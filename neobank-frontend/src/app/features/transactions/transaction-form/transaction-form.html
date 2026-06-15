@@ -1,0 +1,132 @@
+<div class="form-container animate-fade-in pb-10">
+  <!-- Header Section -->
+  <div class="flex-between mb-8 header-section">
+    <div>
+      <h1 class="page-title text-primary">New Transaction</h1>
+      <p class="text-secondary">Process a debit or credit against your accounts</p>
+    </div>
+    <a routerLink="/dashboard" class="btn btn-secondary outline-btn cancel-btn">
+      <i class="fa-solid fa-arrow-left mr-2"></i> Cancel
+    </a>
+  </div>
+
+  <div class="card glass-card transaction-card p-0 shadow-xl border border-outline-variant rounded-xl overflow-hidden">
+    <!-- Card Top Decorator -->
+    <div class="card-decorator"></div>
+
+    <div class="p-8 relative z-10">
+      @if (isLoading()) {
+        <div class="flex-center flex-col py-16">
+          <mat-spinner diameter="48" color="primary"></mat-spinner>
+          <p class="text-secondary mt-4">Loading form data...</p>
+        </div>
+      } @else {
+        <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()" class="transaction-form">
+
+          <div class="form-grid">
+            <!-- Account Selection -->
+            <div class="form-group w-full">
+              <label class="form-label">Source / Destination Account</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-wallet input-icon"></i>
+                <select class="custom-input custom-select pl-10" formControlName="accountId" [class.input-error]="transactionForm.get('accountId')?.touched && transactionForm.get('accountId')?.invalid">
+                  <option value="" disabled selected>Select an account</option>
+                  @for (account of accounts(); track account.id) {
+                    <option [value]="account.id">
+                      {{ account.accountType }} • {{ account.accountNumber }} ({{ account.balance | currency:'USD' }})
+                    </option>
+                  }
+                </select>
+                <i class="fa-solid fa-chevron-down select-caret"></i>
+              </div>
+              @if (transactionForm.get('accountId')?.touched && transactionForm.get('accountId')?.invalid) {
+                <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Please select an account.</span>
+              }
+            </div>
+
+            <!-- Transaction Type -->
+            <div class="form-group w-full">
+              <label class="form-label">Transaction Type</label>
+              <div class="type-selector-grid">
+                <label class="type-option" [class.selected]="transactionForm.get('type')?.value === 'DEBIT'">
+                  <input type="radio" formControlName="type" value="DEBIT" class="hidden-radio">
+                  <div class="type-content">
+                    <div class="type-icon-box debit-icon">
+                      <i class="fa-solid fa-arrow-up"></i>
+                    </div>
+                    <div class="type-text">
+                      <span class="type-title">Debit</span>
+                      <span class="type-desc">Withdraw / Send</span>
+                    </div>
+                  </div>
+                </label>
+                <label class="type-option" [class.selected]="transactionForm.get('type')?.value === 'CREDIT'">
+                  <input type="radio" formControlName="type" value="CREDIT" class="hidden-radio">
+                  <div class="type-content">
+                    <div class="type-icon-box credit-icon">
+                      <i class="fa-solid fa-arrow-down"></i>
+                    </div>
+                    <div class="type-text">
+                      <span class="type-title">Credit</span>
+                      <span class="type-desc">Deposit / Receive</span>
+                    </div>
+                  </div>
+                </label>
+              </div>
+              @if (transactionForm.get('type')?.touched && transactionForm.get('type')?.invalid) {
+                <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Type is required.</span>
+              }
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <!-- Amount -->
+            <div class="form-group w-full">
+              <label class="form-label">Transaction Amount</label>
+              <div class="input-wrapper amount-wrapper">
+                <span class="amount-prefix">₹</span>
+                <input class="custom-input amount-input" type="number" formControlName="amount" placeholder="0.00" [class.input-error]="transactionForm.get('amount')?.touched && transactionForm.get('amount')?.invalid" />
+                <span class="amount-currency">INR</span>
+              </div>
+              @if (transactionForm.get('amount')?.touched && transactionForm.get('amount')?.invalid) {
+                <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Enter a valid amount (> 0).</span>
+              }
+            </div>
+
+            <!-- Description -->
+            <div class="form-group w-full">
+              <label class="form-label">Description / Note</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-pen input-icon"></i>
+                <input class="custom-input pl-10" type="text" formControlName="description" placeholder="e.g., Grocery Shopping, Salary" [class.input-error]="transactionForm.get('description')?.touched && transactionForm.get('description')?.invalid" />
+              </div>
+              @if (transactionForm.get('description')?.touched && transactionForm.get('description')?.invalid) {
+                <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Description is required (min 3 chars).</span>
+              }
+            </div>
+          </div>
+
+          <div class="form-actions mt-8 pt-6 border-t border-outline-variant border-opacity-30">
+            <button class="btn btn-primary btn-submit w-full" type="submit" [disabled]="isSubmitting()">
+              @if (isSubmitting()) {
+                <i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Processing Transaction...
+              } @else {
+                Execute Transaction <i class="fa-solid fa-bolt ml-2"></i>
+              }
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+
+  <div class="info-note-card mt-6 card flex items-start gap-4">
+    <div class="info-icon-box">
+      <i class="fa-solid fa-shield-halved"></i>
+    </div>
+    <div>
+      <h4 class="info-note-title">Secure Transaction Processing</h4>
+      <p class="info-note-desc">Debits are processed immediately via our secure network. Please ensure sufficient funds are available to avoid overdraft fees or transaction failure.</p>
+    </div>
+  </div>
+</div>

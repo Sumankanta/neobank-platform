@@ -1,0 +1,244 @@
+<div class="rewards-gallery animate-fade-in pb-10">
+  <div class="gallery-back">
+    <button class="btn btn-secondary outline-btn" (click)="navBack()">
+      <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+    </button>
+  </div>
+
+  <!-- Hero Title Section -->
+  <section class="gallery-hero">
+    <h1 class="gallery-title">Your Exclusive Rewards Gallery</h1>
+    <p class="gallery-subtitle">
+      Explore a curated selection of rewards tailored to your membership tier. The higher you climb, the more extraordinary the experiences become.
+    </p>
+  </section>
+
+  <!-- Tier Navigation / Progress -->
+  <section class="tier-nav-card card">
+    <div class="tier-nav-left">
+      <span class="label-uppercase-warning">Current Tier</span>
+      <div class="tier-nav-name-box">
+        <i class="fa-solid fa-crown tier-nav-icon text-warning"></i>
+        <h2 class="tier-nav-title">{{ getTier() }}</h2>
+      </div>
+    </div>
+    <div class="tier-nav-progress">
+      <div class="flex-between tier-nav-progress-text">
+        <span class="font-bold text-primary">{{ 35000 - rewardService.pointsBalance() | number }} PTS to Platinum</span>
+        <span class="tier-nav-pts">{{ rewardService.pointsBalance() | number }} / 35,000</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill tier-gold-gradient transition-all" [style.width.%]="getTierProgressToPlatinum()"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Silver Tier (Basic) -->
+  <div class="tier-section">
+    <div class="tier-section-header">
+      <span class="tier-badge bg-surface-container text-secondary">Silver Tier</span>
+      <div class="tier-divider bg-surface-container"></div>
+      <span class="tier-sub-text text-muted">Essential lifestyle perks</span>
+    </div>
+
+    <div class="grid-gallery-4">
+      
+      <!-- Silver Reward 1 -->
+      <div class="card reward-card group">
+        <div class="reward-img-box">
+          <img class="reward-img group-hover-scale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4CHsyh40ffaUtXhu53YZyzlKOWsAKxCSNk74dLlvNA4P1VsyyHdxRurPCe-LXc27x-o3sv8dCyXkVYQS_ECV6-xO4DxTiGPwgB7-uG3jwzhDwt8-Iw4K8or2JBeQGf5nPjCWgb8qGBbeUzS_uDrIONuBxUau7EbwwKHXi-rsQTCT1aN82S5iHopML_fxGS3NfkQu4W77xcXyv8QJ3gaqO--WGLVCvwibDoUp82_nSNRkuvklkf704glw8HpEsiqxUY9F5y15kVIDn" />
+        </div>
+        <div class="reward-content">
+          <h3 class="reward-title">Artisan Coffee Pass</h3>
+          <p class="reward-desc">Complimentary beverage at any partner café.</p>
+          <div class="flex-between reward-footer">
+            <div class="reward-cost-box">
+              <span class="reward-cost-label">Cost</span>
+              <span class="reward-cost-val">1,200 PTS</span>
+            </div>
+            <button class="btn btn-primary btn-sm" (click)="claimReward(1200, 'Artisan Coffee Pass')">Claim</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Silver Reward 2 -->
+      <div class="card reward-card group">
+        <div class="reward-img-box">
+          <img class="reward-img group-hover-scale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCt17N8BeL5LwCz9uUZWr5htcT63abNhIy0758Lks7eSrnH-wfSPpRw7WDXwCf_kwqguDOwGvcx9fCvevi7iwTsXy9sNvuMDSW26d2aO9OluVRpMwJ4-aJjeInlhXdazBu7K2D010yZ5U7pdBxHCWsLHuxP2B2UPhbdsZfM3mZ3uRclbw89o9yXvsnh1mKwFajoXLFJAf7WdrWYhkEE5fLZ12diRz65hkQuULP8V7AI3qzQigz2wnneZ9KTnBmEUzTt3kvhcme5ej6A" />
+        </div>
+        <div class="reward-content">
+          <h3 class="reward-title">$10 Retail Voucher</h3>
+          <p class="reward-desc">Valid at over 50 leading lifestyle brands.</p>
+          <div class="flex-between reward-footer">
+            <div class="reward-cost-box">
+              <span class="reward-cost-label">Cost</span>
+              <span class="reward-cost-val">2,500 PTS</span>
+            </div>
+            <button class="btn btn-primary btn-sm" (click)="claimReward(2500, '$10 Retail Voucher')">Claim</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Silver Reward 3 -->
+      <div class="card reward-card group">
+        <div class="reward-img-box">
+          <img class="reward-img group-hover-scale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6XfVHILkIFzIg_SAXQ_oV1Njz_3H41nisud7VMqoSq_4Z1sfLbX1KEh8OB_zl6ATMXb0VK5WffdoKI3g1lRXpbXJt4AGrlTGdqweVRfzK6PIy1OjXLRJwr9GOHmrT9CL1_p81_qbXapU533Q8da0cRHvsDtFGxlvv22_BxYzD-IoWuIyxFPUrclzoEyJYWREhDqpm_jOBINM_z8gV3IsiyrtCZQ-oYmywMVRF44Zxigml70rkvLkZpiPtazhhI6mLdCTvesVBPGCi" />
+        </div>
+        <div class="reward-content">
+          <h3 class="reward-title">Movie Night for Two</h3>
+          <p class="reward-desc">Premium seating at participating cinemas.</p>
+          <div class="flex-between reward-footer">
+            <div class="reward-cost-box">
+              <span class="reward-cost-label">Cost</span>
+              <span class="reward-cost-val">4,500 PTS</span>
+            </div>
+            <button class="btn btn-primary btn-sm" (click)="claimReward(4500, 'Movie Night for Two')">Claim</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Silver Reward 4 -->
+      <div class="card reward-card group">
+        <div class="reward-img-box">
+          <img class="reward-img group-hover-scale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlqc9WBTWCUQbvR-HBcjcKgKEUk7tHABlrvruHa2jtNZKjrAyNGW30k32o495f1CJVbl1-FTxcJSpNoSI1sRwzoxqjMLTPFW76KRvDIIvcvCTnuX7mJOG9g09x5JjYSV00064wAfEAfEHy4M0o3HXSBWlUISKU9rIZo8ATej9__ApER7AjgXFxc7EYQlrnZMHYa5AC4JCpUubrYYMvT4-6U_MMerV5XOGcrGgmBRuwvpfdvTk0eyK8QwcLYc868BUID5w8FpRA-MU7" />
+        </div>
+        <div class="reward-content">
+          <h3 class="reward-title">Monthly Wellness Box</h3>
+          <p class="reward-desc">Curated selection of premium health products.</p>
+          <div class="flex-between reward-footer">
+            <div class="reward-cost-box">
+              <span class="reward-cost-label">Cost</span>
+              <span class="reward-cost-val">5,000 PTS</span>
+            </div>
+            <button class="btn btn-primary btn-sm" (click)="claimReward(5000, 'Monthly Wellness Box')">Claim</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Gold Tier (Current) -->
+  <div class="tier-section">
+    <div class="tier-section-header">
+      <span class="tier-badge text-warning" style="background: rgba(245, 158, 11, 0.2)">Gold Tier</span>
+      <div class="tier-divider" style="background: rgba(245, 158, 11, 0.3)"></div>
+      <span class="tier-sub-text text-warning font-bold">Global travel & dining perks</span>
+    </div>
+
+    <div class="grid-gallery-3">
+      
+      <!-- Gold Reward 1 -->
+      <div class="card reward-card reward-card-gold group">
+        <div class="reward-img-box-lg">
+          <img class="reward-img group-hover-scale-slow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ_YP92fn1W51CpdoJeeiGNSQ0pR9ql6UQohTrxgAYZkxS0AfPaQyxLVcrLy0av6Gc1IUS0cV1o4BqwJHRhMZSeENQwr-j6fnbBUSVG99e6F6udB-H-0H6mamU3SHCyxZrjVjfF8Ox4D0aR5dAt11UHtE3CbktiL7tFKjBWUpbs3oZ0L893Vi_7SEuhDYq7vMdvFBe6FCkUEeiS2iiRtx-S-b9WWtChdN3UAZ8HxpjPBsurUM11u7oOMOw71geNKovqLB1IcY4VG5Y" />
+          <div class="popular-tag">Popular</div>
+        </div>
+        <div class="reward-content-lg">
+          <h3 class="reward-title-lg">Flight Upgrade Voucher</h3>
+          <p class="reward-desc-lg">Upgrade to Business Class on any short-haul flight with our partner airlines.</p>
+          <div class="flex-between reward-footer">
+            <div class="reward-cost-box">
+              <span class="reward-cost-label text-warning font-bold">Gold Exclusive</span>
+              <span class="reward-cost-val-lg">12,500 PTS</span>
+            </div>
+            <button class="btn" style="background: var(--warning); color: black; font-weight: bold;" (click)="claimReward(12500, 'Flight Upgrade Voucher')">Claim Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gold Reward 2 -->
+      <div class="card reward-card reward-card-gold group">
+        <div class="reward-img-box-lg">
+          <img class="reward-img group-hover-scale-slow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRvugKo9c6SuLi82rgnnHtFVqQ7-bB9bw0C2vuSGN7PJygSILMTCd70cH9CPd7LHqNRw2zhhGRDW1D1yVfQWWJW79NpC-V75djOfLG84S_TnsYCnkFqpo93WDZ10hZDKiAA3foKTK2_wzO5YevJIBN9KoT2eRLNB0j1tkEQnQklEpa2E8JwcDJxSn-lrGJexy32X_1HhLBKl5i1WbyTFMFq7ZRGtb5u1vlrYZSiys_cQwoFxlWF9yTP9siOjfPybW-Cbc8R7n6vBa2" />
+        </div>
+        <div class="reward-content-lg">
+          <h3 class="reward-title-lg">Michelin Tasting Experience</h3>
+          <p class="reward-desc-lg">Complimentary 5-course tasting menu for two at select starred restaurants.</p>
+          <div class="flex-between reward-footer">
+            <div class="reward-cost-box">
+              <span class="reward-cost-label text-warning font-bold">Gold Exclusive</span>
+              <span class="reward-cost-val-lg">18,000 PTS</span>
+            </div>
+            <button class="btn" style="background: var(--warning); color: black; font-weight: bold;" (click)="claimReward(18000, 'Michelin Tasting Experience')">Claim Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gold Reward 3 -->
+      <div class="card reward-card reward-card-gold group">
+        <div class="reward-img-box-lg">
+          <img class="reward-img group-hover-scale-slow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCG8GrDyaMpGjHmX2wJvBQhqkJssrmIPt8IVOcRYEktEIwhzXv1rnz4e0rc5-bLdZtj3zX4KrluENQg0CT279HaugeGsyvg3WpvrFY_C2O7y-5VJZAGcJ4i_a_thaacbcsnqyahB853MHAMIf-tEDFRHDOaSQgFwcIyY0ZlJ4a4p4gmOXGrncmMFtJzy-mKRYR69sQALXPG1VCxOh7vP4HeAzTuCsd1VP13PY4fbLY-GI59o4oVzpGTQbw59xUQv636D0WDI5lLa481" />
+        </div>
+        <div class="reward-content-lg">
+          <h3 class="reward-title-lg">5-Star Hotel Stay</h3>
+          <p class="reward-desc-lg">One complimentary night stay at participating luxury hotel collections globally.</p>
+          <div class="flex-between reward-footer">
+            <div class="reward-cost-box">
+              <span class="reward-cost-label text-warning font-bold">Gold Exclusive</span>
+              <span class="reward-cost-val-lg">25,000 PTS</span>
+            </div>
+            <button class="btn" style="background: var(--warning); color: black; font-weight: bold;" (click)="claimReward(25000, '5-Star Hotel Stay')">Claim Now</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Platinum Tier (Locked) -->
+  <div class="tier-section relative">
+    <div class="tier-section-header">
+      <div class="tier-badge" style="background: rgba(79, 70, 229, 0.1);">
+        <i class="fa-solid fa-lock text-primary text-xs mr-2"></i>
+        <span class="text-primary font-bold">Platinum Tier</span>
+      </div>
+      <div class="tier-divider" style="background: rgba(79, 70, 229, 0.2);"></div>
+      <span class="tier-sub-text text-secondary">The pinnacle of banking exclusivity</span>
+    </div>
+
+    <!-- Lock Overlay for Section -->
+    <div class="platinum-lock-overlay">
+      <div class="lock-icon-box">
+        <i class="fa-solid fa-lock text-primary lock-icon"></i>
+      </div>
+      <h3 class="lock-title">Platinum Access Locked</h3>
+      <p class="lock-desc">Earn {{ 35000 - rewardService.pointsBalance() | number }} more points to unlock private lounge access, personal concierge, and bespoke travel experiences.</p>
+      <button class="btn btn-primary btn-lg" (click)="navBack()">
+        <i class="fa-solid fa-arrow-trend-up"></i> Boost My Points
+      </button>
+    </div>
+
+    <div class="grid-gallery-2 opacity-blur">
+      <!-- Platinum Reward 1 -->
+      <div class="card reward-card reward-card-plat">
+        <div class="reward-img-box-plat">
+          <img class="reward-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvtercdZhsqHL-zFiukmfsIeqTit8sWeIrC_rfiqOcs95961E8AgK958_S27HXKFRvt0Io6SAnQmBCl_oXEsI2eh1qGvMKiDn1yYcKqRWbxSgPGGUvc5RIsIRPe8vcYIsURvhfHKPsrN8bIWuqIsl81-iynrSSAA4fEC6dM8vDT5Qo5QCtBtPvU7TbaTmztiONHJjRQj5qCkNeCgeMjvo-7S_piPYYeARontYyXv8l3vdfbfKKrOetRl8sGdCu8X-DTBkaUHQU9SNi" />
+        </div>
+        <div class="reward-content-plat">
+          <h3 class="reward-title-lg">Global Lounge Unlimited</h3>
+          <p class="reward-desc-lg">Unlimited access to over 1,200 VIP airport lounges worldwide for you and two guests.</p>
+          <div class="reward-footer mt-auto">
+            <span class="reward-cost-label text-primary font-bold">Requirement</span>
+            <div class="reward-cost-val-lg text-primary mt-1">Platinum Membership</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Platinum Reward 2 -->
+      <div class="card reward-card reward-card-plat">
+        <div class="reward-img-box-plat">
+          <img class="reward-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7XufIzoaj0zlpJ2hGl5li_pVD1uydZM-HawnIJBdB4cf9NaxQubXFgEPsSjqUciLd6czh7cRwjyuBPrwio3ZUL7e18sGVMYXfNpSoyzmt1ez9-JJ3tHd5TeHi301EDLGPHsY8pxmmslqs0jp3VuKaWWWBiJMzioBDgkBqGAfZY8AmDudVt_uM-Kdgp-enFA1pzHQV1KNsAaLYaD5n34fOVfyVh2U59YFLDR6-LR0-mRg8hNMUS1pul6gj6Is18fgZJl4zPTW_IlmN" />
+        </div>
+        <div class="reward-content-plat">
+          <h3 class="reward-title-lg">Bespoke Concierge 24/7</h3>
+          <p class="reward-desc-lg">Dedicated personal assistant for event bookings, travel arrangements, and private dining.</p>
+          <div class="reward-footer mt-auto">
+            <span class="reward-cost-label text-primary font-bold">Requirement</span>
+            <div class="reward-cost-val-lg text-primary mt-1">Platinum Membership</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

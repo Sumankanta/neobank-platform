@@ -1,0 +1,87 @@
+<div class="form-container animate-fade-in pb-10">
+  <!-- Header Section -->
+  <div class="flex-between mb-8 header-section">
+    <div>
+      <h1 class="page-title text-primary">Set Spending Limit</h1>
+      <p class="text-secondary">Define your budget for a specific category and month</p>
+    </div>
+    <a routerLink="/budget" class="btn btn-secondary outline-btn cancel-btn">
+      <i class="fa-solid fa-arrow-left mr-2"></i> Cancel
+    </a>
+  </div>
+
+  <div class="card glass-card form-card p-0 shadow-xl border border-outline-variant rounded-xl overflow-hidden">
+    <!-- Card Top Decorator -->
+    <div class="card-decorator"></div>
+    
+    <div class="p-8 relative z-10">
+      <form [formGroup]="budgetForm" (ngSubmit)="onSubmit()" class="custom-form">
+        
+        <div class="form-grid">
+          <!-- Category Selection -->
+          <div class="form-group w-full">
+            <label class="form-label">Expense Category</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-tags input-icon"></i>
+              <select class="custom-input custom-select pl-10" formControlName="category" [class.input-error]="budgetForm.get('category')?.touched && budgetForm.get('category')?.invalid">
+                <option value="" disabled selected>Select a category</option>
+                @for (cat of categories; track cat) {
+                  <option [value]="cat">{{ cat }}</option>
+                }
+              </select>
+              <i class="fa-solid fa-chevron-down select-caret"></i>
+            </div>
+            @if (budgetForm.get('category')?.touched && budgetForm.get('category')?.invalid) {
+              <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Please select a category.</span>
+            }
+          </div>
+
+          <!-- Budget Month -->
+          <div class="form-group w-full">
+            <label class="form-label">Budget Month</label>
+            <div class="input-wrapper">
+              <i class="fa-regular fa-calendar-days input-icon"></i>
+              <input class="custom-input pl-10" type="month" formControlName="budgetMonth" [class.input-error]="budgetForm.get('budgetMonth')?.touched && budgetForm.get('budgetMonth')?.invalid" />
+            </div>
+            @if (budgetForm.get('budgetMonth')?.touched && budgetForm.get('budgetMonth')?.invalid) {
+              <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Month is required.</span>
+            }
+          </div>
+        </div>
+
+        <!-- Limit Amount -->
+        <div class="form-group w-full mt-2">
+          <label class="form-label">Monthly Limit</label>
+          <div class="input-wrapper amount-wrapper">
+            <span class="amount-prefix">₹</span>
+            <input class="custom-input amount-input" type="number" formControlName="limitAmount" placeholder="0.00" [class.input-error]="budgetForm.get('limitAmount')?.touched && budgetForm.get('limitAmount')?.invalid" />
+            <span class="amount-currency">INR</span>
+          </div>
+          @if (budgetForm.get('limitAmount')?.touched && budgetForm.get('limitAmount')?.invalid) {
+            <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Enter a valid limit amount (> 0).</span>
+          }
+        </div>
+
+        <div class="form-actions mt-8 pt-6 border-t border-outline-variant border-opacity-30">
+          <button class="btn btn-primary btn-submit w-full" type="submit" [disabled]="isSubmitting()">
+            @if (isSubmitting()) {
+              <i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Saving Budget...
+            } @else {
+              Save Budget Limit <i class="fa-solid fa-check-double ml-2"></i>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="info-note-card mt-6 card flex items-start gap-4">
+    <div class="info-icon-box bg-primary-light text-primary">
+      <i class="fa-solid fa-lightbulb"></i>
+    </div>
+    <div>
+      <h4 class="info-note-title text-primary">Budgeting Tip</h4>
+      <p class="info-note-desc">Setting a realistic budget helps you stay on track with your financial goals. We'll alert you as you approach your limit.</p>
+    </div>
+  </div>
+</div>

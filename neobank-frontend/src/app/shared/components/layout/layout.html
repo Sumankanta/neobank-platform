@@ -1,0 +1,21 @@
+<div class="app-container">
+  <!-- Sidebar Navigation -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Sidebar Spacer for desktop layouts -->
+  <div class="sidebar-spacer"></div>
+
+  <!-- Main Work Area -->
+  <div class="main-content">
+    <!-- Top Header Navigation Bar -->
+    <app-topbar></app-topbar>
+
+    <!-- Global Alert / Toast Notifications -->
+    <app-alert></app-alert>
+
+    <!-- Routing Viewport -->
+    <main class="content-body animate-fade-in">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

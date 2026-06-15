@@ -1,0 +1,164 @@
+<div class="profile-dashboard animate-fade-in">
+  <!-- Header -->
+  <div class="dashboard-header mb-4">
+    <h1>Account Settings</h1>
+    <p class="text-secondary">Manage your identity, personal details, and security preferences.</p>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex-center p-5">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    <div class="profile-grid">
+      
+      <!-- Left Column: Identity & Meta -->
+      <div class="identity-col">
+        <!-- Identity Card -->
+        <div class="glass-card identity-card gradient-border text-center">
+          <div class="avatar-wrapper mx-auto">
+            <div class="avatar-ring"></div>
+            <div class="avatar-circle">
+              <span class="initials">{{ getInitials() }}</span>
+            </div>
+            <div class="verified-badge" title="KYC Verified">
+              <i class="fa-solid fa-check"></i>
+            </div>
+          </div>
+          
+          <h2 class="mt-4 mb-1">{{ user()?.fullName }}</h2>
+          <p class="text-primary text-sm uppercase font-bold">{{ user()?.role }}</p>
+          <p class="text-xs text-muted mt-2">Member since {{ user()?.createdAt | date:'MMM yyyy' }}</p>
+
+          <div class="kyc-status mt-4">
+            <div class="flex-between text-sm">
+              <span class="text-secondary">KYC Status</span>
+              <span class="text-success font-bold"><i class="fa-solid fa-shield-check"></i> Verified</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document Info -->
+        <div class="glass-card mt-4 p-4">
+          <h3 class="card-title mb-3">Verification Documents</h3>
+          <div class="doc-item">
+            <div class="doc-icon bg-primary-light text-primary"><i class="fa-solid fa-id-card"></i></div>
+            <div class="doc-details">
+              <span class="d-block font-bold">National ID</span>
+              <span class="text-xs text-muted">Uploaded on {{ user()?.createdAt | date:'MMM d, y' }}</span>
+            </div>
+            <i class="fa-solid fa-check-circle text-success ml-auto"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Forms & Settings -->
+      <div class="settings-col">
+        
+        <!-- Personal Info Form -->
+        <div class="glass-card settings-card mb-4">
+          <div class="card-header border-bottom p-4">
+            <h3 class="m-0 font-bold">Personal Information</h3>
+          </div>
+          <div class="card-body p-4">
+            <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="modern-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Full Name</label>
+                  <div class="input-wrapper">
+                    <i class="fa-regular fa-user input-icon"></i>
+                    <input type="text" formControlName="fullName" class="modern-input">
+                  </div>
+                  <div class="error-text" *ngIf="profileForm.get('fullName')?.touched && profileForm.get('fullName')?.invalid">
+                    Full name is required.
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row mt-4">
+                <div class="form-group half-width">
+                  <label class="form-label">Email Address</label>
+                  <div class="input-wrapper">
+                    <i class="fa-regular fa-envelope input-icon"></i>
+                    <input type="email" formControlName="email" class="modern-input">
+                  </div>
+                  <div class="error-text" *ngIf="profileForm.get('email')?.touched && profileForm.get('email')?.invalid">
+                    Valid email is required.
+                  </div>
+                </div>
+
+                <div class="form-group half-width">
+                  <label class="form-label">Phone Number</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-mobile-screen input-icon"></i>
+                    <input type="text" formControlName="phone" class="modern-input" readonly>
+                  </div>
+                  <span class="text-xs text-muted mt-1"><i class="fa-solid fa-lock text-xs"></i> Contact support to change</span>
+                </div>
+              </div>
+
+              <div class="form-actions mt-5 border-top pt-4 text-right">
+                <button type="submit" class="btn btn-primary gradient-btn px-5" [disabled]="profileForm.invalid || isUpdating()">
+                  <span *ngIf="!isUpdating()">Save Changes</span>
+                  <span *ngIf="isUpdating()"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Saving...</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Security Settings -->
+        <div class="glass-card settings-card">
+          <div class="card-header border-bottom p-4">
+            <h3 class="m-0 font-bold">Security Preferences</h3>
+          </div>
+          <div class="card-body">
+            
+            <div class="security-list">
+              <!-- Password -->
+              <div class="security-item p-4 border-bottom">
+                <div class="si-left">
+                  <div class="si-icon bg-warning-light text-warning"><i class="fa-solid fa-key"></i></div>
+                  <div class="si-info">
+                    <span class="font-bold d-block">Login Password</span>
+                    <span class="text-xs text-secondary">Last changed 3 months ago</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary outline-btn btn-sm">Update</button>
+              </div>
+
+              <!-- 2FA -->
+              <div class="security-item p-4 border-bottom">
+                <div class="si-left">
+                  <div class="si-icon bg-primary-light text-primary"><i class="fa-solid fa-shield-halved"></i></div>
+                  <div class="si-info">
+                    <span class="font-bold d-block">Two-Factor Authentication (2FA)</span>
+                    <span class="text-xs text-secondary">Protect your account with an extra security layer</span>
+                  </div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <!-- Connected Devices -->
+              <div class="security-item p-4">
+                <div class="si-left">
+                  <div class="si-icon bg-indigo-light text-indigo"><i class="fa-solid fa-laptop-code"></i></div>
+                  <div class="si-info">
+                    <span class="font-bold d-block">Connected Devices</span>
+                    <span class="text-xs text-secondary">Manage devices logged into your account</span>
+                  </div>
+                </div>
+                <button class="icon-btn-ghost"><i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+</div>

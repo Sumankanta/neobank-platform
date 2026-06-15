@@ -1,0 +1,229 @@
+.rewards-s.rewards-success {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.confetti-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+
+.success-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.success-header {
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-icon-box {
+  width: 5rem;
+  height: 5rem;
+  background-color: var(--success);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.success-title {
+  font-weight: 700;
+  font-size: 2.25rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.success-subtitle {
+  color: var(--text-secondary);
+  max-width: 36rem;
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 2rem;
+  width: 100%;
+}
+
+.bento-col-12 { grid-column: span 12; }
+.bento-col-7 { grid-column: span 12; }
+.bento-col-5 { grid-column: span 12; }
+
+@media (min-width: 1024px) {
+  .bento-col-7 { grid-column: span 7; }
+  .bento-col-5 { grid-column: span 5; }
+}
+
+.success-coupon {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.coupon-img-box {
+  position: relative;
+  height: 16rem;
+  width: 100%;
+}
+
+.coupon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coupon-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+  opacity: 0.8;
+}
+
+.coupon-img-text {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  text-align: left;
+}
+
+.coupon-tag {
+  font-size: 0.75rem;
+  color: #fff;
+  opacity: 0.8;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.coupon-name {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #fff;
+  margin: 0;
+}
+
+.coupon-details {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.label-uppercase {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.claim-code-box {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px dashed var(--border-color);
+}
+
+.claim-code-val {
+  font-family: monospace;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--primary);
+}
+
+.success-balance-val {
+  font-weight: 700;
+  font-size: 2.25rem;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.tier-platinum-gradient {
+  background: linear-gradient(135deg, #131b2e 0%, #3f465c 100%);
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.group:hover .group-hover-translate-x {
+  transform: translateX(4px);
+}
+
+.help-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.help-icon-box {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: rgba(79, 70, 229, 0.1);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  color: var(--primary);
+  font-size: 1.25rem;
+}
+
+.help-title {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.help-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.bounce-in {
+  animation: bounceIn 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+@keyframes bounceIn {
+  0% { opacity: 0; transform: scale3d(0.3, 0.3, 0.3); }
+  20% { transform: scale3d(1.1, 1.1, 1.1); }
+  40% { transform: scale3d(0.9, 0.9, 0.9); }
+  60% { opacity: 1; transform: scale3d(1.03, 1.03, 1.03); }
+  80% { transform: scale3d(0.97, 0.97, 0.97); }
+  100% { opacity: 1; transform: scale3d(1, 1, 1); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.w-full { width: 100%; }
+.progress-track { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.05); border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 999px; transition: width 0.8s ease-out; box-shadow: 0 0 10px currentColor; }

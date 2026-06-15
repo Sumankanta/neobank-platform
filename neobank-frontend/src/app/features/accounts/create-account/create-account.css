@@ -1,0 +1,43 @@
+.type-card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.type-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.type-icon.savings {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+}
+
+.type-icon.current {
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--secondary);
+}
+
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+.features-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.w-full { width: 100%; }

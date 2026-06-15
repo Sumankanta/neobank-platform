@@ -1,0 +1,99 @@
+<div class="account-detail-container">
+  @if (isLoading() && !account()) {
+    <div class="flex-center p-5">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else if (account()) {
+    <div class="detail-header flex-between mb-4">
+      <div class="breadcrumb">
+        <a routerLink="/dashboard" class="text-muted">Dashboard</a>
+        <i class="fa-solid fa-chevron-right text-xs mx-2"></i>
+        <span>{{ account()?.accountType }} Account</span>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" [routerLink]="['/transactions/new']" [queryParams]="{ accountId: account()?.id }">
+          <i class="fa-solid fa-plus"></i> New Transaction
+        </button>
+      </div>
+    </div>
+
+    <!-- Account Overview Card -->
+    <div class="card account-hero mb-4">
+      <div class="flex-between align-start">
+        <div>
+          <span class="badge badge-role mb-2">{{ account()?.accountType }}</span>
+          <h1 class="text-4xl mb-1">{{ account()?.balance | currencyFormat }}</h1>
+          <p class="text-secondary">Available Balance</p>
+        </div>
+        <div class="account-badge text-right">
+          <div class="text-xs text-muted mb-1 uppercase tracking-wider">Account Number</div>
+          <div class="font-mono text-lg">{{ account()?.accountNumber }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="section">
+      <div class="flex-between mb-3">
+        <h3>Transaction History</h3>
+        <div class="pagination-controls">
+          <button class="btn-icon" [disabled]="currentPage() === 0" (click)="prevPage()">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <span class="mx-3 text-sm">Page {{ currentPage() + 1 }}</span>
+          <button class="btn-icon" [disabled]="(currentPage() + 1) * pageSize >= totalElements()" (click)="nextPage()">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Date & Time</th>
+              <th>Description</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Balance After</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (tx of transactions(); track tx.id) {
+              <tr>
+                <td class="text-muted text-xs">
+                  {{ tx.transactionDate | date:'MMM d, y, h:mm a' }}
+                </td>
+                <td class="font-medium">{{ tx.description }}</td>
+                <td>
+                  <span class="badge" [class.badge-pending]="tx.type === 'DEBIT'" [class.badge-paid]="tx.type === 'CREDIT'">
+                    {{ tx.type }}
+                  </span>
+                </td>
+                <td [class.text-danger]="tx.type === 'DEBIT'" [class.text-success]="tx.type === 'CREDIT'">
+                  <span class="font-bold">{{ tx.type === 'DEBIT' ? '-' : '+' }}{{ tx.amount | currencyFormat }}</span>
+                </td>
+                <td class="text-muted">{{ tx.balanceAfter | currencyFormat }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="text-center p-5 text-muted">
+                  <div class="empty-state">
+                    <i class="fa-solid fa-clock-rotate-left text-3xl mb-3"></i>
+                    <p>No transactions found for this account.</p>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  } @else {
+    <div class="card text-center p-5">
+      <h2 class="text-danger">Account Not Found</h2>
+      <p class="mb-4">The account you are looking for does not exist or you don't have permission to view it.</p>
+      <button class="btn btn-secondary" routerLink="/dashboard">Back to Dashboard</button>
+    </div>
+  }
+</div>

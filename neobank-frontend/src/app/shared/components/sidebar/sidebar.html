@@ -1,0 +1,82 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="brand">
+      <i class="fa-solid fa-building-columns brand-icon"></i>
+      <span class="brand-text">Neo<span>Bank</span></span>
+    </div>
+  </div>
+
+  <!-- Reward Points Card -->
+  <div class="rewards-card">
+    <div class="rewards-icon">
+      <i class="fa-solid fa-crown"></i>
+    </div>
+    <div class="rewards-info">
+      <span class="rewards-label">Reward Points</span>
+      <span class="rewards-value">{{ rewardService.pointsBalance() }}</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-menu">
+    <span class="menu-label">Main Menu</span>
+    <a routerLink="/dashboard" routerLinkActive="active" class="menu-item">
+      <i class="fa-solid fa-chart-line"></i>
+      <span>Dashboard</span>
+    </a>
+    <a routerLink="/accounts" routerLinkActive="active" class="menu-item">
+      <i class="fa-solid fa-building-columns"></i>
+      <span>Accounts</span>
+    </a>
+    <a routerLink="/transactions" routerLinkActive="active" class="menu-item">
+      <i class="fa-solid fa-right-left"></i>
+      <span>Transactions</span>
+    </a>
+    <a routerLink="/insights" routerLinkActive="active" class="menu-item">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>Insights</span>
+    </a>
+    <a routerLink="/loans" routerLinkActive="active" class="menu-item">
+      <i class="fa-solid fa-hand-holding-dollar"></i>
+      <span>Loans</span>
+    </a>
+    <a routerLink="/budget" routerLinkActive="active" class="menu-item">
+      <i class="fa-solid fa-wallet"></i>
+      <span>Budgets</span>
+    </a>
+    <a routerLink="/bills" routerLinkActive="active" class="menu-item">
+      <i class="fa-solid fa-file-invoice-dollar"></i>
+      <span>Bills & Utilities</span>
+    </a>
+    <a routerLink="/rewards" routerLinkActive="active" class="menu-item">
+      <i class="fa-solid fa-crown"></i>
+      <span>Rewards</span>
+    </a>
+    <a routerLink="/profile" routerLinkActive="active" class="menu-item">
+      <i class="fa-solid fa-user-gear"></i>
+      <span>My Profile</span>
+    </a>
+
+    @if (authService.currentUser()?.role === 'ADMIN') {
+      <span class="menu-label admin-label">Admin Controls</span>
+      <a routerLink="/admin/users" routerLinkActive="active" class="menu-item admin-item">
+        <i class="fa-solid fa-users-gear"></i>
+        <span>Manage Users</span>
+      </a>
+    }
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-profile-summary">
+      <div class="user-avatar">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <div class="user-details">
+        <span class="user-name">{{ authService.currentUser()?.fullName || 'User' }}</span>
+        <span class="user-role badge badge-role">{{ authService.currentUser()?.role }}</span>
+      </div>
+    </div>
+    <button class="logout-btn" (click)="logout()" title="Logout">
+      <i class="fa-solid fa-power-off"></i>
+    </button>
+  </div>
+</aside>

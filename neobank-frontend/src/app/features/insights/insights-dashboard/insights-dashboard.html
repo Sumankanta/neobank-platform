@@ -1,0 +1,256 @@
+<div class="insights-dashboard animate-fade-in">
+  <!-- Header Section -->
+  <div class="dashboard-header flex-between mb-4">
+    <div>
+      <h1>Reports</h1>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary action-btn outline-btn">
+        <i class="fa-solid fa-arrow-right-arrow-left"></i> Compare
+      </button>
+      <button class="btn btn-secondary action-btn outline-btn">
+        <i class="fa-regular fa-calendar"></i> Last 6 months
+      </button>
+      <button class="btn btn-success action-btn solid-btn">
+        <i class="fa-solid fa-download"></i> Export PDF
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex-center p-5">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    <!-- Top Stats Row -->
+    <div class="stats-row mb-4">
+      <!-- Income -->
+      <div class="glass-card stat-card">
+        <div class="stat-header">
+          <div class="stat-icon-wrap"><i class="fa-solid fa-arrow-down-to-bracket text-muted"></i></div>
+          <span class="stat-title">Income</span>
+          <button class="icon-btn-ghost"><i class="fa-solid fa-ellipsis"></i></button>
+        </div>
+        <div class="stat-body mt-3">
+          <span class="stat-value">{{ insights()?.totalIncome | currencyFormat }}</span>
+          <span class="stat-badge badge-success">+12.4%</span>
+        </div>
+      </div>
+
+      <!-- Expense -->
+      <div class="glass-card stat-card">
+        <div class="stat-header">
+          <div class="stat-icon-wrap"><i class="fa-solid fa-arrow-up-right-from-square text-muted"></i></div>
+          <span class="stat-title">Expense</span>
+          <button class="icon-btn-ghost"><i class="fa-solid fa-ellipsis"></i></button>
+        </div>
+        <div class="stat-body mt-3">
+          <span class="stat-value">{{ insights()?.totalExpense | currencyFormat }}</span>
+          <span class="stat-badge badge-danger">-3.8%</span>
+        </div>
+      </div>
+
+      <!-- Net Cash Flow -->
+      <div class="glass-card stat-card">
+        <div class="stat-header">
+          <div class="stat-icon-wrap"><i class="fa-solid fa-chart-line text-muted"></i></div>
+          <span class="stat-title">Net Cash Flow</span>
+          <button class="icon-btn-ghost"><i class="fa-solid fa-ellipsis"></i></button>
+        </div>
+        <div class="stat-body mt-3">
+          <span class="stat-value">{{ insights()?.netSavings | currencyFormat }}</span>
+          <span class="stat-badge badge-success">+22.1%</span>
+        </div>
+      </div>
+
+      <!-- Save Rate -->
+      <div class="glass-card stat-card">
+        <div class="stat-header">
+          <div class="stat-icon-wrap"><i class="fa-solid fa-wallet text-muted"></i></div>
+          <span class="stat-title">Save Rate</span>
+          <button class="icon-btn-ghost"><i class="fa-solid fa-ellipsis"></i></button>
+        </div>
+        <div class="stat-body mt-3">
+          <span class="stat-value">{{ (insights()?.netSavings! / insights()?.totalIncome! * 100) | number:'1.0-0' }}%</span>
+          <span class="stat-target text-success">Target 50%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle Row: Charts -->
+    <div class="charts-row mb-4">
+      <!-- Cash Flow Bar Chart -->
+      <div class="glass-card cash-flow-card">
+        <div class="card-header flex-between mb-4">
+          <div>
+            <h3>Cash Flow</h3>
+            <p class="text-xs text-secondary mt-1">Income vs Expense over time</p>
+          </div>
+          <div class="chart-toggles">
+            <span class="toggle-item text-success"><span class="dot bg-success"></span> Income</span>
+            <span class="toggle-item text-warning"><span class="dot bg-warning"></span> Expense</span>
+            <button class="btn btn-secondary btn-sm toggle-btn active">Both</button>
+          </div>
+        </div>
+        
+        <div class="chart-summary mb-3">
+          <div class="summary-item">
+            <span class="dot bg-success"></span> Income <strong>{{ insights()?.totalIncome | currencyFormat }}</strong>
+          </div>
+          <div class="summary-item">
+            <span class="dot bg-danger"></span> Expense <strong>{{ insights()?.totalExpense | currencyFormat }}</strong>
+          </div>
+        </div>
+
+        <div class="chart-container" style="height: 250px;">
+          <canvas baseChart
+            [data]="barChartData"
+            [type]="'bar'"
+            [options]="barChartOptions">
+          </canvas>
+        </div>
+
+        <div class="chart-footer-stats mt-4">
+          <div class="footer-stat">
+            <span class="dot bg-success"></span>
+            <div class="fs-info">
+              <span class="fs-label">AVG INCOME</span>
+              <span class="fs-value">{{ avgIncome | currencyFormat }}</span>
+            </div>
+          </div>
+          <div class="footer-stat">
+            <span class="dot bg-danger"></span>
+            <div class="fs-info">
+              <span class="fs-label">AVG EXPENSE</span>
+              <span class="fs-value">{{ avgExpense | currencyFormat }}</span>
+            </div>
+          </div>
+          <div class="footer-stat">
+            <div class="fs-info">
+              <span class="fs-label">BEST MONTH</span>
+              <span class="fs-value">{{ bestMonth }}</span>
+            </div>
+          </div>
+          <div class="footer-stat">
+            <div class="fs-info">
+              <span class="fs-label">HIGHEST INCOME</span>
+              <span class="fs-value">{{ highestIncome | currencyFormat }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly Expense Doughnut Chart -->
+      <div class="glass-card monthly-expense-card">
+        <div class="card-header flex-between mb-4">
+          <h3>Monthly Expense</h3>
+          <button class="icon-btn-ghost"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+        </div>
+
+        <div class="doughnut-wrapper mb-4">
+          <div class="doughnut-center-text">
+            <span>{{ insights()?.totalExpense | currencyFormat }}</span>
+          </div>
+          <canvas baseChart
+            [data]="doughnutChartData"
+            [type]="'doughnut'"
+            [options]="doughnutChartOptions">
+          </canvas>
+        </div>
+
+        <div class="custom-legend">
+          @for (cat of insights()?.categories; track cat.category; let i = $index) {
+            <div class="legend-item">
+              <div class="legend-left">
+                <span class="dot" [style.background-color]="getCategoryColor(i)"></span>
+                <span class="legend-label">{{ cat.category }}</span>
+              </div>
+              <div class="legend-right">
+                <span class="legend-pct">{{ cat.percentage | number:'1.0-0' }}%</span>
+                <span class="legend-amt text-muted">{{ cat.amount | currencyFormat }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row: Merchants & AI Insights -->
+    <div class="bottom-row">
+      <!-- Top Merchants List -->
+      <div class="glass-card top-merchants-card">
+        <div class="card-header flex-between mb-4">
+          <div>
+            <h3>Top Merchants</h3>
+            <p class="text-xs text-secondary mt-1">Where you spend the most</p>
+          </div>
+          <button class="btn btn-secondary btn-sm outline-btn rounded-btn">View All</button>
+        </div>
+
+        <div class="merchants-list">
+          @for (tx of recentTransactions(); track tx.id; let i = $index) {
+            <div class="merchant-item">
+              <span class="merchant-rank">{{ i + 1 }}</span>
+              <div class="merchant-icon">
+                <i [class]="getMerchantIcon(tx.description)"></i>
+              </div>
+              <div class="merchant-details">
+                <div class="merchant-name">{{ tx.description }}</div>
+                <div class="merchant-sub">{{ tx.type === 'DEBIT' ? 'Expense' : 'Income' }}</div>
+              </div>
+              <div class="merchant-amount text-right">
+                <div class="font-bold">{{ tx.type === 'DEBIT' ? '-' : '+' }}{{ tx.amount | currencyFormat }}</div>
+                <div class="merchant-progress mt-1">
+                  <div class="mp-fill" [class.bg-success]="tx.type === 'CREDIT'" [class.bg-warning]="tx.type === 'DEBIT'" style="width: 60%"></div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- AI Insights -->
+      <div class="glass-card ai-insights-card">
+        <div class="card-header flex-between mb-4">
+          <div>
+            <h3>Insights & Trends</h3>
+            <p class="text-xs text-secondary mt-1">AI-powered observations</p>
+          </div>
+          <button class="btn btn-secondary btn-sm outline-btn rounded-btn">View All</button>
+        </div>
+
+        <div class="ai-cards-list">
+          <!-- Food Alert Card -->
+          <div class="ai-card alert-warning">
+            <div class="ai-card-header">
+              <span class="ai-badge badge-warning">SPENDING <span class="dot ms-1"></span> Attention</span>
+            </div>
+            <div class="ai-card-body">
+              <div class="ai-icon bg-warning-light"><i class="fa-solid fa-burger text-warning"></i></div>
+              <div class="ai-content">
+                <h4>Food spending is up 32%</h4>
+                <p>You spent $1,340 on food this month — 32% more than last month. Consider meal planning to save up to $200.</p>
+                <a href="#" class="ai-link text-warning mt-2">Review food expenses <i class="fa-solid fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subscription Alert Card -->
+          <div class="ai-card alert-info">
+            <div class="ai-card-header">
+              <span class="ai-badge badge-info">SUBSCRIPTIONS <span class="dot ms-1"></span> Tip</span>
+            </div>
+            <div class="ai-card-body">
+              <div class="ai-icon bg-info-light"><i class="fa-regular fa-circle-play text-info"></i></div>
+              <div class="ai-content">
+                <h4>Unused Subscriptions</h4>
+                <p>You haven't used your Premium Design subscription in 2 months. Canceling could save you $64/month.</p>
+                <a href="#" class="ai-link text-info mt-2">Manage subscriptions <i class="fa-solid fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

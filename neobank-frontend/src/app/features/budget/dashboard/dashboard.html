@@ -1,0 +1,166 @@
+<div class="budget-dashboard animate-fade-in">
+  <!-- Header Section -->
+  <div class="dashboard-header flex-between mb-4">
+    <div>
+      <h1>Budgets</h1>
+      <p class="text-secondary">Tracking spending for {{ currentMonth | date:'MMMM y' }}</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary outline-btn action-btn hide-mobile">
+        <i class="fa-regular fa-calendar"></i> {{ currentMonth | date:'MMM y' }}
+      </button>
+      <button class="btn btn-primary gradient-btn action-btn" routerLink="/budget/create">
+        <i class="fa-solid fa-plus"></i> New Budget
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex-center p-5">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    <!-- Top Stats Row -->
+    <div class="stats-row mb-4">
+      <div class="glass-card stat-card">
+        <div class="stat-icon bg-primary-light"><i class="fa-solid fa-bullseye text-primary"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Total Budget</span>
+          <h2 class="stat-value">{{ totalBudget() | currencyFormat }}</h2>
+        </div>
+      </div>
+      
+      <div class="glass-card stat-card">
+        <div class="stat-icon bg-danger-light"><i class="fa-solid fa-arrow-trend-up text-danger"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Total Spent</span>
+          <h2 class="stat-value text-danger">{{ totalSpent() | currencyFormat }}</h2>
+        </div>
+      </div>
+
+      <div class="glass-card stat-card">
+        <div class="stat-icon bg-success-light"><i class="fa-solid fa-piggy-bank text-success"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Remaining</span>
+          <h2 class="stat-value text-success">{{ totalRemaining() | currencyFormat }}</h2>
+        </div>
+      </div>
+
+      <div class="glass-card stat-card">
+        <div class="stat-icon bg-warning-light"><i class="fa-solid fa-bolt text-warning"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Utilization</span>
+          <h2 class="stat-value">{{ overallUtilization() | number:'1.0-0' }}%</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="budget-content-grid">
+      <!-- Main Left Column: Category Grid -->
+      <div class="categories-col">
+        <div class="section-header flex-between mb-3">
+          <h2>Budget Categories</h2>
+          <button class="icon-btn-ghost"><i class="fa-solid fa-sliders"></i></button>
+        </div>
+
+        <div class="categories-grid">
+          @for (budget of budgets(); track budget.id) {
+            <div class="glass-card category-card">
+              <div class="cat-card-header">
+                <div class="cat-icon-wrap" [ngClass]="getCategoryBgColor(budget.category)">
+                  <i [class]="getCategoryIcon(budget.category)"></i>
+                </div>
+                <div class="cat-title-wrap">
+                  <h3>{{ formatCategoryName(budget.category) }}</h3>
+                  <span class="text-xs text-muted">Limit: {{ budget.limitAmount | currencyFormat }}</span>
+                </div>
+                <button class="icon-btn-ghost"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+              </div>
+
+              <div class="cat-card-body mt-4">
+                <div class="progress-info mb-2">
+                  <span class="text-sm">Spent <strong [class.text-danger]="budget.utilizationPercentage > 100">{{ budget.spent | currencyFormat }}</strong></span>
+                  <span class="text-sm font-bold">{{ budget.utilizationPercentage | number:'1.0-0' }}%</span>
+                </div>
+                
+                <div class="progress-track">
+                  <div class="progress-fill" [ngClass]="getProgressColor(budget.utilizationPercentage)" [style.width.%]="budget.utilizationPercentage > 100 ? 100 : budget.utilizationPercentage"></div>
+                </div>
+
+                <div class="flex-between mt-3">
+                  <span class="text-xs text-muted uppercase">Remaining</span>
+                  <span class="text-sm font-bold" [class.text-danger]="budget.remaining < 0" [class.text-success]="budget.remaining >= 0">
+                    {{ budget.remaining < 0 ? '-' : '' }}{{ (budget.remaining < 0 ? -budget.remaining : budget.remaining) | currencyFormat }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <div class="glass-card empty-state text-center p-5 col-span-full">
+              <i class="fa-solid fa-chart-pie text-4xl text-muted mb-3"></i>
+              <h3>No budgets active</h3>
+              <p class="text-secondary text-sm mb-4">Set up budgets to track your spending effectively.</p>
+              <button class="btn btn-primary gradient-btn" routerLink="/budget/create">Create Budget</button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Right Column: Charts & Insights -->
+      <div class="insights-col">
+        <!-- Distribution Chart -->
+        <div class="glass-card chart-card mb-4">
+          <h3 class="card-title mb-4">Spending Distribution</h3>
+          
+          <div class="doughnut-wrapper mb-4">
+            <div class="doughnut-center-text">
+              <span>{{ totalSpent() | currencyFormat }}</span>
+              <small class="text-xs text-muted block text-center font-normal">Total Spent</small>
+            </div>
+            <canvas baseChart
+              [data]="doughnutChartData"
+              [type]="'doughnut'"
+              [options]="doughnutChartOptions">
+            </canvas>
+          </div>
+
+          <div class="custom-legend mt-4 pt-4 border-top">
+            @for (budget of budgets() | slice:0:4; track budget.id; let i = $index) {
+              <div class="legend-item mb-2">
+                <div class="legend-left">
+                  <span class="dot" [ngClass]="'bg-color-' + i"></span>
+                  <span class="text-sm">{{ formatCategoryName(budget.category) }}</span>
+                </div>
+                <span class="text-sm font-bold">{{ (budget.spent / totalSpent() * 100) || 0 | number:'1.0-0' }}%</span>
+              </div>
+            }
+            @if (budgets().length > 4) {
+              <div class="legend-item text-center mt-2">
+                <span class="text-xs text-primary cursor-pointer">+ {{ budgets().length - 4 }} more</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Overspend Alert -->
+        @if (overallUtilization() > 90) {
+          <div class="glass-card alert-card bg-danger-light border-danger">
+            <div class="alert-icon text-danger"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="alert-content">
+              <h4 class="text-danger">High Utilization Warning</h4>
+              <p class="text-xs text-secondary mt-1">You have utilized {{ overallUtilization() | number:'1.0-0' }}% of your total budget. Consider cutting back on non-essential categories.</p>
+            </div>
+          </div>
+        } @else if (overallUtilization() < 50 && totalBudget() > 0) {
+          <div class="glass-card alert-card bg-success-light border-success">
+            <div class="alert-icon text-success"><i class="fa-solid fa-leaf"></i></div>
+            <div class="alert-content">
+              <h4 class="text-success">Great Savings!</h4>
+              <p class="text-xs text-secondary mt-1">You've only spent {{ overallUtilization() | number:'1.0-0' }}% of your budget so far. Keep it up!</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

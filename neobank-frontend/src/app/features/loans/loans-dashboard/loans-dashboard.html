@@ -1,0 +1,144 @@
+<div class="loans-container animate-fade-in">
+  <!-- Header -->
+  <div class="dashboard-header flex-between mb-4">
+    <div>
+      <h1>Loans & Credit</h1>
+      <p class="text-secondary">Manage your active loans and discover new financing options.</p>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex-center p-5">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    <!-- Loan Summary Hero -->
+    <div class="stats-row mb-4">
+      <div class="glass-card stat-card gradient-border">
+        <div class="stat-icon bg-primary-light"><i class="fa-solid fa-building-columns text-primary"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Outstanding Balance</span>
+          <h2 class="stat-value">{{ totalOutstanding() | currencyFormat }}</h2>
+        </div>
+      </div>
+      
+      <div class="glass-card stat-card">
+        <div class="stat-icon bg-success-light"><i class="fa-solid fa-check-double text-success"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Principal Paid</span>
+          <h2 class="stat-value text-success">{{ (totalPrincipal() - totalOutstanding()) | currencyFormat }}</h2>
+        </div>
+      </div>
+
+      <div class="glass-card stat-card">
+        <div class="stat-icon bg-warning-light"><i class="fa-solid fa-calendar-day text-warning"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Upcoming EMI</span>
+          <h2 class="stat-value text-warning">{{ totalEmi() | currencyFormat }}</h2>
+        </div>
+      </div>
+
+      <div class="glass-card stat-card">
+        <div class="stat-icon bg-secondary-light"><i class="fa-regular fa-clock text-secondary"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Next Due Date</span>
+          <h2 class="stat-value">{{ nextEmiDate() ? (nextEmiDate() | date:'MMM d, y') : 'N/A' }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="loans-content-grid">
+      <!-- Active Loans Section -->
+      <div class="active-loans-col">
+        <div class="section-header mb-3">
+          <h2>Active Loans</h2>
+        </div>
+
+        <div class="active-loans-list">
+          @for (loan of activeLoans(); track loan.id) {
+            <div class="glass-card active-loan-card" [routerLink]="['/loans', loan.id]">
+              <div class="loan-card-top">
+                <div class="lc-info">
+                  <h3>{{ loan.loanProduct.productName }}</h3>
+                  <span class="text-xs text-muted">ID: {{ loan.id.toString().padStart(6, '0') }}</span>
+                </div>
+                <span class="status-badge" [ngClass]="getStatusClass(loan.status)">{{ loan.status }}</span>
+              </div>
+              
+              <div class="loan-card-mid mt-4">
+                <div class="lc-balance">
+                  <span class="text-xs text-muted uppercase">Remaining</span>
+                  <div class="font-bold text-2xl mt-1">{{ loan.remainingBalance | currencyFormat }}</div>
+                </div>
+                
+                <!-- Animated Progress Ring -->
+                <div class="progress-ring-container">
+                  <div class="progress-ring" [ngStyle]="getRepaymentStyle(loan)">
+                    <div class="progress-ring-inner">
+                      <span class="text-xs font-bold">{{ getRepaymentPercentage(loan) | number:'1.0-0' }}%</span>
+                    </div>
+                  </div>
+                  <span class="text-xs text-muted mt-1 text-center d-block">Paid</span>
+                </div>
+              </div>
+
+              <div class="loan-card-bottom mt-4">
+                <div class="lc-meta">
+                  <span class="text-xs text-muted">EMI</span>
+                  <span class="font-bold">{{ loan.monthlyEmi | currencyFormat }}</span>
+                </div>
+                <div class="lc-meta">
+                  <span class="text-xs text-muted">Ends On</span>
+                  <span class="font-bold">{{ loan.endDate | date:'MMM yyyy' }}</span>
+                </div>
+                <div class="lc-meta">
+                  <span class="text-xs text-muted">Rate</span>
+                  <span class="font-bold">{{ loan.loanProduct.interestRate }}%</span>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <div class="glass-card empty-state text-center p-5">
+              <i class="fa-solid fa-folder-open text-3xl text-muted mb-3"></i>
+              <h3>No active loans</h3>
+              <p class="text-secondary text-sm">Explore our loan products to get started.</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Loan Products -->
+      <div class="products-col">
+        <div class="section-header mb-3">
+          <h2>Available Products</h2>
+        </div>
+
+        <div class="products-grid">
+          @for (product of products(); track product.id) {
+            <div class="glass-card product-card">
+              <div class="product-icon">
+                <i class="fa-solid fa-house-chimney" *ngIf="product.productName.includes('Home')"></i>
+                <i class="fa-solid fa-car" *ngIf="product.productName.includes('Car')"></i>
+                <i class="fa-solid fa-user-graduate" *ngIf="product.productName.includes('Education')"></i>
+                <i class="fa-solid fa-briefcase" *ngIf="product.productName.includes('Personal')"></i>
+                <i class="fa-solid fa-shield-heart" *ngIf="!product.productName.match('Home|Car|Education|Personal')"></i>
+              </div>
+              <div class="product-info">
+                <h3>{{ product.productName }}</h3>
+                <p class="text-xs text-secondary line-clamp-2 mt-1">{{ product.description }}</p>
+                
+                <div class="product-tags mt-3">
+                  <span class="tag"><i class="fa-solid fa-percent text-success"></i> {{ product.interestRate }}% p.a</span>
+                  <span class="tag"><i class="fa-regular fa-calendar text-primary"></i> Up to {{ product.maxTenureMonths }} mo</span>
+                </div>
+              </div>
+              <button class="btn btn-secondary action-btn outline-btn mt-3 w-full" [routerLink]="['/loans/apply', product.id]">
+                Apply Now <i class="fa-solid fa-arrow-right ml-1"></i>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

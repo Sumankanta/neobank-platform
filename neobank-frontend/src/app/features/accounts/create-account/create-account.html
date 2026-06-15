@@ -1,0 +1,67 @@
+<div class="form-container">
+  <div class="flex-between mb-4">
+    <div>
+      <h1>Open New Account</h1>
+      <p class="text-secondary">Choose the type of account that fits your needs</p>
+    </div>
+    <a routerLink="/dashboard" class="btn btn-secondary">
+      <i class="fa-solid fa-arrow-left"></i> Back
+    </a>
+  </div>
+
+  <div class="grid-2">
+    <!-- Savings Account Card -->
+    <mat-card class="card type-card">
+      <mat-card-header>
+        <div class="type-icon savings">
+          <i class="fa-solid fa-piggy-bank"></i>
+        </div>
+        <mat-card-title>Savings Account</mat-card-title>
+        <mat-card-subtitle>For long-term growth</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <ul class="features-list">
+          <li><i class="fa-solid fa-check text-success"></i> High-yield interest rates</li>
+          <li><i class="fa-solid fa-check text-success"></i> No monthly maintenance fees</li>
+          <li><i class="fa-solid fa-check text-success"></i> Automatic savings plans</li>
+        </ul>
+      </mat-card-content>
+      <mat-card-actions>
+        <button class="btn btn-primary w-full" (click)="createAccount('SAVINGS')" [disabled]="isSubmitting()">
+          @if (isSubmitting()) {
+            <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+          } @else {
+            Open Savings Account
+          }
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Current Account Card -->
+    <mat-card class="card type-card">
+      <mat-card-header>
+        <div class="type-icon current">
+          <i class="fa-solid fa-wallet"></i>
+        </div>
+        <mat-card-title>Current Account</mat-card-title>
+        <mat-card-subtitle>For everyday spending</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <ul class="features-list">
+          <li><i class="fa-solid fa-check text-success"></i> Unlimited transactions</li>
+          <li><i class="fa-solid fa-check text-success"></i> Real-time spending alerts</li>
+          <li><i class="fa-solid fa-check text-success"></i> Overdraft protection</li>
+        </ul>
+      </mat-card-content>
+      <mat-card-actions>
+        <button class="btn btn-secondary w-full" (click)="createAccount('CURRENT')" [disabled]="isSubmitting()">
+          @if (isSubmitting()) {
+            <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+          } @else {
+            Open Current Account
+          }
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

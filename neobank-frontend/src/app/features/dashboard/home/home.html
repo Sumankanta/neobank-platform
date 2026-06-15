@@ -1,0 +1,293 @@
+<div class="dashboard-layout">
+
+  <!-- ===== LEFT / MAIN PANEL ===== -->
+  <div class="dashboard-main">
+
+    <!-- Hero Balance Section -->
+    <div class="hero-section">
+      <div class="hero-balance-block">
+        <p class="hero-label">Total Balance in USD</p>
+        <h1 class="hero-amount">{{ totalBalance() | currencyFormat }}</h1>
+        <div class="hero-actions">
+          <button class="hero-action-btn send" routerLink="/transactions">
+            <i class="fa-solid fa-paper-plane"></i> Send
+          </button>
+          <button class="hero-action-btn request" routerLink="/transactions">
+            <i class="fa-solid fa-arrow-down-to-bracket"></i> Request
+          </button>
+          <button class="hero-action-btn topup" routerLink="/accounts">
+            <i class="fa-solid fa-plus"></i> Top Up
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Contacts / Accounts -->
+      <div class="quick-accounts">
+        <p class="qa-title">My Accounts</p>
+        @if (isLoading()) {
+          <div class="qa-list">
+            @for (i of [1,2,3,4]; track i) {
+              <div class="qa-item skeleton-shimmer"></div>
+            }
+          </div>
+        } @else {
+          <div class="qa-list">
+            <button class="qa-item qa-new" routerLink="/accounts/create">
+              <div class="qa-avatar qa-avatar-new"><i class="fa-solid fa-plus"></i></div>
+              <span>New</span>
+            </button>
+            @for (account of accounts(); track account.id; let i = $index) {
+              <button class="qa-item" [routerLink]="['/accounts', account.id]">
+                <div class="qa-avatar" [class]="'qa-color-' + (i % 5)">
+                  {{ account.accountType.charAt(0) }}
+                </div>
+                <span>{{ account.accountNumber | slice:0:6 }}</span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- KPI Stats Row -->
+    @if (!isLoading()) {
+      <div class="kpi-row">
+        <div class="kpi-card income">
+          <div class="kpi-header">
+            <span class="kpi-label">Total Income</span>
+            <span class="kpi-badge up"><i class="fa-solid fa-arrow-trend-up"></i> 2.3%</span>
+          </div>
+          <div class="kpi-amount">{{ income() | currencyFormat }}</div>
+          <div class="kpi-spark income-spark">
+            <div class="spark-bar" style="height:40%"></div>
+            <div class="spark-bar" style="height:55%"></div>
+            <div class="spark-bar" style="height:35%"></div>
+            <div class="spark-bar" style="height:70%"></div>
+            <div class="spark-bar" style="height:60%"></div>
+            <div class="spark-bar active" style="height:90%"></div>
+            <div class="spark-bar" style="height:65%"></div>
+            <div class="spark-bar" style="height:75%"></div>
+          </div>
+        </div>
+        <div class="kpi-card expense">
+          <div class="kpi-header">
+            <span class="kpi-label">Total Spent</span>
+            <span class="kpi-badge down"><i class="fa-solid fa-arrow-trend-down"></i> 1.8%</span>
+          </div>
+          <div class="kpi-amount expense-amt">{{ expense() | currencyFormat }}</div>
+          <div class="kpi-spark expense-spark">
+            <div class="spark-bar" style="height:50%"></div>
+            <div class="spark-bar" style="height:38%"></div>
+            <div class="spark-bar" style="height:62%"></div>
+            <div class="spark-bar" style="height:45%"></div>
+            <div class="spark-bar" style="height:55%"></div>
+            <div class="spark-bar active" style="height:72%"></div>
+            <div class="spark-bar" style="height:48%"></div>
+            <div class="spark-bar" style="height:58%"></div>
+          </div>
+        </div>
+        <div class="kpi-card chart-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Spending by Category</span>
+            <span class="kpi-period">This Month</span>
+          </div>
+          <div class="donut-wrapper">
+            <canvas baseChart
+              [data]="doughnutChartData"
+              [type]="doughnutChartType"
+              [options]="doughnutChartOptions">
+            </canvas>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Transaction History -->
+    <div class="tx-section">
+      <div class="tx-header">
+        <h3>Transaction History</h3>
+        <div class="tx-header-right">
+          <div class="tx-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search transactions…" [(ngModel)]="txSearch">
+          </div>
+          <a routerLink="/transactions" class="view-all-link">View All <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+
+      @if (isLoading()) {
+        <div class="skeleton-rows">
+          @for (i of [1,2,3,4,5]; track i) {
+            <div class="skeleton-row skeleton-shimmer"></div>
+          }
+        </div>
+      } @else {
+        <div class="tx-table-wrapper">
+          <table class="tx-table">
+            <thead>
+              <tr>
+                <th>Account</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (tx of filteredTransactions(); track tx.id) {
+                <tr class="tx-row">
+                  <td>
+                    <span class="tx-acct-badge">{{ tx.accountType }} · {{ tx.accountNumber }}</span>
+                  </td>
+                  <td>
+                    <div class="tx-desc-cell">
+                      <span class="tx-icon-wrap" [class.debit]="tx.type==='DEBIT'" [class.credit]="tx.type==='CREDIT'">
+                        <i class="fa-solid" [class.fa-arrow-up]="tx.type==='DEBIT'" [class.fa-arrow-down]="tx.type==='CREDIT'"></i>
+                      </span>
+                      <span class="tx-desc-text">{{ tx.description }}</span>
+                    </div>
+                  </td>
+                  <td class="tx-date">{{ tx.transactionDate | date:'MMM d, y' }}</td>
+                  <td>
+                    <strong [class.text-danger]="tx.type==='DEBIT'" [class.text-success]="tx.type==='CREDIT'">
+                      {{ tx.type === 'DEBIT' ? '-' : '+' }}{{ tx.amount | currencyFormat }}
+                    </strong>
+                  </td>
+                  <td>
+                    <span class="status-pill" [class.pill-debit]="tx.type==='DEBIT'" [class.pill-credit]="tx.type==='CREDIT'">
+                      <span class="status-dot"></span>
+                      {{ tx.type === 'DEBIT' ? 'Debit' : 'Credit' }}
+                    </span>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="5" class="tx-empty">
+                    <i class="fa-solid fa-inbox"></i>
+                    <p>No recent transactions</p>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ===== RIGHT PANEL ===== -->
+  <aside class="dashboard-right">
+
+    <!-- My Accounts Cards -->
+    <div class="right-section">
+      <div class="right-section-header">
+        <h4>My Accounts</h4>
+        <button class="add-card-btn" routerLink="/accounts/create">
+          <i class="fa-solid fa-plus"></i> Add New
+        </button>
+      </div>
+
+      @if (isLoading()) {
+        <div class="bank-card skeleton-shimmer" style="height:140px; border-radius:16px;"></div>
+      } @else if (accounts().length > 0) {
+        <div class="bank-cards-carousel">
+          @for (account of accounts().slice(0, 2); track account.id; let i = $index) {
+            <div class="bank-card" [class]="'bank-card-' + (i % 3)" [routerLink]="['/accounts', account.id]">
+              <div class="bc-top">
+                <span class="bc-brand">NeoBank</span>
+                <span class="bc-network"><i class="fa-brands fa-cc-visa"></i></span>
+              </div>
+              <div class="bc-number">
+                ···· ···· ···· {{ account.accountNumber | slice:-4 }}
+              </div>
+              <div class="bc-bottom">
+                <div>
+                  <div class="bc-sublabel">Balance</div>
+                  <div class="bc-balance">{{ account.balance | currencyFormat }}</div>
+                </div>
+                <div>
+                  <div class="bc-sublabel">Type</div>
+                  <div class="bc-type">{{ account.accountType }}</div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="no-cards-placeholder">
+          <i class="fa-solid fa-credit-card"></i>
+          <p>No accounts yet</p>
+          <button class="btn btn-primary btn-sm" routerLink="/accounts/create">Create Account</button>
+        </div>
+      }
+    </div>
+
+    <!-- Net Worth Gauge -->
+    @if (!isLoading()) {
+      <div class="right-section">
+        <div class="right-section-header">
+          <h4>Financial Health</h4>
+        </div>
+        <div class="health-metrics">
+          <div class="health-metric">
+            <div class="hm-label">Savings Rate</div>
+            <div class="hm-track">
+              <div class="hm-fill green" [style.width.%]="savingsRate()"></div>
+            </div>
+            <div class="hm-value">{{ savingsRate() | number:'1.0-0' }}%</div>
+          </div>
+          <div class="health-metric">
+            <div class="hm-label">Expense Ratio</div>
+            <div class="hm-track">
+              <div class="hm-fill red" [style.width.%]="expenseRatio()"></div>
+            </div>
+            <div class="hm-value">{{ expenseRatio() | number:'1.0-0' }}%</div>
+          </div>
+          <div class="health-metric">
+            <div class="hm-label">Total Accounts</div>
+            <div class="hm-stat">{{ accounts().length }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Nav Shortcuts -->
+      <div class="right-section">
+        <div class="right-section-header">
+          <h4>Quick Navigate</h4>
+        </div>
+        <div class="quick-nav-grid">
+          <a routerLink="/transactions" class="qn-item">
+            <div class="qn-icon indigo"><i class="fa-solid fa-right-left"></i></div>
+            <span>Transactions</span>
+            <i class="fa-solid fa-chevron-right qn-arrow"></i>
+          </a>
+          <a routerLink="/budget" class="qn-item">
+            <div class="qn-icon cyan"><i class="fa-solid fa-wallet"></i></div>
+            <span>Budgets</span>
+            <i class="fa-solid fa-chevron-right qn-arrow"></i>
+          </a>
+          <a routerLink="/loans" class="qn-item">
+            <div class="qn-icon amber"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+            <span>Loans</span>
+            <i class="fa-solid fa-chevron-right qn-arrow"></i>
+          </a>
+          <a routerLink="/rewards" class="qn-item">
+            <div class="qn-icon gold"><i class="fa-solid fa-crown"></i></div>
+            <span>Rewards</span>
+            <i class="fa-solid fa-chevron-right qn-arrow"></i>
+          </a>
+          <a routerLink="/bills" class="qn-item">
+            <div class="qn-icon rose"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+            <span>Bills</span>
+            <i class="fa-solid fa-chevron-right qn-arrow"></i>
+          </a>
+          <a routerLink="/insights" class="qn-item">
+            <div class="qn-icon violet"><i class="fa-solid fa-chart-pie"></i></div>
+            <span>Insights</span>
+            <i class="fa-solid fa-chevron-right qn-arrow"></i>
+          </a>
+        </div>
+      </div>
+    }
+  </aside>
+</div>

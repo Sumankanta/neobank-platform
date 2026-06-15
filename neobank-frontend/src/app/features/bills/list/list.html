@@ -1,0 +1,143 @@
+<div class="bills-dashboard animate-fade-in">
+  <!-- Header -->
+  <div class="dashboard-header flex-between mb-4">
+    <div>
+      <h1>Bills & Utilities</h1>
+      <p class="text-secondary">Never miss a payment. Manage all your recurring bills here.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary gradient-btn action-btn" routerLink="/bills/create">
+        <i class="fa-solid fa-plus"></i> <span class="hide-mobile">Add New Bill</span>
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex-center p-5">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    <!-- Stats Row -->
+    <div class="stats-row mb-4">
+      <div class="glass-card stat-card gradient-border">
+        <div class="stat-icon bg-warning-light"><i class="fa-regular fa-calendar-minus text-warning"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Upcoming Dues</span>
+          <h2 class="stat-value text-warning">{{ totalUpcoming() | currencyFormat }}</h2>
+        </div>
+      </div>
+      
+      <div class="glass-card stat-card">
+        <div class="stat-icon bg-danger-light"><i class="fa-solid fa-triangle-exclamation text-danger"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Overdue</span>
+          <h2 class="stat-value" [class.text-danger]="totalOverdue() > 0">{{ totalOverdue() | currencyFormat }}</h2>
+        </div>
+      </div>
+
+      <div class="glass-card stat-card">
+        <div class="stat-icon bg-primary-light"><i class="fa-solid fa-bell text-primary"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Reminders Active</span>
+          <h2 class="stat-value">{{ remindersCount() }} Bills</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="glass-card main-content-card p-0">
+      <div class="card-header border-bottom p-4">
+        <h3 class="m-0 font-bold">Scheduled Payments</h3>
+      </div>
+
+      <div class="table-responsive">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Biller Details</th>
+              <th>Status</th>
+              <th>Due Date</th>
+              <th>Reminder</th>
+              <th class="text-right">Amount</th>
+              <th class="text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (bill of bills(); track bill.id) {
+              <tr class="bill-row">
+                <!-- Biller Info -->
+                <td>
+                  <div class="biller-info">
+                    <div class="biller-icon" [ngClass]="getBillerBg(bill.billerName)">
+                      <i [class]="getBillerIcon(bill.billerName)"></i>
+                    </div>
+                    <div class="biller-details">
+                      <span class="biller-name">{{ bill.billerName }}</span>
+                      <span class="biller-acc text-xs text-muted">ID: {{ bill.id.toString().padStart(6, '0') }}</span>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Status -->
+                <td>
+                  <div class="status-col">
+                    @if (bill.status === 'PAID') {
+                      <span class="badge badge-success"><i class="fa-solid fa-check mr-1"></i> Paid</span>
+                    } @else if (bill.status === 'OVERDUE') {
+                      <span class="badge badge-danger"><i class="fa-solid fa-exclamation mr-1"></i> Overdue</span>
+                    } @else {
+                      <span class="badge badge-warning"><i class="fa-regular fa-clock mr-1"></i> Pending</span>
+                    }
+                  </div>
+                </td>
+
+                <!-- Date -->
+                <td>
+                  <div class="date-col">
+                    <span class="date-val" [class.text-danger]="bill.status === 'OVERDUE'">{{ bill.dueDate | date:'MMM d, y' }}</span>
+                  </div>
+                </td>
+
+                <!-- Reminder Toggle -->
+                <td>
+                  <label class="switch">
+                    <input type="checkbox" [checked]="bill.remindMe" (change)="toggleReminder(bill, $event)">
+                    <span class="slider round"></span>
+                  </label>
+                </td>
+
+                <!-- Amount -->
+                <td class="text-right">
+                  <span class="amount-val font-bold text-lg">{{ bill.amount | currencyFormat }}</span>
+                </td>
+
+                <!-- Actions -->
+                <td class="text-right actions-col">
+                  @if (bill.status !== 'PAID') {
+                    <button class="btn btn-primary btn-sm gradient-btn pay-btn" (click)="payBill(bill.id)">
+                      Pay
+                    </button>
+                  }
+                  <button class="icon-btn-ghost ml-2" [routerLink]="['/bills', bill.id]" title="View Details">
+                    <i class="fa-solid fa-chevron-right"></i>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-state-cell">
+                  <div class="empty-state">
+                    <div class="empty-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    <h3>No bills found</h3>
+                    <p class="text-secondary">You don't have any scheduled bills. Add one to get started.</p>
+                    <button class="btn btn-secondary mt-3" routerLink="/bills/create">Add Bill</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

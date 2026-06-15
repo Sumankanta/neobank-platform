@@ -1,0 +1,171 @@
+<main class="landing-shell">
+  <section class="hero-section" id="home">
+    <nav class="navbar" aria-label="Main navigation">
+      <a class="brand" routerLink="/">
+        <span class="brand-mark">N</span>
+        <span>NeoBank</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#partners">Partners</a>
+        <a href="#about">About</a>
+      </div>
+
+      <div class="nav-actions">
+        <a class="login-link" routerLink="/auth/login">Sign In</a>
+        <a class="signup-button" routerLink="/auth/register">Sign Up</a>
+      </div>
+    </nav>
+
+    <div class="hero-content">
+      <div class="hero-copy">
+        <p class="eyebrow">Payment gateway</p>
+        <h1>Quick Application Of Mobile And Online Banking</h1>
+        <p class="hero-text">
+          NeoBank brings accounts, payments, rewards, bills, and budgets into one smooth digital
+          banking workspace for everyday money decisions.
+        </p>
+        <div class="hero-buttons">
+          <a class="primary-cta" routerLink="/auth/register">Get Started</a>
+          <a class="secondary-cta" href="#services">Learn More</a>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-label="NeoBank dashboard preview">
+        <div class="dashboard-card main-dashboard">
+          <div class="window-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="dashboard-topline">
+            <div>
+              <small>Welcome back</small>
+              <strong>Financial Overview</strong>
+            </div>
+            <span class="status-pill">Live</span>
+          </div>
+          <div class="stats-row">
+            <div>
+              <span>Total balance</span>
+              <strong>₹2,54,386</strong>
+            </div>
+            <div>
+              <span>Savings</span>
+              <strong>+18.2%</strong>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-line">
+              <i></i>
+              <i></i>
+              <i></i>
+              <i></i>
+              <i></i>
+            </div>
+          </div>
+          <div class="transaction-list">
+            <div><span class="dot purple"></span> Salary credited <strong>+₹84,000</strong></div>
+            <div><span class="dot orange"></span> Utility bill <strong>-₹2,450</strong></div>
+            <div><span class="dot green"></span> Cashback reward <strong>+₹720</strong></div>
+          </div>
+        </div>
+
+        <div class="dashboard-card transfer-card">
+          <span>Transfer balance</span>
+          <strong>₹25,000.00</strong>
+          <button type="button">Continue</button>
+        </div>
+
+        <div class="dashboard-card advice-card">
+          <span>AI guidance</span>
+          <strong>Help with navigating your finances</strong>
+          <p>Smart reminders, secure transfers, and budget insights are ready.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="partners-section" id="partners">
+    <p class="eyebrow centered">Trusted by</p>
+    <h2>Our Business Partner</h2>
+    <p class="section-subtitle">NeoBank works with modern payment and finance networks.</p>
+    <div class="partner-logos">
+      <span>Mastercard</span>
+      <span>VISA</span>
+      <span>BHIM</span>
+      <span>Rupay</span>
+      <span>PayPal</span>
+    </div>
+  </section>
+
+  <section class="benefits-section" id="services">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">The advantages</p>
+        <h2>Benefits You Get When Using Our Services</h2>
+      </div>
+      <p>
+        Build healthier money habits with secure accounts, instant transfers, flexible budgets, and
+        rewards that stay visible.
+      </p>
+    </div>
+
+    <div class="benefit-grid">
+      <article>
+        <span class="benefit-icon">01</span>
+        <h3>No Hidden Fees</h3>
+        <p>Clear account activity and simple transaction tracking keep your costs easy to read.</p>
+        <a routerLink="/auth/register">Learn More</a>
+      </article>
+      <article>
+        <span class="benefit-icon">02</span>
+        <h3>Earn Rewards</h3>
+        <p>Track reward points and cashback progress as part of your everyday banking flow.</p>
+        <a routerLink="/auth/register">Learn More</a>
+      </article>
+      <article>
+        <span class="benefit-icon">03</span>
+        <h3>Always Protected</h3>
+        <p>JWT authentication and guarded app routes help keep customer banking areas private.</p>
+        <a routerLink="/auth/register">Learn More</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="about-section" id="about">
+    <div class="about-card">
+      <p class="eyebrow centered">About 1 million users</p>
+      <h2>Simple Digital Banking For Faster Decisions</h2>
+      <p>
+        NeoBank combines dashboard summaries, account management, bill reminders, budgets, rewards,
+        and transactions into a focused web application.
+      </p>
+      <a class="primary-cta compact" routerLink="/auth/login">Open Your Account</a>
+    </div>
+  </section>
+
+  <section class="newsletter-section">
+    <p class="eyebrow centered">Stay updated</p>
+    <h2>Subscribe To Our Newsletter</h2>
+    <form class="newsletter-form">
+      <input type="email" placeholder="Enter your email address" aria-label="Email address" />
+      <button type="button">Subscribe</button>
+    </form>
+  </section>
+
+  <footer class="landing-footer">
+    <a class="brand" routerLink="/">
+      <span class="brand-mark">N</span>
+      <span>NeoBank</span>
+    </a>
+    <div>
+      <a href="#services">Services</a>
+      <a routerLink="/auth/login">Login</a>
+      <a routerLink="/auth/register">Register</a>
+    </div>
+    <p>© 2026 NeoBank. All rights reserved.</p>
+  </footer>
+</main>

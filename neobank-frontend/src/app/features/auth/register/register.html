@@ -1,0 +1,106 @@
+<div class="auth-page">
+  <div class="auth-left">
+    <a class="brand" routerLink="/">
+      <span class="brand-icon">N</span>
+      <span class="brand-name">NeoBank</span>
+    </a>
+
+    <p class="eyebrow">Create account</p>
+    <h1 class="form-title">Start Banking With NeoBank</h1>
+    <p class="form-sub">Open your secure digital banking profile in a few quick steps.</p>
+
+    @if (errorMessage()) {
+      <div class="err-box">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+      <div class="field" [class.has-err]="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid">
+        <label for="fullName">Full Name</label>
+        <div class="inp-wrap">
+          <i class="fa-solid fa-user"></i>
+          <input id="fullName" type="text" formControlName="fullName" placeholder="Enter your full name" autocomplete="name" />
+        </div>
+        @if (registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid) {
+          <span class="field-err">Full name is required.</span>
+        }
+      </div>
+
+      <div class="field" [class.has-err]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+        <label for="email">Email Address</label>
+        <div class="inp-wrap">
+          <i class="fa-solid fa-envelope"></i>
+          <input id="email" type="email" formControlName="email" placeholder="name@example.com" autocomplete="email" />
+        </div>
+        @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
+          <span class="field-err">Enter a valid email address.</span>
+        }
+      </div>
+
+      <div class="field" [class.has-err]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
+        <label for="password">Password</label>
+        <div class="inp-wrap">
+          <i class="fa-solid fa-lock"></i>
+          <input id="password" type="password" formControlName="password" placeholder="Create a strong password" autocomplete="new-password" />
+        </div>
+        @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
+          <span class="field-err">Use at least 8 characters with a number and symbol.</span>
+        }
+      </div>
+
+      <div class="field" [class.has-err]="registerForm.get('confirmPassword')?.touched && (registerForm.get('confirmPassword')?.invalid || registerForm.hasError('passwordMismatch'))">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="inp-wrap">
+          <i class="fa-solid fa-shield-halved"></i>
+          <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Confirm your password" autocomplete="new-password" />
+        </div>
+        @if (registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid) {
+          <span class="field-err">Please confirm your password.</span>
+        }
+        @if (registerForm.get('confirmPassword')?.touched && registerForm.hasError('passwordMismatch')) {
+          <span class="field-err">Passwords do not match.</span>
+        }
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span class="spinner"></span>
+          <span>Creating Account...</span>
+        } @else {
+          Create Account
+        }
+      </button>
+    </form>
+
+    <p class="footer-txt">
+      Already have an account?
+      <a routerLink="/auth/login">Sign In</a>
+    </p>
+  </div>
+
+  <div class="auth-right">
+    <div class="preview-card">
+      <div class="preview-top">
+        <span>New account</span>
+        <strong>₹0 setup fee</strong>
+      </div>
+      <div class="preview-stat">
+        <small>Security score</small>
+        <b>98%</b>
+      </div>
+      <div class="preview-bars">
+        <i></i><i></i><i></i><i></i><i></i>
+      </div>
+    </div>
+
+    <div class="hero-content">
+      <p class="eyebrow">Trusted digital banking</p>
+      <h2 class="hero-title">Secure accounts for everyday money.</h2>
+      <p class="hero-body">
+        Manage accounts, payments, budgets, rewards, and bills from one clean NeoBank workspace.
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,225 @@
+<div class="apply-container animate-fade-in">
+  <div class="back-link">
+    <a routerLink="/loans"><i class="fa-solid fa-arrow-left"></i> Back to Loans</a>
+  </div>
+
+  <div class="apply-header mb-4">
+    <div class="product-badge">
+      <i class="fa-solid fa-bolt text-warning"></i> Fast Track Approval
+    </div>
+    <h1 class="form-title">Apply for {{ product()?.productName }}</h1>
+    <p class="form-subtitle">Complete your application in 3 simple steps. No hidden fees.</p>
+  </div>
+
+  <div class="apply-grid">
+    <!-- Left Column: Wizard -->
+    <div class="wizard-col">
+      <!-- Steps Progress -->
+      <div class="steps-progress glass-card mb-4">
+        <div class="step" [class.active]="currentStep() >= 1" [class.completed]="currentStep() > 1">
+          <div class="step-icon"><i class="fa-solid fa-user"></i></div>
+          <span class="step-label hide-mobile">Personal Details</span>
+        </div>
+        <div class="step-connector" [class.active]="currentStep() >= 2"></div>
+        
+        <div class="step" [class.active]="currentStep() >= 2" [class.completed]="currentStep() > 2">
+          <div class="step-icon"><i class="fa-solid fa-sliders"></i></div>
+          <span class="step-label hide-mobile">Loan Setup</span>
+        </div>
+        <div class="step-connector" [class.active]="currentStep() >= 3"></div>
+        
+        <div class="step" [class.active]="currentStep() >= 3">
+          <div class="step-icon"><i class="fa-solid fa-file-signature"></i></div>
+          <span class="step-label hide-mobile">Review & Submit</span>
+        </div>
+      </div>
+
+      <!-- Step Content -->
+      <div class="glass-card form-card">
+        <!-- Step 1: Personal Details (Mock) -->
+        @if (currentStep() === 1) {
+          <div class="step-content animate-fade-in">
+            <h2>Personal Information</h2>
+            <p class="text-secondary mb-4">Tell us a bit about your employment to check eligibility.</p>
+            
+            <form [formGroup]="personalForm">
+              <div class="form-group">
+                <label class="form-label">Employment Type</label>
+                <div class="radio-group">
+                  <label class="radio-card" [class.selected]="personalForm.get('employmentType')?.value === 'SALARIED'">
+                    <input type="radio" formControlName="employmentType" value="SALARIED">
+                    <i class="fa-solid fa-briefcase"></i> Salaried
+                  </label>
+                  <label class="radio-card" [class.selected]="personalForm.get('employmentType')?.value === 'SELF_EMPLOYED'">
+                    <input type="radio" formControlName="employmentType" value="SELF_EMPLOYED">
+                    <i class="fa-solid fa-store"></i> Self-Employed
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Monthly Income (₹)</label>
+                <input type="number" formControlName="monthlyIncome" class="modern-input" placeholder="e.g. 50000">
+                <div class="error-text" *ngIf="personalForm.get('monthlyIncome')?.invalid && personalForm.get('monthlyIncome')?.touched">
+                  Valid monthly income is required.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">PAN Number</label>
+                <input type="text" formControlName="panNumber" class="modern-input uppercase-input" placeholder="ABCDE1234F" maxlength="10">
+                <div class="error-text" *ngIf="personalForm.get('panNumber')?.invalid && personalForm.get('panNumber')?.touched">
+                  Please enter a valid 10-character PAN.
+                </div>
+              </div>
+            </form>
+          </div>
+        }
+
+        <!-- Step 2: Loan Details -->
+        @if (currentStep() === 2) {
+          <div class="step-content animate-fade-in">
+            <h2>Configure Your Loan</h2>
+            <p class="text-secondary mb-4">Adjust the amount and tenure to fit your budget.</p>
+            
+            <form [formGroup]="loanForm">
+              <div class="form-group">
+                <div class="flex-between">
+                  <label class="form-label">Loan Amount (₹)</label>
+                  <span class="text-xs text-primary font-bold">Max: {{ product()?.maxAmount | currencyFormat }}</span>
+                </div>
+                <div class="input-with-icon">
+                  <span class="input-icon">₹</span>
+                  <input type="number" formControlName="amount" class="modern-input amount-input" placeholder="0.00">
+                </div>
+                <div class="range-labels mt-1">
+                  <span class="text-xs text-muted">{{ product()?.minAmount | currencyFormat }}</span>
+                  <span class="text-xs text-muted">{{ product()?.maxAmount | currencyFormat }}</span>
+                </div>
+                <div class="error-text" *ngIf="loanForm.get('amount')?.invalid && loanForm.get('amount')?.touched">
+                  Please enter a valid amount within the limits.
+                </div>
+              </div>
+
+              <div class="form-group mt-4">
+                <div class="flex-between">
+                  <label class="form-label">Tenure (Months)</label>
+                  <span class="text-xs text-primary font-bold">Max: {{ product()?.maxTenureMonths }} mo</span>
+                </div>
+                <input type="number" formControlName="tenureMonths" class="modern-input" placeholder="e.g. 24">
+                <div class="error-text" *ngIf="loanForm.get('tenureMonths')?.invalid && loanForm.get('tenureMonths')?.touched">
+                  Valid tenure is required.
+                </div>
+              </div>
+
+              <div class="form-group mt-4">
+                <label class="form-label">Purpose of Loan</label>
+                <textarea formControlName="purpose" class="modern-input" rows="3" placeholder="e.g. Home renovation..."></textarea>
+                <div class="error-text" *ngIf="loanForm.get('purpose')?.invalid && loanForm.get('purpose')?.touched">
+                  Please provide a short purpose (min 10 chars).
+                </div>
+              </div>
+            </form>
+          </div>
+        }
+
+        <!-- Step 3: Review -->
+        @if (currentStep() === 3) {
+          <div class="step-content animate-fade-in">
+            <h2>Review Application</h2>
+            <p class="text-secondary mb-4">Double check your details before final submission.</p>
+            
+            <div class="review-box">
+              <div class="review-item">
+                <span class="review-label">Product</span>
+                <span class="review-value">{{ product()?.productName }}</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Requested Amount</span>
+                <span class="review-value font-bold text-primary">{{ loanForm.value.amount | currencyFormat }}</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Tenure</span>
+                <span class="review-value">{{ loanForm.value.tenureMonths }} Months</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Interest Rate</span>
+                <span class="review-value text-success">{{ product()?.interestRate }}% p.a. Fixed</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Estimated EMI</span>
+                <span class="review-value font-bold text-warning">{{ calculateEMI() | currencyFormat }}</span>
+              </div>
+            </div>
+
+            <div class="terms-box mt-4">
+              <label class="checkbox-container">
+                <input type="checkbox" checked disabled>
+                <span class="checkmark"></span>
+                <span class="text-sm">I agree to the <a href="#" class="text-primary">Terms and Conditions</a> and authorize NeoBank to perform a soft credit check.</span>
+              </label>
+            </div>
+          </div>
+        }
+
+        <!-- Wizard Navigation -->
+        <div class="wizard-actions mt-5 pt-4 border-top">
+          <button class="btn btn-secondary" (click)="prevStep()" [disabled]="currentStep() === 1 || isSubmitting()">
+            Back
+          </button>
+          
+          <button class="btn btn-primary gradient-btn px-5" (click)="nextStep()" *ngIf="currentStep() < 3">
+            Continue
+          </button>
+          
+          <button class="btn btn-success px-5" (click)="onSubmit()" *ngIf="currentStep() === 3" [disabled]="isSubmitting()">
+            <span *ngIf="!isSubmitting()">Submit Application</span>
+            <span *ngIf="isSubmitting()"><i class="fa-solid fa-spinner fa-spin"></i> Processing...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Summary & Benefits -->
+    <div class="summary-col">
+      <div class="glass-card summary-card gradient-border">
+        <h3 class="summary-title mb-4">Loan Calculator</h3>
+        
+        <div class="calc-preview mb-4">
+          <div class="cp-label">Estimated EMI</div>
+          <div class="cp-value text-warning">{{ calculateEMI() > 0 ? (calculateEMI() | currencyFormat) : '₹0.00' }}</div>
+          <div class="cp-sub text-xs text-muted">/ month</div>
+        </div>
+
+        <div class="summary-breakdown">
+          <div class="sb-item">
+            <span class="text-muted">Principal Amount</span>
+            <span class="font-bold">{{ loanForm.value.amount ? (loanForm.value.amount | currencyFormat) : '---' }}</span>
+          </div>
+          <div class="sb-item">
+            <span class="text-muted">Total Interest</span>
+            <span class="font-bold">{{ calculateEMI() > 0 ? (((calculateEMI() * loanForm.value.tenureMonths) - loanForm.value.amount) | currencyFormat) : '---' }}</span>
+          </div>
+          <div class="sb-item total">
+            <span class="text-muted">Total Payment</span>
+            <span class="font-bold text-primary">{{ calculateEMI() > 0 ? ((calculateEMI() * loanForm.value.tenureMonths) | currencyFormat) : '---' }}</span>
+          </div>
+        </div>
+
+        <div class="info-box mt-4">
+          <i class="fa-solid fa-circle-info"></i>
+          <p>These figures are estimates. Final terms will be provided upon application approval.</p>
+        </div>
+
+        <div class="benefits mt-4">
+          <h4 class="text-xs text-muted uppercase mb-3">Why choose NeoBank</h4>
+          <ul>
+            <li><i class="fa-solid fa-bolt text-warning"></i> Instant soft approval</li>
+            <li><i class="fa-solid fa-shield-check text-success"></i> Secure process</li>
+            <li><i class="fa-solid fa-hand-holding-dollar text-primary"></i> Zero hidden fees</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

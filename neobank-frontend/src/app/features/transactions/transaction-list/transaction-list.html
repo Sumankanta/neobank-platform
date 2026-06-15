@@ -1,0 +1,172 @@
+<div class="transactions-dashboard animate-fade-in">
+  <!-- Header -->
+  <div class="dashboard-header flex-between mb-4">
+    <div>
+      <h1>Transactions</h1>
+      <p class="text-secondary">Review and manage your account activity</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary action-btn outline-btn" (click)="downloadStatement()" [disabled]="isDownloading()">
+        <i class="fa-solid" [class.fa-download]="!isDownloading()" [class.fa-spinner]="isDownloading()" [class.fa-spin]="isDownloading()"></i>
+        <span class="hide-mobile">{{ isDownloading() ? 'Downloading...' : 'Statement' }}</span>
+      </button>
+      <button class="btn btn-secondary action-btn outline-btn" (click)="exportToCSV()" [disabled]="filteredTransactions().length === 0">
+        <i class="fa-solid fa-file-csv"></i> <span class="hide-mobile">Export</span>
+      </button>
+      <a routerLink="/transactions/new" class="btn btn-primary action-btn solid-btn gradient-btn">
+        <i class="fa-solid fa-plus"></i> <span class="hide-mobile">New Payment</span>
+      </a>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex-center p-5">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    <!-- Stats Row -->
+    <div class="stats-row mb-4">
+      <div class="glass-card stat-card">
+        <div class="stat-icon bg-success-light"><i class="fa-solid fa-arrow-down text-success"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Money In</span>
+          <h2 class="stat-value text-success">+{{ totalCredits() | currencyFormat }}</h2>
+        </div>
+      </div>
+      
+      <div class="glass-card stat-card">
+        <div class="stat-icon bg-danger-light"><i class="fa-solid fa-arrow-up text-danger"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Money Out</span>
+          <h2 class="stat-value text-danger">-{{ totalDebits() | currencyFormat }}</h2>
+        </div>
+      </div>
+
+      <div class="glass-card stat-card">
+        <div class="stat-icon bg-primary-light"><i class="fa-solid fa-scale-balanced text-primary"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Net Flow</span>
+          <h2 class="stat-value">{{ netCashFlow() | currencyFormat }}</h2>
+        </div>
+      </div>
+
+      <div class="glass-card stat-card">
+        <div class="stat-icon bg-secondary-light"><i class="fa-solid fa-hashtag text-secondary"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Transactions</span>
+          <h2 class="stat-value">{{ filteredTransactions().length }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="glass-card main-content-card">
+      
+      <!-- Filters Toolbar -->
+      <div class="filters-toolbar">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" [(ngModel)]="searchTerm" placeholder="Search merchants, categories, or accounts..." class="search-input">
+        </div>
+        
+        <div class="filter-controls">
+          <select [(ngModel)]="selectedType" class="filter-select">
+            <option value="ALL">All Types</option>
+            <option value="CREDIT">Money In</option>
+            <option value="DEBIT">Money Out</option>
+          </select>
+
+          <div class="date-range">
+            <input type="date" [(ngModel)]="startDate" class="filter-date" aria-label="Start Date">
+            <span class="text-muted">to</span>
+            <input type="date" [(ngModel)]="endDate" class="filter-date" aria-label="End Date">
+          </div>
+
+          <button class="btn btn-secondary icon-btn" (click)="loadTransactions()" title="Apply Date Filter">
+            <i class="fa-solid fa-filter"></i>
+          </button>
+          
+          <button class="btn btn-secondary icon-btn outline-btn" (click)="clearFilters()" title="Clear Filters">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Transactions Table -->
+      <div class="table-responsive mt-3">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Merchant / Description</th>
+              <th>Account</th>
+              <th>Date</th>
+              <th>Category</th>
+              <th class="text-right">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (tx of filteredTransactions(); track tx.accountId + '-' + tx.id) {
+              <tr class="tx-row">
+                <!-- Merchant Info -->
+                <td>
+                  <div class="tx-merchant">
+                    <div class="tx-icon">
+                      <i [class]="getCategoryIcon(tx.description)"></i>
+                    </div>
+                    <div class="tx-details">
+                      <span class="tx-title">{{ tx.description }}</span>
+                      <span class="tx-id text-xs text-muted">ID: {{ tx.id.toString().padStart(6, '0') }}</span>
+                    </div>
+                  </div>
+                </td>
+                
+                <!-- Account -->
+                <td>
+                  <a [routerLink]="['/accounts', tx.accountId]" class="tx-account">
+                    <span class="acc-type">{{ tx.accountType }}</span>
+                    <span class="acc-num">••{{ tx.accountNumber | slice:-4 }}</span>
+                  </a>
+                </td>
+
+                <!-- Date -->
+                <td>
+                  <div class="tx-date-col">
+                    <span class="tx-date">{{ tx.transactionDate | date:'MMM d, y' }}</span>
+                    <span class="tx-time text-xs text-muted">{{ tx.transactionDate | date:'h:mm a' }}</span>
+                  </div>
+                </td>
+
+                <!-- Category Badge -->
+                <td>
+                  <span class="category-badge">{{ getCategoryName(tx.description) }}</span>
+                </td>
+
+                <!-- Amount -->
+                <td class="text-right">
+                  <div class="tx-amount-col">
+                    <span class="tx-amount font-bold" [class.text-danger]="tx.type === 'DEBIT'" [class.text-success]="tx.type === 'CREDIT'">
+                      {{ tx.type === 'DEBIT' ? '-' : '+' }}{{ tx.amount | currencyFormat }}
+                    </span>
+                    <span class="tx-balance text-xs text-muted">Bal: {{ tx.balanceAfter | currencyFormat }}</span>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-state-cell">
+                  <div class="empty-state">
+                    <div class="empty-icon"><i class="fa-solid fa-receipt"></i></div>
+                    <h3>No transactions found</h3>
+                    <p class="text-secondary">Try adjusting your filters or date range.</p>
+                    <button class="btn btn-secondary mt-3" (click)="clearFilters()">Clear Filters</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  }
+</div>

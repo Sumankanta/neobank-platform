@@ -1,0 +1,43 @@
+/* Layout specific spacing and positioning */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar-spacer {
+  width: 260px;
+  flex-shrink: 0;
+  transition: var(--transition-normal);
+}
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.content-body {
+  padding: 2.5rem;
+  flex-grow: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .sidebar-spacer {
+    width: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-spacer {
+    display: none;
+  }
+  .content-body {
+    padding: 1.5rem;
+  }
+}

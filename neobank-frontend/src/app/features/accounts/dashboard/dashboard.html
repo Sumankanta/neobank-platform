@@ -1,0 +1,184 @@
+<div class="accounts-dashboard">
+  <!-- Header Section -->
+  <div class="dashboard-header flex-between mb-4">
+    <div>
+      <h1>Accounts</h1>
+      <p class="text-secondary">Manage your bank accounts, cards, and wallets in one place.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary action-btn" routerLink="/accounts/create">
+        <i class="fa-solid fa-plus"></i> New Payment
+      </button>
+      <button class="btn btn-primary action-btn gradient-btn">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> Ask NeoBank
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex-center p-5">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    <div class="accounts-grid">
+      <!-- LEFT COLUMN -->
+      <div class="left-col">
+        <!-- Connected Cards Section -->
+        <div class="glass-card connected-cards-card">
+          <div class="card-header flex-between">
+            <h3>Connected Cards</h3>
+            <div class="header-filters">
+              <button class="btn btn-secondary btn-sm rounded-btn" routerLink="/accounts/create">
+                <i class="fa-solid fa-plus"></i> Add Card
+              </button>
+              <button class="btn btn-secondary btn-sm rounded-btn dropdown-btn">
+                Cards <i class="fa-solid fa-chevron-down ms-1"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="cards-list">
+            @for (account of accounts(); track account.id; let i = $index) {
+              <div class="list-item-card" [routerLink]="['/accounts', account.id]">
+                <div class="item-left">
+                  <div class="card-mini-preview" [class]="'bg-gradient-' + (i % 3)">
+                    <i [class]="getCardIcon(getCardBrand(account.accountNumber))"></i>
+                  </div>
+                  <div class="item-details">
+                    <div class="item-title">{{ getCardBrand(account.accountNumber) }} •••• {{ account.accountNumber | slice:-4 }}</div>
+                    <div class="item-subtitle">Created {{ account.createdAt | date:'MM/yyyy' }}</div>
+                    <div class="item-balance">{{ account.balance | currencyFormat }}</div>
+                  </div>
+                </div>
+                <button class="icon-btn-ghost" (click)="$event.stopPropagation()">
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+              </div>
+            } @empty {
+              <div class="empty-state">
+                <p class="text-muted">No accounts connected yet.</p>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Scheduled Payments Section -->
+        <div class="glass-card scheduled-payments-card mt-4">
+          <div class="card-header flex-between">
+            <div>
+              <h3>Scheduled Payments</h3>
+              <p class="text-xs text-secondary mt-1">Upcoming automatic payments and subscriptions</p>
+            </div>
+            <a routerLink="/transactions" class="text-link text-sm">See All</a>
+          </div>
+
+          <div class="table-container-clean mt-3">
+            <table class="table-clean">
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Type</th>
+                  <th>Date</th>
+                  <th class="text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (tx of recentTransactions(); track tx.id) {
+                  <tr>
+                    <td>{{ tx.description }}</td>
+                    <td>
+                      <span class="type-badge" [class.type-debit]="tx.type === 'DEBIT'" [class.type-credit]="tx.type === 'CREDIT'">
+                        {{ tx.type === 'DEBIT' ? 'Expense' : 'Income' }}
+                      </span>
+                    </td>
+                    <td class="text-secondary">{{ tx.transactionDate | date:'MMM d' }}</td>
+                    <td class="text-right font-bold" [class.text-success]="tx.type === 'CREDIT'" [class.text-danger]="tx.type === 'DEBIT'">
+                      {{ tx.type === 'CREDIT' ? '+' : '-' }}{{ tx.amount | currencyFormat }}
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="4" class="text-center text-muted py-4">No scheduled payments</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="right-col">
+        <!-- 2x2 Stats Grid -->
+        <div class="stats-2x2">
+          <!-- Total Balance -->
+          <div class="glass-card stat-block">
+            <div class="stat-header flex-between">
+              <span class="stat-title">Total Balance</span>
+              <div class="stat-icon-wrap"><i class="fa-solid fa-sack-dollar"></i></div>
+            </div>
+            <div class="stat-value">{{ totalBalance() | currencyFormat }}</div>
+            <div class="stat-footer text-success">
+              <i class="fa-solid fa-arrow-trend-up"></i> 12.4% <span class="text-muted ms-1">Across banks & cards</span>
+            </div>
+          </div>
+
+          <!-- Available Balance -->
+          <div class="glass-card stat-block">
+            <div class="stat-header flex-between">
+              <span class="stat-title">Available Balance</span>
+              <div class="stat-icon-wrap"><i class="fa-solid fa-coins"></i></div>
+            </div>
+            <div class="stat-value">{{ availableBalance() | currencyFormat }}</div>
+            <div class="stat-footer text-success">
+              <i class="fa-solid fa-arrow-trend-up"></i> Ready to transfer <span class="text-muted ms-1">Instant access</span>
+            </div>
+          </div>
+
+          <!-- Utilized Amount -->
+          <div class="glass-card stat-block">
+            <div class="stat-header flex-between">
+              <span class="stat-title">Utilized Amount</span>
+              <div class="stat-icon-wrap"><i class="fa-solid fa-hourglass-half"></i></div>
+            </div>
+            <div class="stat-value">{{ utilizedAmount() | currencyFormat }}</div>
+            <div class="stat-footer text-success">
+              <i class="fa-solid fa-arrow-trend-up"></i> $4,120 in progress <span class="text-muted ms-1">Settling soon</span>
+            </div>
+          </div>
+
+          <!-- Active Cards -->
+          <div class="glass-card stat-block">
+            <div class="stat-header flex-between">
+              <span class="stat-title">Active Cards</span>
+              <div class="stat-icon-wrap"><i class="fa-regular fa-credit-card"></i></div>
+            </div>
+            <div class="stat-value">{{ accounts().length }}</div>
+            <div class="stat-footer text-success">
+              <i class="fa-solid fa-arrow-trend-up"></i> +2 New this month <span class="text-muted ms-1">Across banks & cards</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Balance Overview Chart -->
+        <div class="glass-card chart-block mt-4">
+          <div class="card-header flex-between mb-4">
+            <h3>Balance Overview</h3>
+            <div class="chart-filters">
+              <button class="filter-btn active">1Y</button>
+              <button class="filter-btn">6M</button>
+              <button class="filter-btn">1M</button>
+            </div>
+          </div>
+          <div class="chart-container" style="height: 220px;">
+            <canvas baseChart
+              [data]="lineChartData"
+              [type]="lineChartType"
+              [options]="lineChartOptions">
+            </canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,116 @@
+<div class="rewards-dashboard animate-fade-in">
+  <!-- Welcome Section -->
+  <section class="dashboard-welcome">
+    <h1 class="welcome-title">Welcome to EliteRewards</h1>
+    <p class="welcome-subtitle">Explore your exclusive benefits and track your path to Platinum status.</p>
+  </section>
+
+  <!-- Bento Dashboard Grid -->
+  <div class="bento-grid">
+    
+    <!-- Points Overview Card -->
+    <div class="bento-col-8 card card-points group">
+      <div class="points-content">
+        <div>
+          <span class="label-uppercase">Available Balance</span>
+          <div class="points-balance-wrapper">
+            <span class="points-value">{{ rewardService.pointsBalance() | number }}</span>
+            <span class="points-currency">PTS</span>
+          </div>
+        </div>
+        
+        <div class="points-actions">
+          <button class="btn btn-primary btn-lg" (click)="navToGallery()">Redeem Now</button>
+          <button class="btn btn-secondary btn-lg" (click)="refreshPoints()">
+            <i class="fa-solid fa-arrows-rotate" [class.fa-spin]="isLoading()"></i> Refresh
+          </button>
+        </div>
+      </div>
+      <div class="abstract-glow"></div>
+    </div>
+
+    <!-- Tier Status Card -->
+    <div class="bento-col-4 card card-tier">
+      <div class="tier-card-top">
+        <div class="tier-header">
+          <div>
+            <span class="label-uppercase">Current Tier</span>
+            <h3 class="tier-name" [ngClass]="getTierColorClass()">{{ getTier() }}</h3>
+          </div>
+          <i class="tier-icon" [class]="getTierIcon()" [ngClass]="getTierColorClass()"></i>
+        </div>
+
+        <div class="tier-progress-section">
+          @if (getPointsForNextTier() > 0) {
+            <div class="flex-between tier-progress-text">
+              <span>Progress</span>
+              <span class="text-primary-bold">{{ getPointsForNextTier() - rewardService.pointsBalance() | number }} PTS Remaining</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" [ngClass]="getTierBgClass()" [style.width.%]="getTierProgress()"></div>
+            </div>
+            <p class="tier-hint">Next unlock: Premium exclusive rewards</p>
+          } @else {
+            <div class="progress-track">
+              <div class="progress-fill tier-platinum-gradient w-full"></div>
+            </div>
+            <p class="tier-hint-max">Maximum tier reached!</p>
+          }
+        </div>
+      </div>
+      
+      <a class="tier-benefits-link" (click)="navToGallery()">
+        Tier Benefits <i class="fa-solid fa-chevron-right"></i>
+      </a>
+    </div>
+
+    <!-- Quick Actions Grid -->
+    <div class="bento-col-12 quick-actions-container">
+      <h2 class="section-title">Quick Actions</h2>
+      <div class="grid-3">
+        
+        <!-- Action 1 -->
+        <div class="card action-card" (click)="navToGallery()">
+          <div class="action-icon-box">
+            <i class="fa-solid fa-bag-shopping"></i>
+          </div>
+          <h4 class="action-title">Redeem Rewards</h4>
+          <p class="action-desc">Browse luxury products, travel bookings, and gift cards.</p>
+        </div>
+
+        <!-- Action 2 -->
+        <div class="card action-card" (click)="refreshPoints()">
+          <div class="action-icon-box">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <h4 class="action-title">Earn History</h4>
+          <p class="action-desc">Review your points accrual from recent transactions.</p>
+        </div>
+
+        <!-- Action 3 -->
+        <div class="card action-card" (click)="navToGallery()">
+          <div class="action-icon-box">
+            <i class="fa-solid fa-star"></i>
+          </div>
+          <h4 class="action-title">Tier Benefits</h4>
+          <p class="action-desc">Explore exclusive perks reserved for your elite status.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Promotional Content -->
+    <div class="bento-col-12 promo-card">
+      <div class="promo-content">
+        <span class="promo-badge">Exclusive Offer</span>
+        <h2 class="promo-title">Upgrade your journey with the Elite Platinum Card</h2>
+        <p class="promo-desc">Earn 3x points on all international dining and luxury travel bookings. Apply today for a 50,000 point welcome bonus.</p>
+        <button class="btn btn-primary btn-lg promo-btn">Learn More</button>
+      </div>
+      <div class="promo-image-box">
+        <img alt="Elite Platinum Card" class="promo-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7yh8bj2iYwGukRcwSIRAoqAyeBTNpW-eB2L09vtRzIWhl89b-WYBGYeWZCqu3d4d6Kvj3pRHUqQ4AXgJOJUqr_9TaGTzAB2qaYFJjaqUu7hD7wT7QeOQcPhaUcXdYjJswv4DWL7ck8Kc0_K-1H6Y9KN6WzsgNQd9V-_v5F4AmjKNQH_2IjcVl9pFhPrEOhv3h_6BI2k16ye17svPDWwo-Wmg3k3ohB63fqpSn1k9MYsaInoCaPEuT9xYf7BtlpCAPKoD_fVhi6UL5"/>
+      </div>
+    </div>
+
+  </div>
+</div>
