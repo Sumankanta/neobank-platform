@@ -1,106 +1,905 @@
 <div class="auth-page">
-  <div class="auth-left">
-    <a class="brand" routerLink="/">
-      <span class="brand-icon">N</span>
-      <span class="brand-name">NeoBank</span>
-    </a>
-
-    <p class="eyebrow">Create account</p>
-    <h1 class="form-title">Start Banking With NeoBank</h1>
-    <p class="form-sub">Open your secure digital banking profile in a few quick steps.</p>
-
-    @if (errorMessage()) {
-      <div class="err-box">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        <span>{{ errorMessage() }}</span>
-      </div>
-    }
-
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
-      <div class="field" [class.has-err]="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid">
-        <label for="fullName">Full Name</label>
-        <div class="inp-wrap">
-          <i class="fa-solid fa-user"></i>
-          <input id="fullName" type="text" formControlName="fullName" placeholder="Enter your full name" autocomplete="name" />
-        </div>
-        @if (registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid) {
-          <span class="field-err">Full name is required.</span>
-        }
-      </div>
-
-      <div class="field" [class.has-err]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
-        <label for="email">Email Address</label>
-        <div class="inp-wrap">
-          <i class="fa-solid fa-envelope"></i>
-          <input id="email" type="email" formControlName="email" placeholder="name@example.com" autocomplete="email" />
-        </div>
-        @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
-          <span class="field-err">Enter a valid email address.</span>
-        }
-      </div>
-
-      <div class="field" [class.has-err]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
-        <label for="password">Password</label>
-        <div class="inp-wrap">
-          <i class="fa-solid fa-lock"></i>
-          <input id="password" type="password" formControlName="password" placeholder="Create a strong password" autocomplete="new-password" />
-        </div>
-        @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
-          <span class="field-err">Use at least 8 characters with a number and symbol.</span>
-        }
-      </div>
-
-      <div class="field" [class.has-err]="registerForm.get('confirmPassword')?.touched && (registerForm.get('confirmPassword')?.invalid || registerForm.hasError('passwordMismatch'))">
-        <label for="confirmPassword">Confirm Password</label>
-        <div class="inp-wrap">
-          <i class="fa-solid fa-shield-halved"></i>
-          <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Confirm your password" autocomplete="new-password" />
-        </div>
-        @if (registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid) {
-          <span class="field-err">Please confirm your password.</span>
-        }
-        @if (registerForm.get('confirmPassword')?.touched && registerForm.hasError('passwordMismatch')) {
-          <span class="field-err">Passwords do not match.</span>
-        }
-      </div>
-
-      <button type="submit" class="btn-primary" [disabled]="isLoading()">
-        @if (isLoading()) {
-          <span class="spinner"></span>
-          <span>Creating Account...</span>
-        } @else {
-          Create Account
-        }
-      </button>
-    </form>
-
-    <p class="footer-txt">
-      Already have an account?
-      <a routerLink="/auth/login">Sign In</a>
-    </p>
+  <!-- Top progress bar -->
+  <div class="progress-bar-fixed">
+    <div class="progress-fill" [style.width]="(currentStep() / 8) * 100 + '%'"></div>
   </div>
 
-  <div class="auth-right">
-    <div class="preview-card">
-      <div class="preview-top">
-        <span>New account</span>
-        <strong>₹0 setup fee</strong>
-      </div>
-      <div class="preview-stat">
-        <small>Security score</small>
-        <b>98%</b>
-      </div>
-      <div class="preview-bars">
-        <i></i><i></i><i></i><i></i><i></i>
+  <!-- App bar -->
+  <header class="top-app-bar">
+    <div class="brand-title"><a href="/home">NeoBank</a></div>
+    <div class="top-bar-actions">
+      <a href="/help" class="top-nav-link">Help</a>
+      <a href="/auth/login" class="top-nav-link">Return to Login</a>
+      <div class="top-bar-icons">
+        <button class="icon-btn" title="Language">
+          <span class="material-symbols-outlined" style="font-size:20px">language</span>
+        </button>
+        <button class="icon-btn" title="Secure Connection">
+          <span class="material-symbols-outlined" style="font-size:20px">shield_lock</span>
+        </button>
       </div>
     </div>
+  </header>
 
-    <div class="hero-content">
-      <p class="eyebrow">Trusted digital banking</p>
-      <h2 class="hero-title">Secure accounts for everyday money.</h2>
-      <p class="hero-body">
-        Manage accounts, payments, budgets, rewards, and bills from one clean NeoBank workspace.
-      </p>
-    </div>
+  <div class="main-shell">
+    <!-- Sidebar -->
+    <nav class="side-nav-bar">
+      <div class="side-nav-brand">
+        <div class="brand-icon">
+          <span class="material-symbols-outlined">account_balance</span>
+        </div>
+        <span class="side-nav-title">NeoBank</span>
+      </div>
+      <div class="side-nav-subtitle">Secure Onboarding</div>
+
+      <div class="nav-divider"></div>
+
+      <div class="nav-menu">
+        <button class="nav-item"
+          [class.active]="currentStep() === 1"
+          [class.completed]="currentStep() > 1"
+          (click)="currentStep.set(1)">
+          <span class="nav-step-badge">{{ currentStep() > 1 ? '' : '1' }}<span *ngIf="currentStep() > 1" class="material-symbols-outlined" style="font-size:13px">check</span></span>
+          <span class="nav-step-icon material-symbols-outlined">{{ currentStep() > 1 ? 'check_circle' : 'fingerprint' }}</span>
+          <span class="nav-item-label">Personal info</span>
+        </button>
+
+        <button class="nav-item"
+          [class.active]="currentStep() === 2"
+          [class.completed]="currentStep() > 2"
+          (click)="currentStep.set(2)">
+          <span class="nav-step-badge">{{ currentStep() > 2 ? '' : '2' }}<span *ngIf="currentStep() > 2" class="material-symbols-outlined" style="font-size:13px">check</span></span>
+          <span class="nav-step-icon material-symbols-outlined">{{ currentStep() > 2 ? 'check_circle' : 'contact_mail' }}</span>
+          <span class="nav-item-label">Contact details</span>
+        </button>
+
+        <button class="nav-item"
+          [class.active]="currentStep() === 3"
+          [class.completed]="currentStep() > 3"
+          (click)="currentStep.set(3)">
+          <span class="nav-step-badge">{{ currentStep() > 3 ? '' : '3' }}<span *ngIf="currentStep() > 3" class="material-symbols-outlined" style="font-size:13px">check</span></span>
+          <span class="nav-step-icon material-symbols-outlined">{{ currentStep() > 3 ? 'check_circle' : 'badge' }}</span>
+          <span class="nav-item-label">Identity verify</span>
+        </button>
+
+        <button class="nav-item"
+          [class.active]="currentStep() === 4"
+          [class.completed]="currentStep() > 4"
+          (click)="currentStep.set(4)">
+          <span class="nav-step-badge">{{ currentStep() > 4 ? '' : '4' }}<span *ngIf="currentStep() > 4" class="material-symbols-outlined" style="font-size:13px">check</span></span>
+          <span class="nav-step-icon material-symbols-outlined">{{ currentStep() > 4 ? 'check_circle' : 'home_pin' }}</span>
+          <span class="nav-item-label">Address</span>
+        </button>
+
+        <button class="nav-item"
+          [class.active]="currentStep() === 5"
+          [class.completed]="currentStep() > 5"
+          (click)="currentStep.set(5)">
+          <span class="nav-step-badge">{{ currentStep() > 5 ? '' : '5' }}<span *ngIf="currentStep() > 5" class="material-symbols-outlined" style="font-size:13px">check</span></span>
+          <span class="nav-step-icon material-symbols-outlined">{{ currentStep() > 5 ? 'check_circle' : 'family_history' }}</span>
+          <span class="nav-item-label">Nominee</span>
+        </button>
+
+        <button class="nav-item"
+          [class.active]="currentStep() === 6"
+          [class.completed]="currentStep() > 6"
+          (click)="currentStep.set(6)">
+          <span class="nav-step-badge">{{ currentStep() > 6 ? '' : '6' }}<span *ngIf="currentStep() > 6" class="material-symbols-outlined" style="font-size:13px">check</span></span>
+          <span class="nav-step-icon material-symbols-outlined">{{ currentStep() > 6 ? 'check_circle' : 'settings_applications' }}</span>
+          <span class="nav-item-label">Account prefs</span>
+        </button>
+
+        <button class="nav-item"
+          [class.active]="currentStep() === 7"
+          [class.completed]="currentStep() > 7"
+          (click)="currentStep.set(7)">
+          <span class="nav-step-badge">{{ currentStep() > 7 ? '' : '7' }}<span *ngIf="currentStep() > 7" class="material-symbols-outlined" style="font-size:13px">check</span></span>
+          <span class="nav-step-icon material-symbols-outlined">{{ currentStep() > 7 ? 'check_circle' : 'enhanced_encryption' }}</span>
+          <span class="nav-item-label">Security</span>
+        </button>
+
+        <button class="nav-item"
+          [class.active]="currentStep() === 8"
+          [class.completed]="currentStep() > 8"
+          (click)="currentStep.set(8)">
+          <span class="nav-step-badge">{{ currentStep() > 8 ? '' : '8' }}<span *ngIf="currentStep() > 8" class="material-symbols-outlined" style="font-size:13px">check</span></span>
+          <span class="nav-step-icon material-symbols-outlined">{{ currentStep() > 8 ? 'check_circle' : 'fact_check' }}</span>
+          <span class="nav-item-label">Final review</span>
+        </button>
+      </div>
+
+      <div class="side-nav-footer">
+        <button class="btn-outline-primary">
+          <span class="material-symbols-outlined" style="font-size:18px">save</span>
+          Save draft & exit
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main-content">
+      <div class="layout-split">
+        <div class="form-column animate-fade-in">
+
+          <!-- Step header -->
+          <div class="step-header">
+            <div class="step-badge">
+              <span class="step-badge-dot">{{ currentStep() }}</span>
+              <span class="step-badge-text">Step {{ currentStep() }} of 8</span>
+            </div>
+
+            @switch (currentStep()) {
+              @case (1) {
+                <h1 class="step-title">Personal information</h1>
+                <p class="step-desc">Enter your legal details exactly as they appear on your government-issued ID.</p>
+              }
+              @case (2) {
+                <h1 class="step-title">Contact details</h1>
+                <p class="step-desc">Your email and phone are used for account alerts and two-factor authentication.</p>
+              }
+              @case (3) {
+                <h1 class="step-title">Identity verification</h1>
+                <p class="step-desc">Link your government ID to complete KYC and secure your account profile.</p>
+              }
+              @case (4) {
+                <h1 class="step-title">Residential address</h1>
+                <p class="step-desc">Required for tax compliance and physical card delivery.</p>
+              }
+              @case (5) {
+                <h1 class="step-title">Nominee details</h1>
+                <p class="step-desc">Designate a beneficiary to protect your family's financial future.</p>
+              }
+              @case (6) {
+                <h1 class="step-title">Account preferences</h1>
+                <p class="step-desc">Choose your account type and base currency.</p>
+              }
+              @case (7) {
+                <h1 class="step-title">Security setup</h1>
+                <p class="step-desc">Create a strong master password to encrypt your vault locally.</p>
+              }
+              @case (8) {
+                <h1 class="step-title">Final review</h1>
+                <p class="step-desc">Confirm your details and accept the terms to launch your account.</p>
+              }
+            }
+          </div>
+
+          <!-- Form card -->
+          <div class="glass-card">
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="form-body">
+
+              @switch (currentStep()) {
+
+                <!-- Step 1: Personal Info -->
+                @case (1) {
+                  <div formGroupName="personal" class="form-section">
+                    <div class="section-label">
+                      <span class="material-symbols-outlined">person</span> Legal identity
+                    </div>
+                    <div class="grid-2">
+                      <div class="field-col" [class.has-err]="personalGroup.get('fullName')?.invalid && personalGroup.get('fullName')?.touched">
+                        <label>Full legal name</label>
+                        <div class="input-wrapper">
+                          <input type="text" class="styled-input has-icon" formControlName="fullName" placeholder="e.g. Aditya Kumar">
+                          <span class="input-icon"><span class="material-symbols-outlined">badge</span></span>
+                        </div>
+                        @if (personalGroup.get('fullName')?.invalid && personalGroup.get('fullName')?.touched) {
+                          <span class="field-err"><span class="material-symbols-outlined">error</span> Name is required</span>
+                        }
+                      </div>
+                      <div class="field-col" [class.has-err]="personalGroup.get('dob')?.invalid && personalGroup.get('dob')?.touched">
+                        <label>Date of birth</label>
+                        <div class="input-wrapper">
+                          <input type="date" class="styled-input has-icon" formControlName="dob">
+                          <span class="input-icon"><span class="material-symbols-outlined">calendar_month</span></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="grid-2">
+                      <div class="field-col" [class.has-err]="personalGroup.get('gender')?.invalid && personalGroup.get('gender')?.touched">
+                        <label>Gender</label>
+                        <select class="styled-select" formControlName="gender">
+                          <option value="">Select gender</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                          <option value="other">Prefer not to say</option>
+                        </select>
+                      </div>
+                      <div class="field-col" [class.has-err]="personalGroup.get('nationality')?.invalid && personalGroup.get('nationality')?.touched">
+                        <label>Nationality</label>
+                        <div class="input-wrapper">
+                          <input type="text" class="styled-input has-icon" formControlName="nationality" placeholder="e.g. Indian">
+                          <span class="input-icon"><span class="material-symbols-outlined">public</span></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                <!-- Step 2: Contact -->
+                @case (2) {
+                  <div formGroupName="contact" class="form-section">
+                    <div class="section-label">
+                      <span class="material-symbols-outlined">contact_mail</span> Communication
+                    </div>
+                    <div class="grid-2">
+                      <div class="field-col" [class.has-err]="contactGroup.get('email')?.invalid && contactGroup.get('email')?.touched">
+                        <div class="field-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                          <label style="margin: 0;">Email address</label>
+                          <button type="button" class="btn-temp-email" (click)="generateTempEmail()" [disabled]="isGeneratingEmail()" style="background: none; border: none; color: #6366f1; font-size: 11.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0; outline: none;">
+                            <span class="material-symbols-outlined" style="font-size: 14px;">auto_renew</span>
+                            {{ isGeneratingEmail() ? 'Generating...' : 'Get temp email' }}
+                          </button>
+                        </div>
+                        <div class="input-wrapper">
+                          <input type="email" class="styled-input has-icon" formControlName="email" placeholder="you@example.com">
+                          <span class="input-icon"><span class="material-symbols-outlined">mail</span></span>
+                        </div>
+                        @if (contactGroup.get('email')?.errors?.['email'] && contactGroup.get('email')?.touched) {
+                          <span class="field-err"><span class="material-symbols-outlined">error</span> Enter a valid email</span>
+                        }
+                      </div>
+                      <div class="field-col" [class.has-err]="contactGroup.get('phone')?.invalid && contactGroup.get('phone')?.touched">
+                        <label>Phone number</label>
+                        <div class="input-wrapper">
+                          <input type="tel" class="styled-input has-icon" formControlName="phone" placeholder="10-digit number">
+                          <span class="input-icon"><span class="material-symbols-outlined">call</span></span>
+                        </div>
+                        @if (contactGroup.get('phone')?.errors?.['pattern'] && contactGroup.get('phone')?.touched) {
+                          <span class="field-err"><span class="material-symbols-outlined">error</span> Enter a 10-digit phone number</span>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                <!-- Step 3: Identity -->
+                @case (3) {
+                  <div formGroupName="identity" class="form-section">
+                    <div class="section-label">
+                      <span class="material-symbols-outlined">badge</span> Document verification
+                    </div>
+                    <div class="grid-2">
+                      <div class="field-col">
+                        <label>Document type</label>
+                        <select class="styled-select" formControlName="idType">
+                          <option value="">Select document type</option>
+                          <option value="aadhaar">Aadhaar number</option>
+                          <option value="panCard">PAN card</option>
+                          <option value="passport">Passport</option>
+                          <option value="voterId">Voter ID</option>
+                        </select>
+                      </div>
+                      <div class="field-col">
+                        <label>Document number</label>
+                        <div class="input-wrapper">
+                          <input type="text" class="styled-input has-icon" formControlName="idNumber" placeholder="Enter ID number">
+                          <span class="input-icon"><span class="material-symbols-outlined">pin</span></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button type="button" class="btn-outline-primary" style="width:auto; align-self:flex-start; padding: 12px 24px;" (click)="simulateIdentityVerification()" [disabled]="isVerifying()">
+                      @if (isVerifying()) {
+                        <mat-spinner diameter="18" color="accent" style="margin-right: 8px;"></mat-spinner>
+                        Verifying...
+                      } @else {
+                        <span class="material-symbols-outlined" style="font-size:18px">fingerprint</span>
+                        Run verification
+                      }
+                    </button>
+
+                    @if (identityGroup.get('isVerified')?.value) {
+                      <div class="verify-success">
+                        <span class="material-symbols-outlined">verified</span>
+                        Identity successfully verified
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Step 4: Address -->
+                @case (4) {
+                  <div formGroupName="address" class="form-section">
+                    <div class="section-label">
+                      <span class="material-symbols-outlined">home_pin</span> Residential address
+                    </div>
+                    <div class="field-col">
+                      <label>Street address</label>
+                      <div class="input-wrapper">
+                        <input type="text" class="styled-input has-icon" formControlName="street" placeholder="123, MG Road">
+                        <span class="input-icon"><span class="material-symbols-outlined">location_on</span></span>
+                      </div>
+                    </div>
+                    <div class="grid-3">
+                      <div class="field-col">
+                        <label>City</label>
+                        <input type="text" class="styled-input" formControlName="city" placeholder="Bangalore">
+                      </div>
+                      <div class="field-col">
+                        <label>State</label>
+                        <input type="text" class="styled-input" formControlName="state" placeholder="Karnataka">
+                      </div>
+                      <div class="field-col">
+                        <label>PIN / ZIP code</label>
+                        <input type="text" class="styled-input" formControlName="zipCode" placeholder="560001">
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                <!-- Step 5: Nominee -->
+                @case (5) {
+                  <div formGroupName="nominee" class="form-section">
+                    <div class="section-label">
+                      <span class="material-symbols-outlined">family_history</span> Nominee details
+                    </div>
+                    <div class="grid-3">
+                      <div class="field-col">
+                        <label>Nominee full name</label>
+                        <div class="input-wrapper">
+                          <input type="text" class="styled-input has-icon" formControlName="nomineeName" placeholder="Jane Doe">
+                          <span class="input-icon"><span class="material-symbols-outlined">person</span></span>
+                        </div>
+                      </div>
+                      <div class="field-col">
+                        <label>Relationship</label>
+                        <select class="styled-select" formControlName="relationship">
+                          <option value="">Select relation</option>
+                          <option value="spouse">Spouse</option>
+                          <option value="child">Child</option>
+                          <option value="parent">Parent</option>
+                          <option value="sibling">Sibling</option>
+                        </select>
+                      </div>
+                      <div class="field-col">
+                        <label>Date of birth</label>
+                        <div class="input-wrapper">
+                          <input type="date" class="styled-input has-icon" formControlName="nomineeDob">
+                          <span class="input-icon"><span class="material-symbols-outlined">calendar_month</span></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                <!-- Step 6: Preferences -->
+                @case (6) {
+                  <div formGroupName="preferences" class="form-section">
+                    <div class="section-label">
+                      <span class="material-symbols-outlined">settings_applications</span> Account configuration
+                    </div>
+                    <div class="grid-2">
+                      <div class="field-col" [class.has-err]="preferencesGroup.get('accountType')?.invalid && preferencesGroup.get('accountType')?.touched">
+                        <label>Account type</label>
+                        <select class="styled-select" formControlName="accountType">
+                          <option value="">Select account type</option>
+                          <option value="SAVINGS">Savings</option>
+                          <option value="CURRENT">Current</option>
+                          <option value="SALARIED">Salaried</option>
+                        </select>
+                      </div>
+                      <div class="field-col">
+                        <label>Base currency</label>
+                        <select class="styled-select" formControlName="currency">
+                          <option value="INR">INR — Indian Rupee</option>
+                          <option value="USD">USD — US Dollar</option>
+                          <option value="EUR">EUR — Euro</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                <!-- Step 7: Security -->
+                @case (7) {
+                  <div formGroupName="security" class="form-section">
+                    <div class="section-label">
+                      <span class="material-symbols-outlined">enhanced_encryption</span> Create your password
+                    </div>
+                    <div class="grid-2">
+                      <div class="field-col" [class.has-err]="securityGroup.get('password')?.invalid && securityGroup.get('password')?.touched">
+                        <label>Master password</label>
+                        <div class="input-wrapper">
+                          <input type="password" class="styled-input has-icon" formControlName="password" placeholder="Min. 8 characters" #pwInput>
+                          <span class="input-icon"><span class="material-symbols-outlined">key</span></span>
+                        </div>
+                        <!-- Password strength indicator -->
+                        <div class="password-strength" *ngIf="securityGroup.get('password')?.value">
+                          <div class="strength-bars">
+                            <div class="strength-bar" [class]="getStrengthClass(1, securityGroup.get('password')?.value)"></div>
+                            <div class="strength-bar" [class]="getStrengthClass(2, securityGroup.get('password')?.value)"></div>
+                            <div class="strength-bar" [class]="getStrengthClass(3, securityGroup.get('password')?.value)"></div>
+                            <div class="strength-bar" [class]="getStrengthClass(4, securityGroup.get('password')?.value)"></div>
+                          </div>
+                          <span class="strength-label" [class]="getStrengthLabelClass(securityGroup.get('password')?.value)">
+                            {{ getStrengthLabel(securityGroup.get('password')?.value) }}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="field-col" [class.has-err]="securityGroup.hasError('passwordMismatch') && securityGroup.get('confirmPassword')?.touched">
+                        <label>Confirm password</label>
+                        <div class="input-wrapper">
+                          <input type="password" class="styled-input has-icon" formControlName="confirmPassword" placeholder="Repeat password">
+                          <span class="input-icon"><span class="material-symbols-outlined">password</span></span>
+                        </div>
+                        @if (securityGroup.hasError('passwordMismatch') && securityGroup.get('confirmPassword')?.touched) {
+                          <span class="field-err"><span class="material-symbols-outlined">error</span> Passwords don't match</span>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                <!-- Step 8: Review -->
+                @case (8) {
+                  <div formGroupName="review" class="form-section">
+                    <div class="section-label">
+                      <span class="material-symbols-outlined">fact_check</span> Review your details
+                    </div>
+
+                    <div class="review-grid">
+                      <div class="review-chip">
+                        <span class="review-chip-label">Legal name</span>
+                        <span class="review-chip-value">{{ personalGroup.get('fullName')?.value || '—' }}</span>
+                      </div>
+                      <div class="review-chip">
+                        <span class="review-chip-label">Contact</span>
+                        <span class="review-chip-value">{{ contactGroup.get('email')?.value || '—' }}</span>
+                        <span class="review-chip-sub">{{ contactGroup.get('phone')?.value || '' }}</span>
+                      </div>
+                      <div class="review-chip">
+                        <span class="review-chip-label">Identity</span>
+                        <span class="review-chip-value" style="text-transform:capitalize">{{ identityGroup.get('idType')?.value || '—' }}</span>
+                        <span class="review-chip-sub">{{ identityGroup.get('idNumber')?.value || '' }}</span>
+                      </div>
+                      <div class="review-chip">
+                        <span class="review-chip-label">Account type</span>
+                        <span class="review-chip-value" style="text-transform:capitalize">{{ (preferencesGroup.get('accountType')?.value | lowercase) || '—' }}</span>
+                        <span class="review-chip-sub">{{ preferencesGroup.get('currency')?.value || '' }}</span>
+                      </div>
+                      <div class="review-chip">
+                        <span class="review-chip-label">Nominee</span>
+                        <span class="review-chip-value">{{ nomineeGroup.get('nomineeName')?.value || '—' }}</span>
+                        <span class="review-chip-sub" style="text-transform:capitalize">{{ nomineeGroup.get('relationship')?.value || '' }}</span>
+                      </div>
+                      <div class="review-chip" style="grid-column: span 2">
+                        <span class="review-chip-label">Address</span>
+                        <span class="review-chip-value" style="font-size:13.5px;line-height:1.5">
+                          {{ addressGroup.get('street')?.value || '—' }},
+                          {{ addressGroup.get('city')?.value }},
+                          {{ addressGroup.get('state')?.value }}
+                          {{ addressGroup.get('zipCode')?.value }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="terms-box">
+                      <label>
+                        <input type="checkbox" formControlName="termsAccepted">
+                        <div>
+                          <div class="terms-title">Acknowledge & authorise</div>
+                          <div class="terms-desc">By submitting, you agree to NeoBank's terms of service, privacy policy, and consent to electronic communications.</div>
+                        </div>
+                      </label>
+                    </div>
+
+                    @if (errorMessage()) {
+                      <div class="error-alert">
+                        <span class="material-symbols-outlined">warning</span>
+                        {{ errorMessage() }}
+                      </div>
+                    }
+                  </div>
+                }
+              }
+
+              <!-- Footer actions -->
+              <div class="form-actions">
+                <button type="button" class="btn-back" [disabled]="currentStep() === 1" (click)="prevStep()">
+                  <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span> Back
+                </button>
+                <div class="action-group">
+                  <button type="button" class="btn-text">Clear</button>
+                  @if (currentStep() < totalSteps) {
+                    <button type="button" class="btn-continue" (click)="nextStep()">
+                      Save & continue <span class="material-symbols-outlined">arrow_forward</span>
+                    </button>
+                  } @else {
+                    <button type="submit" class="btn-continue" [disabled]="isLoading() || registerForm.invalid">
+                      @if (isLoading()) {
+                        <mat-spinner diameter="20" color="accent"></mat-spinner> Creating account…
+                      } @else {
+                        Create account <span class="material-symbols-outlined">rocket_launch</span>
+                      }
+                    </button>
+                  }
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+        <!-- Right visual column -->
+        <div class="visual-column animate-fade-in">
+          <div class="visual-panel">
+            <!-- Ambient SVG art — changes per step via Angular -->
+            @switch (currentStep()) {
+              @case (1) {
+                <svg viewBox="0 0 420 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                  <defs>
+                    <radialGradient id="bg1" cx="50%" cy="40%" r="65%">
+                      <stop offset="0%" stop-color="#1e3a8a" stop-opacity="0.6"/>
+                      <stop offset="100%" stop-color="#020813" stop-opacity="1"/>
+                    </radialGradient>
+                    <radialGradient id="orb1" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.5"/>
+                      <stop offset="100%" stop-color="#1d4ed8" stop-opacity="0"/>
+                    </radialGradient>
+                  </defs>
+                  <rect width="420" height="580" fill="url(#bg1)"/>
+                  <circle cx="210" cy="220" r="140" fill="url(#orb1)"/>
+                  <!-- Fingerprint rings -->
+                  <circle cx="210" cy="220" r="120" fill="none" stroke="#3b82f6" stroke-width="0.8" stroke-opacity="0.3"/>
+                  <circle cx="210" cy="220" r="100" fill="none" stroke="#3b82f6" stroke-width="0.8" stroke-opacity="0.25"/>
+                  <circle cx="210" cy="220" r="80" fill="none" stroke="#60a5fa" stroke-width="1" stroke-opacity="0.35"/>
+                  <circle cx="210" cy="220" r="60" fill="none" stroke="#60a5fa" stroke-width="1" stroke-opacity="0.4"/>
+                  <circle cx="210" cy="220" r="40" fill="none" stroke="#93c5fd" stroke-width="1.2" stroke-opacity="0.5"/>
+                  <circle cx="210" cy="220" r="22" fill="rgba(59,130,246,0.25)" stroke="#93c5fd" stroke-width="1.5"/>
+                  <!-- Center icon suggestion -->
+                  <text x="210" y="228" text-anchor="middle" font-size="20" fill="#bfdbfe" opacity="0.9" font-family="sans-serif">✦</text>
+                  <!-- Floating data chips -->
+                  <rect x="60" y="90" width="120" height="36" rx="10" fill="rgba(59,130,246,0.12)" stroke="rgba(59,130,246,0.25)" stroke-width="1"/>
+                  <text x="120" y="113" text-anchor="middle" font-size="11" fill="#93c5fd" font-family="Inter,sans-serif">Full legal name</text>
+                  <rect x="240" y="120" width="110" height="36" rx="10" fill="rgba(59,130,246,0.08)" stroke="rgba(59,130,246,0.2)" stroke-width="1"/>
+                  <text x="295" y="143" text-anchor="middle" font-size="11" fill="#93c5fd" font-family="Inter,sans-serif">Date of birth</text>
+                  <rect x="100" y="360" width="90" height="32" rx="8" fill="rgba(78,222,163,0.1)" stroke="rgba(78,222,163,0.25)" stroke-width="1"/>
+                  <text x="145" y="381" text-anchor="middle" font-size="10" fill="#6ee7b7" font-family="Inter,sans-serif">Verified ✓</text>
+                </svg>
+              }
+              @case (2) {
+                <!-- Step 2: Contact — signal waves radiating from a device -->
+                <svg viewBox="0 0 420 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                  <defs>
+                    <radialGradient id="bg2" cx="50%" cy="45%" r="60%">
+                      <stop offset="0%" stop-color="#0c4a6e" stop-opacity="0.6"/>
+                      <stop offset="100%" stop-color="#020813" stop-opacity="1"/>
+                    </radialGradient>
+                  </defs>
+                  <rect width="420" height="580" fill="url(#bg2)"/>
+                  <!-- Phone body -->
+                  <rect x="170" y="160" width="80" height="136" rx="14" fill="rgba(14,165,233,0.12)" stroke="rgba(56,189,248,0.4)" stroke-width="1.5"/>
+                  <rect x="178" y="172" width="64" height="100" rx="6" fill="rgba(14,165,233,0.08)" stroke="rgba(56,189,248,0.15)" stroke-width="1"/>
+                  <rect x="189" y="170" width="42" height="5" rx="3" fill="rgba(56,189,248,0.3)"/>
+                  <circle cx="210" cy="286" r="5" fill="rgba(56,189,248,0.35)" stroke="rgba(56,189,248,0.5)" stroke-width="1"/>
+                  <!-- Screen glow lines -->
+                  <line x1="188" y1="188" x2="232" y2="188" stroke="rgba(56,189,248,0.25)" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="188" y1="200" x2="222" y2="200" stroke="rgba(56,189,248,0.18)" stroke-width="1" stroke-linecap="round"/>
+                  <line x1="188" y1="212" x2="228" y2="212" stroke="rgba(56,189,248,0.18)" stroke-width="1" stroke-linecap="round"/>
+                  <line x1="188" y1="224" x2="215" y2="224" stroke="rgba(56,189,248,0.15)" stroke-width="1" stroke-linecap="round"/>
+                  <!-- Signal arcs left -->
+                  <path d="M148 228 Q120 228 120 200 Q120 172 148 172" fill="none" stroke="rgba(56,189,248,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M148 240 Q100 240 100 200 Q100 160 148 160" fill="none" stroke="rgba(56,189,248,0.2)" stroke-width="1.2" stroke-linecap="round"/>
+                  <path d="M148 252 Q80  252  80 200 Q80  148  148 148" fill="none" stroke="rgba(56,189,248,0.1)" stroke-width="1" stroke-linecap="round"/>
+                  <!-- Signal arcs right -->
+                  <path d="M272 228 Q300 228 300 200 Q300 172 272 172" fill="none" stroke="rgba(56,189,248,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M272 240 Q320 240 320 200 Q320 160 272 160" fill="none" stroke="rgba(56,189,248,0.2)" stroke-width="1.2" stroke-linecap="round"/>
+                  <path d="M272 252 Q340 252  340 200 Q340 148  272 148" fill="none" stroke="rgba(56,189,248,0.1)" stroke-width="1" stroke-linecap="round"/>
+                  <!-- Floating notification chips -->
+                  <rect x="52" y="100" width="130" height="34" rx="10" fill="rgba(14,165,233,0.1)" stroke="rgba(56,189,248,0.22)" stroke-width="1"/>
+                  <circle cx="72" cy="117" r="8" fill="rgba(56,189,248,0.2)" stroke="rgba(56,189,248,0.4)" stroke-width="1"/>
+                  <line x1="90" y1="112" x2="165" y2="112" stroke="rgba(56,189,248,0.3)" stroke-width="1.2" stroke-linecap="round"/>
+                  <line x1="90" y1="122" x2="148" y2="122" stroke="rgba(56,189,248,0.18)" stroke-width="1" stroke-linecap="round"/>
+                  <rect x="240" y="330" width="130" height="34" rx="10" fill="rgba(78,222,163,0.08)" stroke="rgba(78,222,163,0.22)" stroke-width="1"/>
+                  <circle cx="260" cy="347" r="8" fill="rgba(78,222,163,0.15)" stroke="rgba(78,222,163,0.4)" stroke-width="1"/>
+                  <line x1="278" y1="342" x2="353" y2="342" stroke="rgba(78,222,163,0.28)" stroke-width="1.2" stroke-linecap="round"/>
+                  <line x1="278" y1="352" x2="338" y2="352" stroke="rgba(78,222,163,0.18)" stroke-width="1" stroke-linecap="round"/>
+                  <!-- Dotted trail -->
+                  <line x1="182" y1="296" x2="182" y2="400" stroke="rgba(56,189,248,0.12)" stroke-width="1" stroke-dasharray="3 5"/>
+                </svg>
+              }
+              @case (3) {
+                <!-- Step 3: Identity — ID card with scan beams -->
+                <svg viewBox="0 0 420 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                  <defs>
+                    <radialGradient id="bg3" cx="50%" cy="42%" r="65%">
+                      <stop offset="0%" stop-color="#1a1060" stop-opacity="0.7"/>
+                      <stop offset="100%" stop-color="#020813" stop-opacity="1"/>
+                    </radialGradient>
+                  </defs>
+                  <rect width="420" height="580" fill="url(#bg3)"/>
+                  <!-- ID card body -->
+                  <rect x="85" y="165" width="250" height="160" rx="16" fill="rgba(99,102,241,0.1)" stroke="rgba(129,140,248,0.35)" stroke-width="1.5"/>
+                  <!-- Card stripe -->
+                  <rect x="85" y="165" width="250" height="36" rx="16" fill="rgba(99,102,241,0.15)" stroke="none"/>
+                  <rect x="85" y="189" width="250" height="12" rx="0" fill="rgba(99,102,241,0.15)" stroke="none"/>
+                  <!-- Avatar circle -->
+                  <circle cx="130" cy="250" r="28" fill="rgba(99,102,241,0.18)" stroke="rgba(129,140,248,0.35)" stroke-width="1.5"/>
+                  <circle cx="130" cy="243" r="10" fill="rgba(129,140,248,0.3)"/>
+                  <path d="M107 275 Q107 258 130 258 Q153 258 153 275" fill="rgba(129,140,248,0.2)"/>
+                  <!-- ID text lines -->
+                  <rect x="172" y="228" width="140" height="8" rx="4" fill="rgba(129,140,248,0.35)"/>
+                  <rect x="172" y="244" width="100" height="6" rx="3" fill="rgba(129,140,248,0.2)"/>
+                  <rect x="172" y="258" width="120" height="6" rx="3" fill="rgba(129,140,248,0.18)"/>
+                  <rect x="172" y="272" width="80"  height="6" rx="3" fill="rgba(129,140,248,0.14)"/>
+                  <!-- Scan beam lines -->
+                  <line x1="85" y1="210" x2="335" y2="210" stroke="rgba(129,140,248,0.5)" stroke-width="1.5" stroke-dasharray="4 3"/>
+                  <line x1="85" y1="280" x2="335" y2="280" stroke="rgba(129,140,248,0.3)" stroke-width="1" stroke-dasharray="4 3"/>
+                  <!-- Corner scan brackets -->
+                  <path d="M85 180 L85 165 L100 165" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M320 165 L335 165 L335 180" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M85 310 L85 325 L100 325" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M320 325 L335 325 L335 310" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round"/>
+                  <!-- Verified badge -->
+                  <circle cx="300" cy="320" r="22" fill="rgba(78,222,163,0.15)" stroke="rgba(78,222,163,0.4)" stroke-width="1.5"/>
+                  <path d="M290 320 L297 327 L312 312" fill="none" stroke="#4edea3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <!-- Floating dots -->
+                  <circle cx="70"  cy="155" r="3" fill="rgba(129,140,248,0.5)"/>
+                  <circle cx="350" cy="340" r="4" fill="rgba(78,222,163,0.4)"/>
+                  <circle cx="60"  cy="360" r="2.5" fill="rgba(129,140,248,0.3)"/>
+                  <line x1="70" y1="155" x2="85" y2="165" stroke="rgba(129,140,248,0.2)" stroke-width="1" stroke-dasharray="2 3"/>
+                </svg>
+              }
+              @case (4) {
+                <!-- Step 4: Address — location pin over a minimal map grid -->
+                <svg viewBox="0 0 420 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                  <defs>
+                    <radialGradient id="bg4" cx="50%" cy="42%" r="65%">
+                      <stop offset="0%" stop-color="#064e3b" stop-opacity="0.55"/>
+                      <stop offset="100%" stop-color="#020813" stop-opacity="1"/>
+                    </radialGradient>
+                    <radialGradient id="pin-glow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="#10b981" stop-opacity="0.4"/>
+                      <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+                    </radialGradient>
+                  </defs>
+                  <rect width="420" height="580" fill="url(#bg4)"/>
+                  <!-- Map grid lines horizontal -->
+                  <line x1="0"   y1="130" x2="420" y2="130" stroke="rgba(16,185,129,0.07)" stroke-width="1"/>
+                  <line x1="0"   y1="190" x2="420" y2="190" stroke="rgba(16,185,129,0.07)" stroke-width="1"/>
+                  <line x1="0"   y1="250" x2="420" y2="250" stroke="rgba(16,185,129,0.09)" stroke-width="1"/>
+                  <line x1="0"   y1="310" x2="420" y2="310" stroke="rgba(16,185,129,0.07)" stroke-width="1"/>
+                  <line x1="0"   y1="370" x2="420" y2="370" stroke="rgba(16,185,129,0.07)" stroke-width="1"/>
+                  <!-- Map grid lines vertical -->
+                  <line x1="80"  y1="100" x2="80"  y2="460" stroke="rgba(16,185,129,0.07)" stroke-width="1"/>
+                  <line x1="160" y1="100" x2="160" y2="460" stroke="rgba(16,185,129,0.07)" stroke-width="1"/>
+                  <line x1="210" y1="100" x2="210" y2="460" stroke="rgba(16,185,129,0.09)" stroke-width="1"/>
+                  <line x1="260" y1="100" x2="260" y2="460" stroke="rgba(16,185,129,0.07)" stroke-width="1"/>
+                  <line x1="340" y1="100" x2="340" y2="460" stroke="rgba(16,185,129,0.07)" stroke-width="1"/>
+                  <!-- Block shapes on map -->
+                  <rect x="88"  y="138" width="60" height="44" rx="6" fill="rgba(16,185,129,0.06)" stroke="rgba(16,185,129,0.12)" stroke-width="1"/>
+                  <rect x="164" y="198" width="38" height="44" rx="6" fill="rgba(16,185,129,0.06)" stroke="rgba(16,185,129,0.12)" stroke-width="1"/>
+                  <rect x="268" y="138" width="64" height="30" rx="6" fill="rgba(16,185,129,0.06)" stroke="rgba(16,185,129,0.12)" stroke-width="1"/>
+                  <rect x="88"  y="318" width="52" height="44" rx="6" fill="rgba(16,185,129,0.05)" stroke="rgba(16,185,129,0.1)"  stroke-width="1"/>
+                  <rect x="268" y="260" width="64" height="42" rx="6" fill="rgba(16,185,129,0.05)" stroke="rgba(16,185,129,0.1)"  stroke-width="1"/>
+                  <!-- Pulse ring under pin -->
+                  <circle cx="210" cy="235" r="55" fill="url(#pin-glow)"/>
+                  <circle cx="210" cy="235" r="38" fill="none" stroke="rgba(16,185,129,0.2)" stroke-width="1.5" stroke-dasharray="5 4"/>
+                  <circle cx="210" cy="235" r="24" fill="none" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
+                  <!-- Location pin -->
+                  <path d="M210 168 C185 168 166 187 166 212 C166 245 210 290 210 290 C210 290 254 245 254 212 C254 187 235 168 210 168 Z" fill="rgba(16,185,129,0.18)" stroke="#10b981" stroke-width="1.8"/>
+                  <circle cx="210" cy="210" r="12" fill="rgba(16,185,129,0.5)" stroke="#6ee7b7" stroke-width="1.5"/>
+                  <!-- Road lines -->
+                  <line x1="0" y1="250" x2="420" y2="250" stroke="rgba(16,185,129,0.18)" stroke-width="2.5"/>
+                  <line x1="210" y1="100" x2="210" y2="460" stroke="rgba(16,185,129,0.18)" stroke-width="2.5"/>
+                </svg>
+              }
+              @case (5) {
+                <!-- Step 5: Nominee — two silhouette figures connected by a bond arc -->
+                <svg viewBox="0 0 420 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                  <defs>
+                    <radialGradient id="bg5" cx="50%" cy="40%" r="65%">
+                      <stop offset="0%" stop-color="#4a044e" stop-opacity="0.45"/>
+                      <stop offset="100%" stop-color="#020813" stop-opacity="1"/>
+                    </radialGradient>
+                  </defs>
+                  <rect width="420" height="580" fill="url(#bg5)"/>
+                  <!-- Bond arc between the two figures -->
+                  <path d="M130 220 Q210 130 290 220" fill="none" stroke="rgba(216,180,254,0.35)" stroke-width="1.5" stroke-dasharray="5 4"/>
+                  <!-- Left figure (account holder) -->
+                  <circle cx="120" cy="195" r="28" fill="rgba(139,92,246,0.18)" stroke="rgba(167,139,250,0.4)" stroke-width="1.5"/>
+                  <circle cx="120" cy="188" r="10" fill="rgba(167,139,250,0.35)"/>
+                  <path d="M95 222 Q95 205 120 205 Q145 205 145 222" fill="rgba(139,92,246,0.2)"/>
+                  <!-- Right figure (nominee) -->
+                  <circle cx="300" cy="195" r="28" fill="rgba(236,72,153,0.12)" stroke="rgba(244,114,182,0.35)" stroke-width="1.5"/>
+                  <circle cx="300" cy="188" r="10" fill="rgba(244,114,182,0.3)"/>
+                  <path d="M275 222 Q275 205 300 205 Q325 205 325 222" fill="rgba(236,72,153,0.15)"/>
+                  <!-- Labels -->
+                  <rect x="82"  y="238" width="76" height="22" rx="8" fill="rgba(139,92,246,0.12)" stroke="rgba(167,139,250,0.25)" stroke-width="1"/>
+                  <text x="120" y="253" text-anchor="middle" font-size="10" fill="#c4b5fd" font-family="Inter,sans-serif">You</text>
+                  <rect x="262" y="238" width="76" height="22" rx="8" fill="rgba(236,72,153,0.1)" stroke="rgba(244,114,182,0.22)" stroke-width="1"/>
+                  <text x="300" y="253" text-anchor="middle" font-size="10" fill="#fbcfe8" font-family="Inter,sans-serif">Nominee</text>
+                  <!-- Heart in arc mid-point -->
+                  <circle cx="210" cy="152" r="16" fill="rgba(139,92,246,0.15)" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+                  <path d="M210 160 C210 160 198 151 198 145 C198 141 202 138 206 140 C208 141 210 143 210 143 C210 143 212 141 214 140 C218 138 222 141 222 145 C222 151 210 160 210 160 Z" fill="rgba(244,114,182,0.6)"/>
+                  <!-- Inheritance flow arrow -->
+                  <line x1="210" y1="270" x2="210" y2="330" stroke="rgba(167,139,250,0.25)" stroke-width="1.5" stroke-dasharray="4 4"/>
+                  <rect x="145" y="330" width="130" height="50" rx="12" fill="rgba(139,92,246,0.1)" stroke="rgba(167,139,250,0.22)" stroke-width="1"/>
+                  <text x="210" y="351" text-anchor="middle" font-size="11" fill="#c4b5fd" font-family="Inter,sans-serif">Protected assets</text>
+                  <text x="210" y="368" text-anchor="middle" font-size="10" fill="rgba(196,181,253,0.55)" font-family="Inter,sans-serif">Auto-transferred on claim</text>
+                  <!-- Floating dots -->
+                  <circle cx="60"  cy="140" r="3" fill="rgba(167,139,250,0.4)"/>
+                  <circle cx="360" cy="150" r="3" fill="rgba(244,114,182,0.4)"/>
+                  <circle cx="55"  cy="320" r="2" fill="rgba(167,139,250,0.25)"/>
+                  <circle cx="370" cy="310" r="2.5" fill="rgba(244,114,182,0.25)"/>
+                </svg>
+              }
+              @case (6) {
+                <!-- Step 6: Preferences — currency/account type selector with coin motif -->
+                <svg viewBox="0 0 420 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                  <defs>
+                    <radialGradient id="bg6" cx="50%" cy="42%" r="65%">
+                      <stop offset="0%" stop-color="#422006" stop-opacity="0.55"/>
+                      <stop offset="100%" stop-color="#020813" stop-opacity="1"/>
+                    </radialGradient>
+                    <radialGradient id="coin-glow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35"/>
+                      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+                    </radialGradient>
+                  </defs>
+                  <rect width="420" height="580" fill="url(#bg6)"/>
+                  <!-- Stacked coins (rear) -->
+                  <ellipse cx="210" cy="308" rx="62" ry="14" fill="rgba(217,119,6,0.25)" stroke="rgba(245,158,11,0.3)" stroke-width="1"/>
+                  <rect x="148" y="274" width="124" height="34" rx="0" fill="rgba(217,119,6,0.18)" stroke="rgba(245,158,11,0.25)" stroke-width="1"/>
+                  <ellipse cx="210" cy="274" rx="62" ry="14" fill="rgba(217,119,6,0.3)" stroke="rgba(245,158,11,0.35)" stroke-width="1"/>
+                  <!-- Stacked coins (mid) -->
+                  <rect x="148" y="244" width="124" height="30" rx="0" fill="rgba(217,119,6,0.22)" stroke="rgba(245,158,11,0.28)" stroke-width="1"/>
+                  <ellipse cx="210" cy="244" rx="62" ry="14" fill="rgba(217,119,6,0.35)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/>
+                  <!-- Top coin (bright) -->
+                  <rect x="148" y="214" width="124" height="30" rx="0" fill="rgba(217,119,6,0.25)" stroke="rgba(245,158,11,0.32)" stroke-width="1"/>
+                  <ellipse cx="210" cy="214" rx="62" ry="14" fill="url(#coin-glow)"/>
+                  <ellipse cx="210" cy="214" rx="62" ry="14" fill="rgba(245,158,11,0.2)" stroke="rgba(251,191,36,0.55)" stroke-width="1.5"/>
+                  <!-- Currency symbol on top coin -->
+                  <text x="210" y="219" text-anchor="middle" font-size="16" fill="rgba(251,191,36,0.85)" font-family="Inter,sans-serif" font-weight="700">₹</text>
+                  <!-- Floating currency chips -->
+                  <rect x="55"  y="140" width="68" height="30" rx="10" fill="rgba(245,158,11,0.1)" stroke="rgba(245,158,11,0.25)" stroke-width="1"/>
+                  <text x="89" y="160" text-anchor="middle" font-size="13" fill="#fbbf24" font-family="Inter,sans-serif" font-weight="600">USD</text>
+                  <rect x="298" y="140" width="68" height="30" rx="10" fill="rgba(245,158,11,0.1)" stroke="rgba(245,158,11,0.25)" stroke-width="1"/>
+                  <text x="332" y="160" text-anchor="middle" font-size="13" fill="#fbbf24" font-family="Inter,sans-serif" font-weight="600">EUR</text>
+                  <rect x="170" y="110" width="80" height="30" rx="10" fill="rgba(245,158,11,0.14)" stroke="rgba(251,191,36,0.35)" stroke-width="1"/>
+                  <text x="210" y="130" text-anchor="middle" font-size="13" fill="#fde68a" font-family="Inter,sans-serif" font-weight="700">INR</text>
+                  <!-- Account type chips -->
+                  <rect x="68"  y="360" width="84" height="28" rx="9" fill="rgba(245,158,11,0.08)" stroke="rgba(245,158,11,0.2)" stroke-width="1"/>
+                  <text x="110" y="378" text-anchor="middle" font-size="11" fill="rgba(251,191,36,0.7)" font-family="Inter,sans-serif">Savings</text>
+                  <rect x="168" y="360" width="84" height="28" rx="9" fill="rgba(245,158,11,0.14)" stroke="rgba(251,191,36,0.35)" stroke-width="1.2"/>
+                  <text x="210" y="378" text-anchor="middle" font-size="11" fill="#fde68a" font-family="Inter,sans-serif" font-weight="600">Current ✓</text>
+                  <rect x="268" y="360" width="84" height="28" rx="9" fill="rgba(245,158,11,0.08)" stroke="rgba(245,158,11,0.2)" stroke-width="1"/>
+                  <text x="310" y="378" text-anchor="middle" font-size="11" fill="rgba(251,191,36,0.7)" font-family="Inter,sans-serif">Salaried</text>
+                  <!-- Dashed lines from coin to chips -->
+                  <line x1="148" y1="214" x2="89"  y2="170" stroke="rgba(245,158,11,0.12)" stroke-width="1" stroke-dasharray="3 4"/>
+                  <line x1="272" y1="214" x2="332" y2="170" stroke="rgba(245,158,11,0.12)" stroke-width="1" stroke-dasharray="3 4"/>
+                </svg>
+              }
+              @case (7) {
+                <!-- Step 7: Security — shield with lock -->
+                <svg viewBox="0 0 420 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                  <defs>
+                    <radialGradient id="bg7" cx="50%" cy="50%" r="65%">
+                      <stop offset="0%" stop-color="#1e1b4b" stop-opacity="0.8"/>
+                      <stop offset="100%" stop-color="#020813" stop-opacity="1"/>
+                    </radialGradient>
+                  </defs>
+                  <rect width="420" height="580" fill="url(#bg7)"/>
+                  <path d="M210 80 L300 120 L300 230 Q300 300 210 340 Q120 300 120 230 L120 120 Z"
+                    fill="rgba(37,99,235,0.1)" stroke="rgba(59,130,246,0.35)" stroke-width="1.5"/>
+                  <path d="M210 110 L278 143 L278 237 Q278 291 210 322 Q142 291 142 237 L142 143 Z"
+                    fill="rgba(37,99,235,0.08)" stroke="rgba(96,165,250,0.25)" stroke-width="1"/>
+                  <rect x="195" y="195" width="30" height="24" rx="4" fill="rgba(96,165,250,0.5)" stroke="#93c5fd" stroke-width="1.2"/>
+                  <path d="M203 195 L203 189 Q203 179 210 179 Q217 179 217 189 L217 195" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round"/>
+                  <circle cx="210" cy="207" r="3" fill="#bfdbfe"/>
+                  <!-- Password dots row -->
+                  <circle cx="180" cy="360" r="5" fill="rgba(96,165,250,0.6)"/>
+                  <circle cx="198" cy="360" r="5" fill="rgba(96,165,250,0.6)"/>
+                  <circle cx="216" cy="360" r="5" fill="rgba(96,165,250,0.6)"/>
+                  <circle cx="234" cy="360" r="5" fill="rgba(96,165,250,0.6)"/>
+                  <circle cx="252" cy="360" r="5" fill="rgba(96,165,250,0.25)"/>
+                  <circle cx="270" cy="360" r="5" fill="rgba(96,165,250,0.15)"/>
+                  <!-- Strength bar -->
+                  <rect x="148" y="376" width="62" height="4" rx="2" fill="#f87171"/>
+                  <rect x="216" y="376" width="62" height="4" rx="2" fill="#facc15"/>
+                  <rect x="284" y="376" width="62" height="4" rx="2" fill="rgba(255,255,255,0.08)"/>
+                  <text x="210" y="396" text-anchor="middle" font-size="10" fill="rgba(148,163,184,0.6)" font-family="Inter,sans-serif">Password strength</text>
+                  <circle cx="210" cy="60"  r="4" fill="rgba(96,165,250,0.6)"/>
+                  <circle cx="310" cy="210" r="3" fill="rgba(78,222,163,0.5)"/>
+                  <circle cx="110" cy="210" r="3" fill="rgba(78,222,163,0.5)"/>
+                  <line x1="210" y1="340" x2="210" y2="350" stroke="rgba(59,130,246,0.2)" stroke-width="1" stroke-dasharray="4 4"/>
+                  <line x1="300" y1="230" x2="350" y2="200" stroke="rgba(59,130,246,0.15)" stroke-width="1" stroke-dasharray="3 5"/>
+                  <line x1="120" y1="230" x2="70"  y2="200" stroke="rgba(59,130,246,0.15)" stroke-width="1" stroke-dasharray="3 5"/>
+                </svg>
+              }
+              @case (8) {
+                <!-- Step 8: Review — checklist with a rocket launch -->
+                <svg viewBox="0 0 420 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                  <defs>
+                    <radialGradient id="bg8" cx="50%" cy="38%" r="65%">
+                      <stop offset="0%" stop-color="#0c2461" stop-opacity="0.7"/>
+                      <stop offset="100%" stop-color="#020813" stop-opacity="1"/>
+                    </radialGradient>
+                  </defs>
+                  <rect width="420" height="580" fill="url(#bg8)"/>
+                  <!-- Checklist card -->
+                  <rect x="95" y="145" width="230" height="200" rx="16" fill="rgba(37,99,235,0.1)" stroke="rgba(59,130,246,0.25)" stroke-width="1.5"/>
+                  <!-- Checklist rows -->
+                  <circle cx="124" cy="180" r="9" fill="rgba(78,222,163,0.2)" stroke="rgba(78,222,163,0.5)" stroke-width="1.2"/>
+                  <path d="M119 180 L123 184 L130 176" fill="none" stroke="#4edea3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <rect x="142" y="174" width="110" height="7" rx="3" fill="rgba(255,255,255,0.25)"/>
+                  <rect x="142" y="184" width="70"  height="5" rx="2" fill="rgba(255,255,255,0.1)"/>
+
+                  <circle cx="124" cy="215" r="9" fill="rgba(78,222,163,0.2)" stroke="rgba(78,222,163,0.5)" stroke-width="1.2"/>
+                  <path d="M119 215 L123 219 L130 211" fill="none" stroke="#4edea3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <rect x="142" y="209" width="130" height="7" rx="3" fill="rgba(255,255,255,0.25)"/>
+                  <rect x="142" y="219" width="80"  height="5" rx="2" fill="rgba(255,255,255,0.1)"/>
+
+                  <circle cx="124" cy="250" r="9" fill="rgba(78,222,163,0.2)" stroke="rgba(78,222,163,0.5)" stroke-width="1.2"/>
+                  <path d="M119 250 L123 254 L130 246" fill="none" stroke="#4edea3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <rect x="142" y="244" width="90" height="7" rx="3" fill="rgba(255,255,255,0.25)"/>
+                  <rect x="142" y="254" width="120" height="5" rx="2" fill="rgba(255,255,255,0.1)"/>
+
+                  <circle cx="124" cy="285" r="9" fill="rgba(78,222,163,0.2)" stroke="rgba(78,222,163,0.5)" stroke-width="1.2"/>
+                  <path d="M119 285 L123 289 L130 281" fill="none" stroke="#4edea3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <rect x="142" y="279" width="100" height="7" rx="3" fill="rgba(255,255,255,0.25)"/>
+                  <rect x="142" y="289" width="60"  height="5" rx="2" fill="rgba(255,255,255,0.1)"/>
+                  <!-- Rocket -->
+                  <path d="M210 110 C210 110 195 140 195 170 L225 170 C225 140 210 110 210 110 Z" fill="rgba(59,130,246,0.35)" stroke="rgba(96,165,250,0.6)" stroke-width="1.5"/>
+                  <ellipse cx="210" cy="170" rx="15" ry="8" fill="rgba(59,130,246,0.25)" stroke="rgba(96,165,250,0.4)" stroke-width="1"/>
+                  <!-- Fins -->
+                  <path d="M195 160 L180 175 L195 170 Z" fill="rgba(59,130,246,0.25)" stroke="rgba(96,165,250,0.3)" stroke-width="1"/>
+                  <path d="M225 160 L240 175 L225 170 Z" fill="rgba(59,130,246,0.25)" stroke="rgba(96,165,250,0.3)" stroke-width="1"/>
+                  <!-- Exhaust flames -->
+                  <path d="M200 178 Q210 198 220 178" fill="rgba(251,146,60,0.35)" stroke="rgba(251,146,60,0.5)" stroke-width="1"/>
+                  <path d="M204 178 Q210 205 216 178" fill="rgba(251,191,36,0.25)"/>
+                  <!-- Trajectory path -->
+                  <path d="M210 178 Q210 380 330 420" fill="none" stroke="rgba(59,130,246,0.12)" stroke-width="1.5" stroke-dasharray="4 5"/>
+                  <!-- Stars -->
+                  <circle cx="80"  cy="110" r="1.5" fill="rgba(255,255,255,0.5)"/>
+                  <circle cx="340" cy="90"  r="2"   fill="rgba(255,255,255,0.4)"/>
+                  <circle cx="60"  cy="200" r="1.5" fill="rgba(255,255,255,0.35)"/>
+                  <circle cx="370" cy="160" r="1.5" fill="rgba(255,255,255,0.35)"/>
+                  <circle cx="355" cy="250" r="1"   fill="rgba(255,255,255,0.3)"/>
+                  <circle cx="55"  cy="300" r="1"   fill="rgba(255,255,255,0.3)"/>
+                </svg>
+              }
+            }
+            <div class="visual-overlay">
+              @switch (currentStep()) {
+                @case (1) {
+                  <p class="visual-overlay-title">Digital identity</p>
+                  <p class="visual-overlay-desc">Your personal profile is encrypted end-to-end and never shared with third parties.</p>
+                }
+                @case (2) {
+                  <p class="visual-overlay-title">Stay connected</p>
+                  <p class="visual-overlay-desc">Real-time alerts for every transaction, delivered instantly to your devices.</p>
+                }
+                @case (3) {
+                  <p class="visual-overlay-title">KYC verification</p>
+                  <p class="visual-overlay-desc">Secure, one-time identity check powered by government-grade validation.</p>
+                }
+                @case (4) {
+                  <p class="visual-overlay-title">Global presence</p>
+                  <p class="visual-overlay-desc">Anchor your physical location for seamless card delivery and tax compliance.</p>
+                }
+                @case (5) {
+                  <p class="visual-overlay-title">Generational wealth</p>
+                  <p class="visual-overlay-desc">Protect your family's financial future with instant beneficiary designation.</p>
+                }
+                @case (6) {
+                  <p class="visual-overlay-title">Your account, your rules</p>
+                  <p class="visual-overlay-desc">Choose how your money works — account type, currency, and features on your terms.</p>
+                }
+                @case (7) {
+                  <p class="visual-overlay-title">Bank-grade security</p>
+                  <p class="visual-overlay-desc">Your vault is encrypted locally. NeoBank never sees your password.</p>
+                }
+                @case (8) {
+                  <p class="visual-overlay-title">Ready to launch</p>
+                  <p class="visual-overlay-desc">Review your details and step into a new era of personal finance.</p>
+                }
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 </div>
