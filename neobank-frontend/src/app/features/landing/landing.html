@@ -1,171 +1,683 @@
 <main class="landing-shell">
-  <section class="hero-section" id="home">
-    <nav class="navbar" aria-label="Main navigation">
-      <a class="brand" routerLink="/">
-        <span class="brand-mark">N</span>
-        <span>NeoBank</span>
-      </a>
+  <div class="blob blob-1" aria-hidden="true"></div>
+  <div class="blob blob-2" aria-hidden="true"></div>
+  <div class="blob blob-3" aria-hidden="true"></div>
 
-      <div class="nav-links">
-        <a href="#home">Home</a>
-        <a href="#services">Services</a>
-        <a href="#partners">Partners</a>
-        <a href="#about">About</a>
-      </div>
-
-      <div class="nav-actions">
-        <a class="login-link" routerLink="/auth/login">Sign In</a>
-        <a class="signup-button" routerLink="/auth/register">Sign Up</a>
-      </div>
-    </nav>
-
-    <div class="hero-content">
-      <div class="hero-copy">
-        <p class="eyebrow">Payment gateway</p>
-        <h1>Quick Application Of Mobile And Online Banking</h1>
-        <p class="hero-text">
-          NeoBank brings accounts, payments, rewards, bills, and budgets into one smooth digital
-          banking workspace for everyday money decisions.
-        </p>
-        <div class="hero-buttons">
-          <a class="primary-cta" routerLink="/auth/register">Get Started</a>
-          <a class="secondary-cta" href="#services">Learn More</a>
-        </div>
-      </div>
-
-      <div class="hero-visual" aria-label="NeoBank dashboard preview">
-        <div class="dashboard-card main-dashboard">
-          <div class="window-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <div class="dashboard-topline">
-            <div>
-              <small>Welcome back</small>
-              <strong>Financial Overview</strong>
-            </div>
-            <span class="status-pill">Live</span>
-          </div>
-          <div class="stats-row">
-            <div>
-              <span>Total balance</span>
-              <strong>₹2,54,386</strong>
-            </div>
-            <div>
-              <span>Savings</span>
-              <strong>+18.2%</strong>
-            </div>
-          </div>
-          <div class="chart-card">
-            <div class="chart-line">
-              <i></i>
-              <i></i>
-              <i></i>
-              <i></i>
-              <i></i>
-            </div>
-          </div>
-          <div class="transaction-list">
-            <div><span class="dot purple"></span> Salary credited <strong>+₹84,000</strong></div>
-            <div><span class="dot orange"></span> Utility bill <strong>-₹2,450</strong></div>
-            <div><span class="dot green"></span> Cashback reward <strong>+₹720</strong></div>
-          </div>
-        </div>
-
-        <div class="dashboard-card transfer-card">
-          <span>Transfer balance</span>
-          <strong>₹25,000.00</strong>
-          <button type="button">Continue</button>
-        </div>
-
-        <div class="dashboard-card advice-card">
-          <span>AI guidance</span>
-          <strong>Help with navigating your finances</strong>
-          <p>Smart reminders, secure transfers, and budget insights are ready.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="partners-section" id="partners">
-    <p class="eyebrow centered">Trusted by</p>
-    <h2>Our Business Partner</h2>
-    <p class="section-subtitle">NeoBank works with modern payment and finance networks.</p>
-    <div class="partner-logos">
-      <span>Mastercard</span>
-      <span>VISA</span>
-      <span>BHIM</span>
-      <span>Rupay</span>
-      <span>PayPal</span>
-    </div>
-  </section>
-
-  <section class="benefits-section" id="services">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">The advantages</p>
-        <h2>Benefits You Get When Using Our Services</h2>
-      </div>
-      <p>
-        Build healthier money habits with secure accounts, instant transfers, flexible budgets, and
-        rewards that stay visible.
-      </p>
-    </div>
-
-    <div class="benefit-grid">
-      <article>
-        <span class="benefit-icon">01</span>
-        <h3>No Hidden Fees</h3>
-        <p>Clear account activity and simple transaction tracking keep your costs easy to read.</p>
-        <a routerLink="/auth/register">Learn More</a>
-      </article>
-      <article>
-        <span class="benefit-icon">02</span>
-        <h3>Earn Rewards</h3>
-        <p>Track reward points and cashback progress as part of your everyday banking flow.</p>
-        <a routerLink="/auth/register">Learn More</a>
-      </article>
-      <article>
-        <span class="benefit-icon">03</span>
-        <h3>Always Protected</h3>
-        <p>JWT authentication and guarded app routes help keep customer banking areas private.</p>
-        <a routerLink="/auth/register">Learn More</a>
-      </article>
-    </div>
-  </section>
-
-  <section class="about-section" id="about">
-    <div class="about-card">
-      <p class="eyebrow centered">About 1 million users</p>
-      <h2>Simple Digital Banking For Faster Decisions</h2>
-      <p>
-        NeoBank combines dashboard summaries, account management, bill reminders, budgets, rewards,
-        and transactions into a focused web application.
-      </p>
-      <a class="primary-cta compact" routerLink="/auth/login">Open Your Account</a>
-    </div>
-  </section>
-
-  <section class="newsletter-section">
-    <p class="eyebrow centered">Stay updated</p>
-    <h2>Subscribe To Our Newsletter</h2>
-    <form class="newsletter-form">
-      <input type="email" placeholder="Enter your email address" aria-label="Email address" />
-      <button type="button">Subscribe</button>
-    </form>
-  </section>
-
-  <footer class="landing-footer">
+  <!-- ══ NAVBAR ════════════════════════════════════════════════════ -->
+  <nav class="navbar" aria-label="Main navigation">
     <a class="brand" routerLink="/">
       <span class="brand-mark">N</span>
-      <span>NeoBank</span>
+      <span class="brand-name">NeoBank</span>
     </a>
-    <div>
-      <a href="#services">Services</a>
-      <a routerLink="/auth/login">Login</a>
-      <a routerLink="/auth/register">Register</a>
+    <div class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#security">Security</a>
+      <a href="#about">About</a>
     </div>
-    <p>© 2026 NeoBank. All rights reserved.</p>
-  </footer>
+    <div class="nav-actions">
+      <a class="nav-login" routerLink="/auth/login">Sign in</a>
+      <a class="btn-nav" routerLink="/auth/register">Open Account</a>
+    </div>
+    <button class="nav-hamburger" aria-label="Toggle menu" type="button" (click)="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="page-body">
+
+    <!-- ══ HERO ══════════════════════════════════════════════════════ -->
+    <section class="hero" id="home">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-inner">
+
+        <!-- Left copy -->
+        <div class="hero-copy reveal v">
+          <div class="eyebrow-pill">
+            <span class="pill-dot"></span>
+            Next-gen digital banking · India's fastest growing neobank
+          </div>
+          <h1 class="hero-h1">
+            Banking made<br>
+            <span class="accent">faster, smarter,</span><br>
+            and entirely yours
+          </h1>
+          <p class="hero-body">
+            NeoBank brings accounts, payments, rewards, bills, and budgets into one smooth
+            digital workspace — built for the way you actually manage money.
+          </p>
+          <div class="hero-actions">
+            <a class="btn-primary" routerLink="/auth/register">
+              Get started free
+              <span class="material-symbols-outlined" style="font-size:18px">arrow_forward</span>
+            </a>
+            <a class="btn-ghost" href="#features">Explore features</a>
+          </div>
+          <div class="hero-trust">
+            <div class="trust-avs">
+              <div class="trust-av ta1">AK</div>
+              <div class="trust-av ta2">SR</div>
+              <div class="trust-av ta3">PM</div>
+              <div class="trust-av ta4">VN</div>
+            </div>
+            <div class="trust-text">
+              <strong>1M+ customers</strong><br>
+              across India trust NeoBank
+            </div>
+          </div>
+        </div>
+
+        <!-- Right dashboard visual -->
+        <div class="hero-visual reveal v" style="transition-delay:150ms">
+          <div class="glass dash-main">
+            <div class="card-chrome">
+              <div class="chrome-dots">
+                <span class="cd1"></span><span class="cd2"></span><span class="cd3"></span>
+              </div>
+              <div class="live-badge"><span class="live-dot"></span> Live</div>
+            </div>
+            <div class="dash-ov">
+              <div>
+                <div class="ov-label">Total balance</div>
+                <div class="ov-amount">₹2,54,386</div>
+              </div>
+              <div class="ov-badge">
+                <span class="material-symbols-outlined" style="font-size:14px">trending_up</span>
+                +18.2%
+              </div>
+            </div>
+            <div class="mini-chart" aria-label="Balance chart">
+              <div class="cbar" style="height:38%"></div>
+              <div class="cbar" style="height:62%"></div>
+              <div class="cbar" style="height:45%"></div>
+              <div class="cbar" style="height:80%"></div>
+              <div class="cbar" style="height:58%"></div>
+              <div class="cbar dim" style="height:30%"></div>
+              <div class="cbar dim" style="height:20%"></div>
+            </div>
+            <div class="tx-list">
+              <div class="tx-row">
+                <div class="tx-ic tx-salary">
+                  <span class="material-symbols-outlined" style="font-size:15px;font-variation-settings:'FILL' 1">payments</span>
+                </div>
+                <div class="tx-info">
+                  <div class="tx-name">Salary credited</div>
+                  <div class="tx-date">Today, 09:00 AM</div>
+                </div>
+                <div class="tx-amt pos">+₹84,000</div>
+              </div>
+              <div class="tx-row">
+                <div class="tx-ic tx-bill">
+                  <span class="material-symbols-outlined" style="font-size:15px;font-variation-settings:'FILL' 1">bolt</span>
+                </div>
+                <div class="tx-info">
+                  <div class="tx-name">Utility bill</div>
+                  <div class="tx-date">Yesterday</div>
+                </div>
+                <div class="tx-amt neg">-₹2,450</div>
+              </div>
+              <div class="tx-row">
+                <div class="tx-ic tx-reward">
+                  <span class="material-symbols-outlined" style="font-size:15px;font-variation-settings:'FILL' 1">star</span>
+                </div>
+                <div class="tx-info">
+                  <div class="tx-name">Cashback reward</div>
+                  <div class="tx-date">Jun 19</div>
+                </div>
+                <div class="tx-amt pos">+₹720</div>
+              </div>
+            </div>
+          </div>
+          <!-- Floating transfer card -->
+          <div class="glass float-card fc-transfer">
+            <div class="fc-label">Quick transfer</div>
+            <div class="fc-amount">₹25,000</div>
+            <button class="fc-btn" type="button">Send now</button>
+          </div>
+          <!-- Floating AI tip card -->
+          <div class="glass float-card fc-ai">
+            <div class="fc-tip-icon">
+              <span class="material-symbols-outlined" style="font-size:14px">auto_awesome</span>
+            </div>
+            <div class="fc-tip-body">Smart savings tip ready</div>
+            <div class="fc-tip-sub">Save ₹4,200 this month by switching subscriptions.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ STATS STRIP ════════════════════════════════════════════════ -->
+    <div class="stats-strip" aria-label="Key metrics">
+      <div class="stats-inner">
+        <div class="stat-item reveal v">
+          <div class="stat-num c-p">₹50B+</div>
+          <div class="stat-label">Monthly Volume</div>
+        </div>
+        <div class="stat-item reveal v" style="transition-delay:80ms">
+          <div class="stat-num c-s">1M+</div>
+          <div class="stat-label">Active Customers</div>
+        </div>
+        <div class="stat-item reveal v" style="transition-delay:160ms">
+          <div class="stat-num c-t">99.99%</div>
+          <div class="stat-label">Uptime SLA</div>
+        </div>
+        <div class="stat-item reveal v" style="transition-delay:240ms">
+          <div class="stat-num" style="color:#fff">0.1ms</div>
+          <div class="stat-label">Execution Speed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PARTNERS ═══════════════════════════════════════════════════ -->
+    <section class="partners-section sec-border-top" id="partners" aria-label="Payment partners">
+      <div class="sec-inner">
+        <p class="eyebrow reveal v" style="text-align:center">Trusted by millions · Powered by</p>
+        <h2 class="sec-h2 reveal v" style="text-align:center;margin-bottom:0">Our global payment network</h2>
+      </div>
+      <div class="partner-logos" role="list">
+        <span class="partner-logo reveal v" role="listitem">Mastercard</span>
+        <span class="partner-logo reveal v" style="transition-delay:60ms" role="listitem">VISA</span>
+        <span class="partner-logo reveal v" style="transition-delay:120ms" role="listitem">BHIM UPI</span>
+        <span class="partner-logo reveal v" style="transition-delay:180ms" role="listitem">RuPay</span>
+        <span class="partner-logo reveal v" style="transition-delay:240ms" role="listitem">PayPal</span>
+        <span class="partner-logo reveal v" style="transition-delay:300ms" role="listitem">SWIFT</span>
+      </div>
+    </section>
+
+    <!-- ══ HOW IT WORKS ═══════════════════════════════════════════════ -->
+    <section class="how-section sec-border-top" id="how" aria-labelledby="how-h2">
+      <div class="how-inner">
+        <div class="center-head reveal v">
+          <p class="eyebrow">Simple process</p>
+          <h2 class="sec-h2" id="how-h2">Get started in 3 minutes</h2>
+          <p class="sec-body">No branch visits. No paperwork. Open your account entirely from your phone or browser — verified, funded, and ready to use.</p>
+        </div>
+        <div class="how-grid">
+          <div class="how-step reveal v">
+            <div class="how-num">01</div>
+            <div class="how-icon hi-blue">
+              <span class="material-symbols-outlined" style="font-size:26px;color:var(--primary-mid);font-variation-settings:'FILL' 1">person_add</span>
+            </div>
+            <div class="how-title">Create your account</div>
+            <p class="how-body">Fill in your basic details — name, email, and mobile number. The whole form takes under 90 seconds and is fully encrypted end-to-end.</p>
+            <div class="how-connector">
+              <span class="material-symbols-outlined" style="font-size:14px;color:rgba(59,130,246,.6)">chevron_right</span>
+            </div>
+          </div>
+          <div class="how-step reveal v" style="transition-delay:100ms">
+            <div class="how-num">02</div>
+            <div class="how-icon hi-cyan">
+              <span class="material-symbols-outlined" style="font-size:26px;color:var(--secondary);font-variation-settings:'FILL' 1">verified_user</span>
+            </div>
+            <div class="how-title">Verify your identity</div>
+            <p class="how-body">Upload your Aadhaar or PAN — our instant KYC engine verifies your documents in seconds, not days. No physical visit required.</p>
+            <div class="how-connector">
+              <span class="material-symbols-outlined" style="font-size:14px;color:rgba(59,130,246,.6)">chevron_right</span>
+            </div>
+          </div>
+          <div class="how-step reveal v" style="transition-delay:200ms">
+            <div class="how-num">03</div>
+            <div class="how-icon hi-green">
+              <span class="material-symbols-outlined" style="font-size:26px;color:var(--tertiary);font-variation-settings:'FILL' 1">rocket_launch</span>
+            </div>
+            <div class="how-title">Start banking instantly</div>
+            <p class="how-body">Your account is live. Transfer money, pay bills, set budgets, and earn rewards — everything accessible from one clean dashboard.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PRODUCT BENTO ══════════════════════════════════════════════ -->
+    <section class="bento-section sec-border-top" id="features" aria-labelledby="bento-h2">
+      <div class="bento-inner">
+        <div class="center-head reveal v" style="padding-top:96px">
+          <p class="eyebrow">Everything you need</p>
+          <h2 class="sec-h2" id="bento-h2">A full bank in your pocket</h2>
+          <p class="sec-body">From instant transfers to AI-powered budgeting — every feature built for speed, clarity, and total control over your money.</p>
+        </div>
+        <div class="bento-grid">
+          <!-- Wide card -->
+          <div class="glass bento-card wide reveal v">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+              <div>
+                <div class="bc-icon bc-blue" style="margin-bottom:14px">
+                  <span class="material-symbols-outlined" style="font-size:24px;font-variation-settings:'FILL' 1">currency_exchange</span>
+                </div>
+                <div class="bc-title">Instant transfers &amp; UPI</div>
+                <p class="bc-body" style="margin-top:8px;max-width:380px">Send money to any bank account or UPI ID in under 3 seconds. No transfer fees, no limits on frequency — just fast, reliable movement of your money.</p>
+              </div>
+              <span class="bc-tag tag-live">
+                <span class="material-symbols-outlined" style="font-size:12px;font-variation-settings:'FILL' 1">circle</span> Live
+              </span>
+            </div>
+            <div class="bento-widget">
+              <div class="bw-row">
+                <span class="bw-label">Monthly transfers</span>
+                <span class="bw-amount">₹1,84,500</span>
+              </div>
+              <div class="bw-bar-track"><div class="bw-bar-fill" style="width:74%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--on-variant)">
+                <span>74% of limit used</span><span>Limit: ₹2.5L/mo</span>
+              </div>
+            </div>
+          </div>
+          <!-- AI budget -->
+          <div class="glass bento-card reveal v" style="transition-delay:80ms">
+            <span class="bc-tag tag-new" style="margin-bottom:4px">
+              <span class="material-symbols-outlined" style="font-size:12px">auto_awesome</span> AI-powered
+            </span>
+            <div class="bc-icon bc-purple">
+              <span class="material-symbols-outlined" style="font-size:24px;font-variation-settings:'FILL' 1">psychology</span>
+            </div>
+            <div class="bc-title">Smart budget assistant</div>
+            <p class="bc-body">Set monthly budgets and let NeoBank AI track your spending, flag overspends, and suggest tweaks — automatically, every week.</p>
+          </div>
+          <!-- Savings vaults -->
+          <div class="glass bento-card reveal v" style="transition-delay:80ms">
+            <div class="bc-icon bc-cyan">
+              <span class="material-symbols-outlined" style="font-size:24px;font-variation-settings:'FILL' 1">savings</span>
+            </div>
+            <div class="bc-title">Smart savings vaults</div>
+            <p class="bc-body">Create named vaults for any goal — emergency fund, vacation, gadget — and automate round-up contributions from every spend.</p>
+            <span class="bc-tag tag-live">
+              <span class="material-symbols-outlined" style="font-size:12px;font-variation-settings:'FILL' 1">circle</span> Live
+            </span>
+          </div>
+          <!-- Analytics tall -->
+          <div class="glass bento-card tall reveal v" style="transition-delay:140ms">
+            <div class="bc-icon bc-green">
+              <span class="material-symbols-outlined" style="font-size:24px;font-variation-settings:'FILL' 1">monitoring</span>
+            </div>
+            <div class="bc-title">Live spending analytics</div>
+            <p class="bc-body">See where every rupee goes. Categorised spending charts update in real-time as you spend — no manual tagging needed.</p>
+            <div class="bento-chart">
+              <div class="bc-bar" style="height:40%"></div>
+              <div class="bc-bar hi" style="height:70%"></div>
+              <div class="bc-bar" style="height:30%"></div>
+              <div class="bc-bar hi" style="height:85%"></div>
+              <div class="bc-bar" style="height:50%"></div>
+              <div class="bc-bar" style="height:35%"></div>
+              <div class="bc-bar hi" style="height:60%"></div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+              <span style="font-size:.7rem;color:var(--on-variant);background:rgba(255,255,255,.05);padding:3px 8px;border-radius:4px">🍜 Food 32%</span>
+              <span style="font-size:.7rem;color:var(--on-variant);background:rgba(255,255,255,.05);padding:3px 8px;border-radius:4px">🚌 Travel 18%</span>
+              <span style="font-size:.7rem;color:var(--on-variant);background:rgba(255,255,255,.05);padding:3px 8px;border-radius:4px">💊 Health 12%</span>
+            </div>
+          </div>
+          <!-- Rewards -->
+          <div class="glass bento-card reveal v" style="transition-delay:180ms">
+            <div class="bc-icon bc-orange">
+              <span class="material-symbols-outlined" style="font-size:24px;font-variation-settings:'FILL' 1">stars</span>
+            </div>
+            <div class="bc-title">Rewards on every spend</div>
+            <p class="bc-body">Earn NeoPoints on every transaction. Redeem for cashback, vouchers, or exclusive experiences — no expiry, no minimums.</p>
+            <span class="bc-tag tag-beta">
+              <span class="material-symbols-outlined" style="font-size:12px">new_releases</span> Plus plan
+            </span>
+          </div>
+          <!-- Autopay -->
+          <div class="glass bento-card reveal v" style="transition-delay:220ms">
+            <div class="bc-icon bc-blue">
+              <span class="material-symbols-outlined" style="font-size:24px;font-variation-settings:'FILL' 1">receipt_long</span>
+            </div>
+            <div class="bc-title">Autopay &amp; bill manager</div>
+            <p class="bc-body">Schedule recurring payments for rent, EMI, utilities, and subscriptions. Get 3-day reminders and never miss a due date again.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ GLOBAL NETWORK ═════════════════════════════════════════════ -->
+    <section class="network-section sec-border-both" aria-labelledby="network-h2">
+      <div class="network-inner">
+        <div class="reveal v">
+          <p class="eyebrow c-secondary">Global infrastructure</p>
+          <h2 class="sec-h2" id="network-h2">Banking without borders</h2>
+          <p class="sec-body">NeoBank's infrastructure spans 24 time zones. Whether you're sending money to Mumbai or Singapore, every transaction settles in milliseconds.</p>
+          <div class="network-stats">
+            <div class="ns-item reveal v">
+              <div class="ns-number c-p">40+</div>
+              <div class="ns-label">Global currencies</div>
+            </div>
+            <div class="ns-item reveal v" style="transition-delay:60ms">
+              <div class="ns-number c-s">200+</div>
+              <div class="ns-label">Banking partners</div>
+            </div>
+            <div class="ns-item reveal v" style="transition-delay:120ms">
+              <div class="ns-number c-t">24/7</div>
+              <div class="ns-label">Live operations</div>
+            </div>
+            <div class="ns-item reveal v" style="transition-delay:180ms">
+              <div class="ns-number" style="color:#fff">₹50B+</div>
+              <div class="ns-label">Monthly volume</div>
+            </div>
+          </div>
+        </div>
+        <div class="map-wrap reveal v" style="transition-delay:200ms">
+          <div class="map-grid" aria-hidden="true"></div>
+          <div class="scan-line" aria-hidden="true"></div>
+          <div class="map-hub" style="top:35%;left:24%"><div class="hub-dot"></div><div class="hub-label">New York · Active</div></div>
+          <div class="map-hub" style="top:28%;left:47%"><div class="hub-dot"></div><div class="hub-label">London · Active</div></div>
+          <div class="map-hub" style="top:38%;left:58%"><div class="hub-dot"></div><div class="hub-label">Mumbai · Active</div></div>
+          <div class="map-hub" style="top:44%;left:74%"><div class="hub-dot"></div><div class="hub-label">Singapore · Active</div></div>
+          <div class="map-hub" style="top:64%;left:81%"><div class="hub-dot"></div><div class="hub-label">Sydney · Active</div></div>
+          <div class="map-hub" style="top:40%;left:61%"><div class="hub-dot"></div><div class="hub-label">Dubai · Active</div></div>
+          <div class="map-status">
+            <div class="ms-left"><span class="ms-pulse"></span> Live network — all systems optimal</div>
+            <div class="ms-right">
+              <span class="ms-metric">TCP: 0.1ms</span>
+              <span class="ms-metric">Uptime: 99.999%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SECURITY VAULT ═════════════════════════════════════════════ -->
+    <section class="security-section" id="security" aria-labelledby="security-h2">
+      <div class="security-inner">
+        <div class="reveal v">
+          <p class="eyebrow c-secondary">Zero-trust architecture</p>
+          <h2 class="sec-h2" id="security-h2">Your money, behind military-grade walls</h2>
+          <p class="sec-body">Security isn't a feature at NeoBank — it's the foundation. Every layer of our infrastructure is built to protect your assets and your data.</p>
+          <div class="sec-features">
+            <div class="sf-item">
+              <div class="sf-icon">
+                <span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">fingerprint</span>
+              </div>
+              <div>
+                <div class="sf-title">Biometric authentication</div>
+                <p class="sf-body">Every login and high-value transaction requires biometric confirmation — face ID, fingerprint, or hardware security key. No exceptions.</p>
+              </div>
+            </div>
+            <div class="sf-item">
+              <div class="sf-icon">
+                <span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">enhanced_encryption</span>
+              </div>
+              <div>
+                <div class="sf-title">AES-256 end-to-end encryption</div>
+                <p class="sf-body">Your data is encrypted in transit and at rest using AES-256. Even our own engineers cannot read your transaction data without your keys.</p>
+              </div>
+            </div>
+            <div class="sf-item">
+              <div class="sf-icon">
+                <span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">hub</span>
+              </div>
+              <div>
+                <div class="sf-title">Multi-Party Computation (MPC)</div>
+                <p class="sf-body">No single server holds your full private key. Keys are sharded across geo-distributed nodes — a compromise of one node reveals nothing.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="vault-terminal reveal v" style="transition-delay:200ms">
+          <div class="vault-inner">
+            <div class="vault-header">
+              <div class="vault-dots">
+                <span class="vd1"></span><span class="vd2"></span><span class="vd3"></span>
+              </div>
+              <div class="vault-node"><span class="vn-dot"></span> Secure_Node_0x71F</div>
+            </div>
+            <div class="vault-lines">
+              <div class="vl"><span class="vl-num">01</span><code class="txt-muted">Initializing MPC Sharding Protocol...</code></div>
+              <div class="vl"><span class="vl-num">02</span><code class="txt-cyan">Distributing key shares → [CH · SG · IN]</code></div>
+              <div class="vl"><span class="vl-num">03</span><code class="txt-muted">Verification: <code class="txt-green">100% — High Confidence</code></code></div>
+              <div class="vl"><span class="vl-num">04</span><code class="txt-blue">Tunnel established via AES-XTS-512...</code></div>
+              <div class="vl"><span class="vl-num">05</span><code class="txt-muted">Auth Status: <code class="txt-tag">AUTHORIZED</code></code></div>
+              <div class="vl"><span class="vl-num">06</span><code class="txt-green">Transaction signed. Broadcasting...</code></div>
+            </div>
+            <div class="vault-lock">
+              <div>
+                <div class="lock-ring">
+                  <div class="lock-circle">
+                    <span class="material-symbols-outlined" style="font-size:48px;color:rgba(59,130,246,.8);font-variation-settings:'FILL' 1">lock</span>
+                  </div>
+                </div>
+                <div class="lock-caption">System armed · All clear</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ BENEFITS ═══════════════════════════════════════════════════ -->
+    <section class="benefits-section sec-border-top" aria-labelledby="benefits-h2">
+      <div class="benefits-inner">
+        <div class="benefits-head">
+          <div>
+            <p class="eyebrow reveal v">Why NeoBank</p>
+            <h2 class="sec-h2 reveal v" id="benefits-h2">Built around how you use money</h2>
+          </div>
+          <p class="sec-body reveal v" style="margin:0">Clear accounts, instant transfers, smart budgets, and rewards that show up where you can actually see them.</p>
+        </div>
+        <div class="benefit-grid">
+          <article class="glass benefit-card reveal v">
+            <div class="bi-wrap bi-blue">
+              <span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">receipt_long</span>
+            </div>
+            <div class="benefit-title">No hidden fees</div>
+            <p class="benefit-body">Every charge is listed before you confirm. Account activity and transaction history stay visible and easy to read — no fine print.</p>
+            <a class="benefit-link" routerLink="/auth/register">Open account <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span></a>
+          </article>
+          <article class="glass benefit-card reveal v" style="transition-delay:100ms">
+            <div class="bi-wrap bi-cyan">
+              <span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">stars</span>
+            </div>
+            <div class="benefit-title">Earn as you spend</div>
+            <p class="benefit-body">Cashback and reward points on everyday purchases. Track progress in real-time and redeem directly from your dashboard — no waiting.</p>
+            <a class="benefit-link" routerLink="/auth/register">See rewards <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span></a>
+          </article>
+          <article class="glass benefit-card reveal v" style="transition-delay:200ms">
+            <div class="bi-wrap bi-green">
+              <span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">shield_with_heart</span>
+            </div>
+            <div class="benefit-title">Protected by default</div>
+            <p class="benefit-body">JWT sessions, encrypted storage, and biometric login on mobile. Your account is guarded at every layer, automatically — always on.</p>
+            <a class="benefit-link" routerLink="/auth/register">Learn more <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ TESTIMONIALS ═══════════════════════════════════════════════ -->
+    <section class="testimonials-section sec-border-top" aria-labelledby="testimonials-h2">
+      <div class="testimonials-inner">
+        <div class="center-head reveal v">
+          <p class="eyebrow">Customer stories</p>
+          <h2 class="sec-h2" id="testimonials-h2">Loved by a million+ people</h2>
+          <p class="sec-body">From first-time savers to seasoned investors — here's what real NeoBank customers say about managing money differently.</p>
+        </div>
+        <div class="t-grid">
+          <div class="glass t-card reveal v">
+            <div class="t-stars">★★★★★</div>
+            <p class="t-quote">"I switched from a traditional bank and immediately saved ₹1,200/month in fees I didn't even know I was paying. The dashboard makes everything so obvious."</p>
+            <div class="t-author">
+              <div class="t-avatar av1">AK</div>
+              <div><div class="t-name">Arjun Kumar</div><div class="t-role">Software Engineer, Bengaluru</div></div>
+            </div>
+          </div>
+          <div class="glass t-card reveal v" style="transition-delay:100ms">
+            <div class="t-stars">★★★★★</div>
+            <p class="t-quote">"The smart vault feature helped me save ₹80,000 for my Europe trip in 8 months without even noticing. Round-ups are a genius idea — I'm obsessed."</p>
+            <div class="t-author">
+              <div class="t-avatar av2">SR</div>
+              <div><div class="t-name">Sneha Rao</div><div class="t-role">UX Designer, Hyderabad</div></div>
+            </div>
+          </div>
+          <div class="glass t-card reveal v" style="transition-delay:200ms">
+            <div class="t-stars">★★★★★</div>
+            <p class="t-quote">"I run a small business and NeoBank's instant UPI settlement means I never have to chase payments. My cash flow visibility improved 10x on day one."</p>
+            <div class="t-author">
+              <div class="t-avatar av3">PM</div>
+              <div><div class="t-name">Priya Mehta</div><div class="t-role">Founder, Chennai</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ COMPLIANCE ═════════════════════════════════════════════════ -->
+    <section class="compliance-section sec-border-top" aria-labelledby="compliance-h2">
+      <div class="compliance-inner">
+        <div class="center-head reveal v">
+          <p class="eyebrow">Fully regulated</p>
+          <h2 class="sec-h2" id="compliance-h2">Compliant at every level</h2>
+          <p class="sec-body">NeoBank operates under the strictest regulatory frameworks so your money is always protected — legally and technically.</p>
+        </div>
+        <div class="compliance-grid">
+          <div class="glass comp-badge reveal v">
+            <div class="comp-icon"><span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">verified</span></div>
+            <div class="comp-label">RBI Licensed</div>
+          </div>
+          <div class="glass comp-badge reveal v" style="transition-delay:60ms">
+            <div class="comp-icon"><span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">shield</span></div>
+            <div class="comp-label">SOC 2 Type II</div>
+          </div>
+          <div class="glass comp-badge reveal v" style="transition-delay:120ms">
+            <div class="comp-icon"><span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">encrypted</span></div>
+            <div class="comp-label">ISO 27001</div>
+          </div>
+          <div class="glass comp-badge reveal v" style="transition-delay:180ms">
+            <div class="comp-icon"><span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">credit_card</span></div>
+            <div class="comp-label">PCI-DSS</div>
+          </div>
+          <div class="glass comp-badge reveal v" style="transition-delay:240ms">
+            <div class="comp-icon"><span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">gavel</span></div>
+            <div class="comp-label">SEBI Regulated</div>
+          </div>
+          <div class="glass comp-badge reveal v" style="transition-delay:300ms">
+            <div class="comp-icon"><span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">account_balance</span></div>
+            <div class="comp-label">DICGC Insured</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ CTA ════════════════════════════════════════════════════════ -->
+    <section class="cta-section sec-pad" id="about" aria-labelledby="cta-h2">
+      <div class="cta-inner">
+        <div class="cta-wrap reveal v">
+          <div class="cta-card">
+            <div class="cta-glow" aria-hidden="true"></div>
+            <p class="eyebrow" style="position:relative">Over 1 million accounts opened</p>
+            <h2 class="cta-h2" id="cta-h2">Ready to bank differently?</h2>
+            <p class="cta-body">Join over a million Indians who've already moved to NeoBank. Open your account in 3 minutes — no branch visit, no paperwork, no fees.</p>
+            <div class="cta-actions">
+              <a class="btn-primary" routerLink="/auth/register">
+                Open free account
+                <span class="material-symbols-outlined" style="font-size:18px;font-variation-settings:'FILL' 1">rocket_launch</span>
+              </a>
+              <a class="btn-ghost" href="#">Talk to us</a>
+            </div>
+            <div class="cta-badges">
+              <div class="cta-badge"><span class="badge-dot"></span> No setup fees</div>
+              <div class="cta-badge"><span class="badge-dot" style="background:var(--secondary)"></span> Instant activation</div>
+              <div class="cta-badge"><span class="badge-dot" style="background:var(--primary-mid)"></span> 24/7 support</div>
+              <div class="cta-badge"><span class="badge-dot" style="background:#a78bfa"></span> No minimum balance</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ NEWSLETTER ═════════════════════════════════════════════════ -->
+    <section class="newsletter-section" aria-labelledby="nl-h2">
+      <div class="newsletter-inner">
+        <p class="eyebrow reveal v">Stay in the loop</p>
+        <h2 class="sec-h2 reveal v" id="nl-h2" style="text-align:center">Get banking insights weekly</h2>
+        <p class="sec-body reveal v" style="margin:0 auto;text-align:center">
+          Tips on saving, spending smarter, and new NeoBank features — delivered to your inbox, never spam.
+        </p>
+        <form class="nl-form reveal v" style="transition-delay:80ms" (ngSubmit)="onNewsletterSubmit()" novalidate>
+          <input class="nl-input" type="email" placeholder="Enter your email address" aria-label="Email address"/>
+          <button class="nl-btn" type="submit">Subscribe</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ══ FOOTER ══════════════════════════════════════════════════════ -->
+    <footer class="landing-footer">
+      <div class="footer-inner">
+        <div class="footer-grid">
+          <div class="footer-brand-col">
+            <a class="brand" routerLink="/" style="margin-bottom:16px;display:inline-flex">
+              <span class="brand-mark">N</span>
+              <span class="brand-name">NeoBank</span>
+            </a>
+            <p class="footer-tagline">The digital bank built for India — fast, safe, and completely transparent about your money.</p>
+            <div class="footer-social">
+              <a class="social-btn" href="#" aria-label="Twitter">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98-3.56-.18-6.73-1.89-8.84-4.48-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 01-1.93.07 4.28 4.28 0 004 2.98 8.52 8.52 0 01-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
+              </a>
+              <a class="social-btn" href="#" aria-label="LinkedIn">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0H5C2.24 0 0 2.24 0 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5V5c0-2.76-2.24-5-5-5zM8 19H5V8h3v11zM6.5 6.73A1.77 1.77 0 014.73 4.96 1.77 1.77 0 016.5 6.73zM20 19h-3v-5.6c0-3.37-4-3.11-4 0V19h-3V8h3v1.77C14.4 7.21 20 7.03 20 12.48V19z"/></svg>
+              </a>
+              <a class="social-btn" href="#" aria-label="Instagram">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="#">About NeoBank</a></li>
+              <li><a href="#">Leadership team</a></li>
+              <li><a href="#">Careers <span style="background:rgba(59,130,246,.15);color:var(--primary);font-size:.65rem;padding:1px 6px;border-radius:4px;margin-left:4px">Hiring</span></a></li>
+              <li><a href="#">Press &amp; Media</a></li>
+              <li><a href="#">Investor relations</a></li>
+              <li><a href="#">Contact us</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Products</h4>
+            <ul>
+              <li><a href="#">Savings account</a></li>
+              <li><a href="#">Current account</a></li>
+              <li><a href="#">UPI payments</a></li>
+              <li><a href="#">Smart vaults</a></li>
+              <li><a href="#">Bill payments</a></li>
+              <li><a href="#">NeoPoints rewards</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="#">Help centre</a></li>
+              <li><a href="#">Blog &amp; insights</a></li>
+              <li><a href="#">API docs</a></li>
+              <li><a href="#">Security centre</a></li>
+              <li><a href="#">Status page</a></li>
+              <li><a href="#">Community</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="#">Privacy policy</a></li>
+              <li><a href="#">Terms of service</a></li>
+              <li><a href="#">Cookie policy</a></li>
+              <li><a href="#">Grievance redressal</a></li>
+              <li><a href="#">PMLA disclosure</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div class="footer-legal">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Cookies</a>
+            <a href="#">Accessibility</a>
+            <a href="#">Sitemap</a>
+          </div>
+          <p class="footer-copy">© 2026 NeoBank Technologies Pvt. Ltd. All rights reserved.</p>
+        </div>
+        <p class="footer-disclaimer">NeoBank is a financial technology company, not a bank. Banking services are provided by our partner banks regulated by the Reserve Bank of India. Deposits are insured up to ₹5,00,000 per depositor under DICGC. Investment products are subject to market risk. Please read all scheme-related documents carefully before investing.</p>
+      </div>
+    </footer>
+
+  </div><!-- /page-body -->
 </main>

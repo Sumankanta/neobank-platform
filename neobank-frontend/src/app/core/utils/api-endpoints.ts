@@ -5,6 +5,9 @@ export class ApiEndpoints {
   static auth = {
     login: () => `${environment.apiUrl}${API_ROUTES.AUTH}/login`,
     register: () => `${environment.apiUrl}${API_ROUTES.AUTH}/register`,
+    verifyDocument: (idNumber: string) => `${environment.apiUrl}${API_ROUTES.AUTH}/verify-document?idNumber=${idNumber}`,
+    requestOtp: () => `${environment.apiUrl}${API_ROUTES.AUTH}/otp/request`,
+    verifyOtp: () => `${environment.apiUrl}${API_ROUTES.AUTH}/otp/verify`,
   };
 
   static users = {

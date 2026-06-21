@@ -2,13 +2,13 @@
   <div class="topbar-left">
     <div class="welcome-section">
       <span class="welcome-text">Welcome back, <strong class="user-name">{{ authService.currentUser()?.fullName || 'User' }}</strong></span>
-      <span class="current-date"><i class="fa-regular fa-calendar-days"></i> {{ currentDate }}</span>
+      <span class="current-date"><span class="material-symbols-outlined" style="font-size: 14px; margin-right: 4px;">calendar_month</span> {{ currentDate }}</span>
     </div>
   </div>
 
   <div class="topbar-center">
     <div class="search-box">
-      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      <span class="material-symbols-outlined search-icon">search</span>
       <input 
         type="text" 
         [(ngModel)]="searchQuery" 
@@ -22,12 +22,12 @@
   <div class="topbar-right">
     <div class="topbar-actions">
       <button class="action-btn" title="Notifications">
-        <i class="fa-regular fa-bell"></i>
+        <span class="material-symbols-outlined">notifications</span>
         <span class="notification-dot"></span>
       </button>
       
       <button class="action-btn" title="Settings" [routerLink]="['/profile']">
-        <i class="fa-regular fa-gear"></i>
+        <span class="material-symbols-outlined">settings</span>
       </button>
 
       <div class="user-profile">
@@ -38,7 +38,7 @@
           <span class="role">{{ authService.currentUser()?.role || 'User' }}</span>
         </div>
         <button class="logout-btn" (click)="logout()" title="Logout">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span class="material-symbols-outlined">logout</span>
         </button>
       </div>
     </div>
