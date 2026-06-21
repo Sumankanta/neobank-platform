@@ -34,15 +34,15 @@ INSERT INTO transactions (account_id, amount, type, category, description, trans
 
 -- 4. Budgets
 INSERT INTO budgets (user_id, category, budget_limit, spent_amount, budget_month, created_at) VALUES
-(2, 'GROCERIES', 500.00, 200.00, '2026-06', CURRENT_TIMESTAMP),
-(2, 'RENT', 1500.00, 1500.00, '2026-06', CURRENT_TIMESTAMP),
-(3, 'ENTERTAINMENT', 200.00, 50.00, '2026-06', CURRENT_TIMESTAMP),
-(3, 'UTILITIES', 300.00, 100.00, '2026-06', CURRENT_TIMESTAMP),
-(4, 'SHOPPING', 1000.00, 300.00, '2026-06', CURRENT_TIMESTAMP),
-(4, 'TRAVEL', 500.00, 0.00, '2026-06', CURRENT_TIMESTAMP);
+(2, 'GROCERIES', 500.00, 200.00, '2026-06-01', CURRENT_TIMESTAMP),
+(2, 'RENT', 1500.00, 1500.00, '2026-06-01', CURRENT_TIMESTAMP),
+(3, 'ENTERTAINMENT', 200.00, 50.00, '2026-06-01', CURRENT_TIMESTAMP),
+(3, 'UTILITIES', 300.00, 100.00, '2026-06-01', CURRENT_TIMESTAMP),
+(4, 'SHOPPING', 1000.00, 300.00, '2026-06-01', CURRENT_TIMESTAMP),
+(4, 'TRAVEL', 500.00, 0.00, '2026-06-01', CURRENT_TIMESTAMP);
 
 -- 5. Bills (One due within 3 days: Current date is June 13, 2026)
-INSERT INTO bills (user_id, bill_name, amount, due_date, status, created_at) VALUES
+INSERT INTO bills (user_id, biller_name, amount, due_date, status, created_at) VALUES
 (2, 'Electric Bill', 120.00, '2026-06-15', 'PENDING', CURRENT_TIMESTAMP),
 (2, 'Water Bill', 45.00, '2026-06-10', 'PAID', CURRENT_TIMESTAMP),
 (3, 'Internet', 80.00, '2026-06-25', 'PENDING', CURRENT_TIMESTAMP),

@@ -1,0 +1,14 @@
+-- Sprint 1: Foundation & Core Banking
+-- 01_create_users_table.sql
+
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    role ENUM('ADMIN', 'CUSTOMER', 'INACTIVE') NOT NULL DEFAULT 'CUSTOMER',
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_user_email (email)
+) ENGINE=InnoDB;

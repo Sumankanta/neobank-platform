@@ -15,6 +15,8 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final EmailService emailService;
+
 
     public UserResponse getProfile(Long userId) {
         User user = userRepository.findById(userId)
@@ -38,8 +40,26 @@ public class UserService {
     public UserResponse toggleUserStatus(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
-        user.setActive(!user.isActive());
-        return mapToResponse(userRepository.save(user));
+        boolean originalStatus = user.isActive();
+        user.setActive(!originalStatus);
+        User saved = userRepository.save(user);
+
+        // If toggled from inactive to active, send approval email
+        if (!originalStatus && saved.isActive()) {
+            String emailBody = String.format(
+                "Dear %s,\n\n" +
+                "We are pleased to inform you that your NeoBank account application has been reviewed and APPROVED by our administration team!\n\n" +
+                "Your account status is now ACTIVE, and you can log in to start using our banking services.\n\n" +
+                "Log in here: http://localhost:4200/auth/login\n\n" +
+                "Thank you for choosing NeoBank!\n\n" +
+                "Best regards,\n" +
+                "The NeoBank Team",
+                saved.getFullName()
+            );
+            emailService.sendEmail(saved.getEmail(), "NeoBank Account Approved & Activated!", emailBody);
+        }
+
+        return mapToResponse(saved);
     }
 
     private UserResponse mapToResponse(User user) {
@@ -47,6 +67,21 @@ public class UserService {
         r.setId(user.getId());
         r.setEmail(user.getEmail());
         r.setFullName(user.getFullName());
+        r.setPhone(user.getPhone());
+        r.setDob(user.getDob() != null ? user.getDob().toString() : null);
+        r.setGender(user.getGender());
+        r.setNationality(user.getNationality());
+        r.setIdType(user.getIdType());
+        r.setIdNumber(user.getIdNumber());
+        r.setStreet(user.getStreet());
+        r.setCity(user.getCity());
+        r.setState(user.getState());
+        r.setZipCode(user.getZipCode());
+        r.setNomineeName(user.getNomineeName());
+        r.setNomineeRelation(user.getNomineeRelation());
+        r.setNomineeDob(user.getNomineeDob() != null ? user.getNomineeDob().toString() : null);
+        r.setPreferredAccountType(user.getPreferredAccountType());
+        r.setCurrency(user.getCurrency());
         r.setRole(user.getRole());
         r.setActive(user.isActive());
         r.setCreatedAt(user.getCreatedAt());

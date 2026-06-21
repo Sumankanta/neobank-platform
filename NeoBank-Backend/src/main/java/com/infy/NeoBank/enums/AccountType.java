@@ -2,5 +2,8 @@ package com.infy.NeoBank.enums;
 
 public enum AccountType {
     SAVINGS,
-    CURRENT
+    CURRENT,
+    CHECKING,
+    FIXED_DEPOSIT,
+    SALARIED
 }

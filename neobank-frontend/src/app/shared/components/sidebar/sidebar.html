@@ -1,7 +1,7 @@
 <aside class="sidebar">
   <div class="sidebar-header">
     <div class="brand">
-      <i class="fa-solid fa-building-columns brand-icon"></i>
+      <span class="material-symbols-outlined brand-icon">account_balance</span>
       <span class="brand-text">Neo<span>Bank</span></span>
     </div>
   </div>
@@ -9,7 +9,7 @@
   <!-- Reward Points Card -->
   <div class="rewards-card">
     <div class="rewards-icon">
-      <i class="fa-solid fa-crown"></i>
+      <span class="material-symbols-outlined">workspace_premium</span>
     </div>
     <div class="rewards-info">
       <span class="rewards-label">Reward Points</span>
@@ -20,46 +20,46 @@
   <nav class="sidebar-menu">
     <span class="menu-label">Main Menu</span>
     <a routerLink="/dashboard" routerLinkActive="active" class="menu-item">
-      <i class="fa-solid fa-chart-line"></i>
+      <span class="material-symbols-outlined">dashboard</span>
       <span>Dashboard</span>
     </a>
     <a routerLink="/accounts" routerLinkActive="active" class="menu-item">
-      <i class="fa-solid fa-building-columns"></i>
+      <span class="material-symbols-outlined">account_balance_wallet</span>
       <span>Accounts</span>
     </a>
     <a routerLink="/transactions" routerLinkActive="active" class="menu-item">
-      <i class="fa-solid fa-right-left"></i>
+      <span class="material-symbols-outlined">sync_alt</span>
       <span>Transactions</span>
     </a>
     <a routerLink="/insights" routerLinkActive="active" class="menu-item">
-      <i class="fa-solid fa-chart-pie"></i>
+      <span class="material-symbols-outlined">pie_chart</span>
       <span>Insights</span>
     </a>
     <a routerLink="/loans" routerLinkActive="active" class="menu-item">
-      <i class="fa-solid fa-hand-holding-dollar"></i>
+      <span class="material-symbols-outlined">real_estate_agent</span>
       <span>Loans</span>
     </a>
     <a routerLink="/budget" routerLinkActive="active" class="menu-item">
-      <i class="fa-solid fa-wallet"></i>
+      <span class="material-symbols-outlined">savings</span>
       <span>Budgets</span>
     </a>
     <a routerLink="/bills" routerLinkActive="active" class="menu-item">
-      <i class="fa-solid fa-file-invoice-dollar"></i>
+      <span class="material-symbols-outlined">receipt_long</span>
       <span>Bills & Utilities</span>
     </a>
     <a routerLink="/rewards" routerLinkActive="active" class="menu-item">
-      <i class="fa-solid fa-crown"></i>
+      <span class="material-symbols-outlined">stars</span>
       <span>Rewards</span>
     </a>
     <a routerLink="/profile" routerLinkActive="active" class="menu-item">
-      <i class="fa-solid fa-user-gear"></i>
+      <span class="material-symbols-outlined">manage_accounts</span>
       <span>My Profile</span>
     </a>
 
     @if (authService.currentUser()?.role === 'ADMIN') {
       <span class="menu-label admin-label">Admin Controls</span>
       <a routerLink="/admin/users" routerLinkActive="active" class="menu-item admin-item">
-        <i class="fa-solid fa-users-gear"></i>
+        <span class="material-symbols-outlined">admin_panel_settings</span>
         <span>Manage Users</span>
       </a>
     }
@@ -68,7 +68,7 @@
   <div class="sidebar-footer">
     <div class="user-profile-summary">
       <div class="user-avatar">
-        <i class="fa-solid fa-user"></i>
+        <span class="material-symbols-outlined">person</span>
       </div>
       <div class="user-details">
         <span class="user-name">{{ authService.currentUser()?.fullName || 'User' }}</span>
@@ -76,7 +76,7 @@
       </div>
     </div>
     <button class="logout-btn" (click)="logout()" title="Logout">
-      <i class="fa-solid fa-power-off"></i>
+      <span class="material-symbols-outlined">power_settings_new</span>
     </button>
   </div>
 </aside>

@@ -31,6 +31,28 @@ export class AuthService {
     return this.http.post<User>(ApiEndpoints.auth.register(), userData);
   }
 
+  verifyDocument(idNumber: string): Observable<{ verified: boolean }> {
+    return this.http.get<{ verified: boolean }>(ApiEndpoints.auth.verifyDocument(idNumber));
+  }
+
+  requestOtp(contact: string, contactType: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(ApiEndpoints.auth.requestOtp(), { contact, contactType });
+  }
+
+  verifyOtp(contact: string, code: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(ApiEndpoints.auth.verifyOtp(), { contact, code }).pipe(
+      tap((res) => {
+        StorageUtil.setSession(res);
+        this.currentUser.set({
+          userId: res.userId,
+          email: res.email,
+          fullName: res.fullName,
+          role: res.role
+        });
+      })
+    );
+  }
+
   getProfile(): Observable<User> {
     return this.http.get<User>(ApiEndpoints.users.profile()).pipe(
       tap((user) => {

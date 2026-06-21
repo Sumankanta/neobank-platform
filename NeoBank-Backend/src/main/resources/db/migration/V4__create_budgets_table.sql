@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS budgets (
     category ENUM('GROCERIES', 'RENT', 'UTILITIES', 'ENTERTAINMENT', 'SHOPPING', 'HEALTH', 'TRAVEL', 'OTHER') NOT NULL,
     budget_limit DECIMAL(15, 2) NOT NULL,
     spent_amount DECIMAL(15, 2) DEFAULT 0.00,
-    budget_month VARCHAR(7) NOT NULL, -- Format: YYYY-MM
+    budget_month DATE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_budgets_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE KEY uk_user_category_limit (user_id, category, budget_limit),
