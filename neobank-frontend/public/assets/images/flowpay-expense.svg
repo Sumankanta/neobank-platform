@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 320" role="img" aria-label="Expense tracking illustration">
+  <rect width="420" height="320" rx="28" fill="#f6f7fb"/>
+  <rect x="64" y="80" width="104" height="160" rx="18" fill="#1f66ff"/>
+  <rect x="178" y="100" width="164" height="120" rx="18" fill="#ffd94e"/>
+  <rect x="190" y="114" width="140" height="18" rx="9" fill="#fff" opacity=".9"/>
+  <rect x="190" y="142" width="120" height="18" rx="9" fill="#fff" opacity=".7"/>
+  <rect x="190" y="170" width="150" height="18" rx="9" fill="#fff" opacity=".5"/>
+  <circle cx="112" cy="154" r="34" fill="#ff8d2d"/>
+  <circle cx="274" cy="74" r="40" fill="#70e55a"/>
+  <circle cx="312" cy="220" r="34" fill="#ff8d2d"/>
+  <path d="M136 124c40-18 70 6 88 30" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+  <path d="M146 212h118" stroke="#1f66ff" stroke-width="14" stroke-linecap="round"/>
+  <path d="M194 60l10 20 22 4-16 16 4 22-20-10-20 10 4-22-16-16 22-4z" fill="#ffd11a"/>
+</svg>

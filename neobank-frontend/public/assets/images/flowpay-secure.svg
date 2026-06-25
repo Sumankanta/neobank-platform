@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 320" role="img" aria-label="Secure banking illustration">
+  <rect width="420" height="320" rx="28" fill="#f6f7fb"/>
+  <rect x="132" y="74" width="156" height="172" rx="22" fill="#111"/>
+  <rect x="150" y="98" width="120" height="18" rx="9" fill="#d9ff4d"/>
+  <rect x="150" y="130" width="120" height="18" rx="9" fill="#fff" opacity=".15"/>
+  <rect x="150" y="162" width="88" height="18" rx="9" fill="#fff" opacity=".15"/>
+  <circle cx="210" cy="204" r="26" fill="#d9ff4d"/>
+  <path d="M210 188v32M194 204h32" stroke="#111" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="86" cy="88" r="28" fill="#ffcf5b"/>
+  <circle cx="334" cy="84" r="28" fill="#2f74ff"/>
+  <circle cx="84" cy="228" r="22" fill="#70e55a"/>
+  <circle cx="334" cy="226" r="22" fill="#ff8d2d"/>
+  <path d="M74 140l34 18" stroke="#ffcf5b" stroke-width="10" stroke-linecap="round"/>
+  <path d="M324 140l-34 18" stroke="#70e55a" stroke-width="10" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-label="Flowpay hero illustration">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f5f7ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <circle cx="170" cy="240" r="58" fill="#ffd11a"/>
+  <circle cx="220" cy="560" r="42" fill="#ffd11a"/>
+  <circle cx="1010" cy="190" r="54" fill="#ffd11a"/>
+  <circle cx="1040" cy="530" r="40" fill="#ffd11a"/>
+  <ellipse cx="600" cy="410" rx="204" ry="255" fill="#111"/>
+  <rect x="450" y="300" width="300" height="232" rx="28" fill="#171717"/>
+  <rect x="488" y="336" width="224" height="24" rx="12" fill="#ffffff" opacity=".08"/>
+  <rect x="496" y="374" width="208" height="80" rx="18" fill="#202020"/>
+  <rect x="496" y="470" width="208" height="30" rx="15" fill="#2c6bff"/>
+  <circle cx="126" cy="470" r="66" fill="#2e74ff"/>
+  <circle cx="1036" cy="470" r="66" fill="#8bef51"/>
+  <path d="M110 420c44-98 118-146 182-178 48-25 82 8 58 56-34 69-83 116-162 148-40 16-91 3-78-26z" fill="#ffcf6b"/>
+  <path d="M980 420c-44-98-118-146-182-178-48-25-82 8-58 56 34 69 83 116 162 148 40 16 91 3 78-26z" fill="#ffcf6b"/>
+  <circle cx="178" cy="320" r="56" fill="#ffd11a" opacity=".85"/>
+  <circle cx="996" cy="310" r="58" fill="#ffd11a" opacity=".85"/>
+  <g fill="#ffd11a">
+    <circle cx="275" cy="128" r="22"/><circle cx="345" cy="158" r="18"/><circle cx="770" cy="124" r="20"/><circle cx="843" cy="150" r="16"/>
+  </g>
+  <g transform="translate(0,10)">
+    <circle cx="250" cy="470" r="34" fill="#f5f0ff"/>
+    <circle cx="250" cy="470" r="22" fill="#ffd11a"/>
+    <circle cx="946" cy="470" r="34" fill="#f5f0ff"/>
+    <circle cx="946" cy="470" r="22" fill="#ffd11a"/>
+  </g>
+  <path d="M278 598c-8-58 24-110 72-135 40-22 88-11 111 24 36 54 15 124-52 156-55 25-121-1-131-45z" fill="#2b7cff"/>
+  <path d="M914 598c8-58-24-110-72-135-40-22-88-11-111 24-36 54-15 124 52 156 55 25 121-1 131-45z" fill="#7af05a"/>
+  <rect x="412" y="598" width="376" height="24" rx="12" fill="#f1f3fb"/>
+  <rect x="484" y="562" width="232" height="36" rx="18" fill="#fff" stroke="#e8ebf5"/>
+  <circle cx="550" cy="580" r="13" fill="#58cf59"/>
+  <rect x="570" y="572" width="90" height="7" rx="3.5" fill="#d5daf0"/>
+</svg>
