@@ -8,6 +8,7 @@ import com.infy.NeoBank.entity.User;
 import com.infy.NeoBank.enums.Role;
 import com.infy.NeoBank.exception.DuplicateResourceException;
 import com.infy.NeoBank.repository.UserRepository;
+import com.infy.NeoBank.repository.AccountRepository;
 import com.infy.NeoBank.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,15 @@ class AuthServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private AccountRepository accountRepository;
+
+    @Mock
+    private EmailService emailService;
+
+    @Mock
+    private SmsService smsService;
 
     @Mock
     private PasswordEncoder passwordEncoder;

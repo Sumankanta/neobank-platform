@@ -70,9 +70,9 @@ public class BillService {
         Bill bill = billRepository.findByIdAndUserId(billId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Bill not found: " + billId));
 
-        if (bill.getStatus() != BillStatus.PENDING) {
+        if (bill.getStatus() == BillStatus.PAID) {
             throw new InvalidRequestException(
-                    "Invalid status transition: only PENDING bills can be updated");
+                    "Invalid status transition: PAID bills cannot be updated");
         }
 
         bill.setStatus(request.getStatus());

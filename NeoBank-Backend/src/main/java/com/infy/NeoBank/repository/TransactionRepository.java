@@ -5,7 +5,10 @@ import com.infy.NeoBank.enums.TransactionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -44,4 +47,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             LocalDateTime from,
             LocalDateTime to
     );
+
+    @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.account.user.id = :userId AND t.type = :type")
+    BigDecimal sumAmountByUserIdAndType(@Param("userId") Long userId, @Param("type") TransactionType type);
+
+    @Query("SELECT t.category, SUM(t.amount) FROM Transaction t WHERE t.type = 'DEBIT' AND t.account.user.id = :userId GROUP BY t.category")
+    List<Object[]> findSpendingByCategory(@Param("userId") Long userId);
 }

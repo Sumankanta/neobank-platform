@@ -136,6 +136,22 @@ class BillServiceTest {
     }
 
     @Test
+    void updateStatus_FromOverdueToPaid_Success() {
+        testBill.setStatus(BillStatus.OVERDUE);
+        when(billRepository.findByIdAndUserId(1L, 1L)).thenReturn(Optional.of(testBill));
+        when(billRepository.save(any(Bill.class))).thenReturn(testBill);
+
+        BillStatusRequest statusRequest = new BillStatusRequest();
+        statusRequest.setStatus(BillStatus.PAID);
+
+        billService.updateStatus(1L, 1L, statusRequest);
+
+        verify(rewardService).accrue(1L, 50);
+        verify(billRepository).save(testBill);
+        assertEquals(BillStatus.PAID, testBill.getStatus());
+    }
+
+    @Test
     void updateStatus_AlreadyPaid_ThrowsInvalidRequest() {
         testBill.setStatus(BillStatus.PAID);
         when(billRepository.findByIdAndUserId(1L, 1L)).thenReturn(Optional.of(testBill));
