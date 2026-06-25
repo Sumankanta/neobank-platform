@@ -161,7 +161,7 @@ export class InsightsDashboard implements OnInit {
       }
     });
     this.highestIncome = maxInc;
-    this.bestMonth = `${maxIncMonth.substring(0, 3)} - ${maxInc}`;
+    this.bestMonth = maxIncMonth ? `${maxIncMonth.substring(0, 3).toUpperCase()} - $${maxInc}` : 'N/A';
 
     // Category Chart (Doughnut)
     this.doughnutChartData = {

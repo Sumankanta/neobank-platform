@@ -1,6 +1,8 @@
-import { Component, AfterViewInit, OnDestroy } from '@angular/core';
-import { RouterLink } from '@angular/router';
+﻿import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+// @ts-ignore - browser-only animation helper loaded for the landing page chunk.
+import { initLandingAnimations } from './landing-animations.js';
 
 @Component({
   selector: 'app-landing',
@@ -10,57 +12,66 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './landing.css',
 })
 export class Landing implements AfterViewInit, OnDestroy {
-  private scrollHandler = () => this.revealElements();
   menuOpen = false;
+  newsletterEmail = '';
+
+  private observer?: IntersectionObserver;
+  private animationCleanup?: () => void;
 
   ngAfterViewInit(): void {
-    window.addEventListener('scroll', this.scrollHandler, { passive: true });
-    this.revealElements();
-
-    // Smooth anchor scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', (e) => {
-        const href = (anchor as HTMLAnchorElement).getAttribute('href');
-        if (href && href !== '#') {
-          e.preventDefault();
-          document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            this.observer?.unobserve(entry.target);
+          }
         }
-      });
+      },
+      { threshold: 0.16, rootMargin: '0px 0px -8% 0px' },
+    );
+
+    document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
+      this.observer?.observe(el);
     });
+
+    this.animationCleanup = initLandingAnimations();
   }
 
   ngOnDestroy(): void {
-    window.removeEventListener('scroll', this.scrollHandler);
-  }
-
-  private revealElements(): void {
-    const vh = window.innerHeight;
-    document.querySelectorAll<HTMLElement>('.reveal:not(.v)').forEach(el => {
-      if (el.getBoundingClientRect().top < vh - 80) {
-        el.classList.add('v');
-      }
-    });
+    this.observer?.disconnect();
+    this.animationCleanup?.();
   }
 
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
-    const links = document.querySelector<HTMLElement>('.nav-links');
-    if (links) {
-      links.style.display = this.menuOpen ? 'flex' : '';
-      links.style.flexDirection = 'column';
-      links.style.position = 'absolute';
-      links.style.top = '68px';
-      links.style.left = '0';
-      links.style.right = '0';
-      links.style.background = 'rgba(2,8,19,0.97)';
-      links.style.padding = '20px 24px';
-      links.style.borderBottom = '1px solid rgba(255,255,255,0.07)';
-      links.style.gap = '20px';
-    }
+  }
+
+  closeMenu(): void {
+    this.menuOpen = false;
+  }
+
+  scrollToSection(event: Event, targetId: string): void {
+    event.preventDefault();
+    this.closeMenu();
+    document.getElementById(targetId)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
   }
 
   onNewsletterSubmit(): void {
-    // TODO: wire to your newsletter API
-    console.log('Newsletter subscribed');
+    const email = this.newsletterEmail.trim();
+
+    if (!email) {
+      return;
+    }
+
+    console.log('Newsletter subscribed:', email);
+    this.newsletterEmail = '';
   }
 }
+
+
+
+
