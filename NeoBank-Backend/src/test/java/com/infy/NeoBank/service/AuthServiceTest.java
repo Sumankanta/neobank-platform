@@ -112,6 +112,21 @@ class AuthServiceTest {
     }
 
     @Test
+    void login_Success_ByPhone() {
+        loginRequest.setEmail("9876543210");
+        when(userRepository.findByEmail("9876543210")).thenReturn(Optional.empty());
+        when(userRepository.findByPhone("9876543210")).thenReturn(Optional.of(testUser));
+        when(jwtUtil.generateToken(anyLong(), anyString(), anyString())).thenReturn("mockToken");
+
+        AuthResponse response = authService.login(loginRequest);
+
+        assertNotNull(response);
+        assertEquals("mockToken", response.getToken());
+        assertEquals(testUser.getEmail(), response.getEmail());
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+    }
+
+    @Test
     void login_InvalidCredentials_ThrowsException() {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Invalid credentials"));

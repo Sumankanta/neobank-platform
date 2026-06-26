@@ -126,7 +126,9 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+        User user = userRepository.findByEmail(request.getEmail())
+                .or(() -> userRepository.findByPhone(request.getEmail()))
+                .orElseThrow(() -> new BadCredentialsException("User not found"));
 
         String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole().name());
 

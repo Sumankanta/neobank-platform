@@ -54,29 +54,8 @@
 
     <!-- ── SIGN IN FLOWS ─────────────────────────────────────────── -->
     @else {
-      @if (view() === 'password') {
-        <h1 class="form-title">Welcome back</h1>
-        <p class="form-sub">Sign in to your account to continue.</p>
-      } @else {
-        <h1 class="form-title">Sign in with OTP</h1>
-        <p class="form-sub">No password needed — we'll send a one-time code.</p>
-      }
-
-      <!-- Mode switcher tabs -->
-      <div class="mode-tabs" role="tablist">
-        <button class="mode-tab" [class.active]="view() === 'password'"
-          (click)="switchView('password')" role="tab" [attr.aria-selected]="view() === 'password'">
-          Password
-        </button>
-        <button class="mode-tab" [class.active]="view() === 'otp'"
-          (click)="switchView('otp')" role="tab" [attr.aria-selected]="view() === 'otp'">
-          OTP login
-        </button>
-        <button class="mode-tab" [class.active]="view() === 'social'"
-          (click)="switchView('social')" role="tab" [attr.aria-selected]="view() === 'social'">
-          Social / SSO
-        </button>
-      </div>
+      <h1 class="form-title">Welcome back</h1>
+      <p class="form-sub">Sign in to your account to continue.</p>
 
       @if (errorMessage()) {
         <div class="err-box">
@@ -86,8 +65,7 @@
       }
 
       <!-- ══ PASSWORD TAB ══════════════════════════════════════════ -->
-      @if (view() === 'password') {
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
 
           <!-- Identifier type + value -->
           <div class="field" [class.has-err]="loginForm.get('idType')?.touched && loginForm.get('identifier')?.touched && loginForm.get('identifier')?.invalid">
@@ -149,7 +127,7 @@
           <!-- CAPTCHA -->
           <div class="captcha-wrap" [class.verified]="captchaVerified()" (click)="verifyCaptcha()" role="checkbox"
             [attr.aria-checked]="captchaVerified()" tabindex="0"
-            (keydown.enter)="verifyCaptcha()" (keydown.space)="verifyCaptcha()">
+            (keydown.enter)="verifyCaptcha()" (keydown.space)="$event.preventDefault(); verifyCaptcha()">
             <div class="captcha-left">
               <div class="captcha-checkbox">
                 @if (captchaVerified()) { ✓ }
@@ -172,181 +150,6 @@
           </button>
         </form>
 
-        <div class="divider"><span>or continue with</span></div>
-        <div class="social-row">
-          <button type="button" class="btn-social">
-            <span class="g-dot"></span> Google
-          </button>
-          <button type="button" class="btn-social">
-            <i class="fa-brands fa-apple"></i> Apple
-          </button>
-        </div>
-      }
-
-      <!-- ══ OTP TAB ════════════════════════════════════════════════ -->
-      @if (view() === 'otp') {
-
-        <!-- Step indicator -->
-        <div class="flow-steps">
-          <div class="flow-step" [class.active]="otpStep() === 1" [class.done]="otpStep() > 1">
-            <span class="step-num">@if(otpStep() > 1){ ✓ } @else { 1 }</span>
-            <span>Identify</span>
-          </div>
-          <div class="step-line" [class.done]="otpStep() > 1"></div>
-          <div class="flow-step" [class.active]="otpStep() === 2" [class.done]="otpStep() > 2">
-            <span class="step-num">@if(otpStep() > 2){ ✓ } @else { 2 }</span>
-            <span>Verify OTP</span>
-          </div>
-          <div class="step-line" [class.done]="otpStep() > 2"></div>
-          <div class="flow-step" [class.active]="otpStep() === 3">
-            <span class="step-num">3</span>
-            <span>Access</span>
-          </div>
-        </div>
-
-        <!-- Step 1: enter contact -->
-        @if (otpStep() === 1) {
-          <form [formGroup]="otpRequestForm" (ngSubmit)="requestOtp()" novalidate>
-            <div class="field" [class.has-err]="otpRequestForm.get('contact')?.touched && otpRequestForm.get('contact')?.invalid">
-              <label>Mobile number or email</label>
-              <div class="id-row">
-                <div class="inp-wrap">
-                  <select formControlName="contactType" aria-label="Contact type" (change)="onContactTypeChange()">
-                    <option value="phone">Phone</option>
-                    <option value="email">Email</option>
-                  </select>
-                  <span class="select-arrow"><i class="fa-solid fa-chevron-down"></i></span>
-                </div>
-                <div class="inp-wrap">
-                  <i class="inp-icon"
-                    [class]="otpRequestForm.get('contactType')?.value === 'phone' ? 'fa-solid fa-mobile-screen' : 'fa-solid fa-envelope'">
-                  </i>
-                  <input formControlName="contact"
-                    [type]="otpRequestForm.get('contactType')?.value === 'phone' ? 'tel' : 'email'"
-                    [placeholder]="otpRequestForm.get('contactType')?.value === 'phone' ? '10-digit mobile number' : 'you@example.com'"
-                    autocomplete="off" />
-                </div>
-              </div>
-              @if (otpRequestForm.get('contact')?.touched && otpRequestForm.get('contact')?.invalid) {
-                <span class="field-err">Enter a valid {{ otpRequestForm.get('contactType')?.value === 'phone' ? '10-digit number' : 'email address' }}.</span>
-              }
-            </div>
-
-            <!-- CAPTCHA for OTP too -->
-            <div class="captcha-wrap" [class.verified]="captchaVerified()" (click)="verifyCaptcha()" role="checkbox"
-              [attr.aria-checked]="captchaVerified()" tabindex="0"
-              (keydown.enter)="verifyCaptcha()" (keydown.space)="verifyCaptcha()">
-              <div class="captcha-left">
-                <div class="captcha-checkbox">
-                  @if (captchaVerified()) { ✓ }
-                  @else if (captchaLoading()) { <span class="spinner" style="width:13px;height:13px;border-color:rgba(0,0,0,.15);border-top-color:#6236e9"></span> }
-                </div>
-                <span class="captcha-label">I'm not a robot</span>
-              </div>
-              <div class="captcha-badge">
-                <strong>reCAPTCHA</strong>
-                Privacy · Terms
-              </div>
-            </div>
-
-            <button type="submit" class="btn-primary" [disabled]="isLoading() || !captchaVerified()">
-              @if (isLoading()) {
-                <span class="spinner"></span> Sending OTP…
-              } @else {
-                Send OTP <i class="fa-solid fa-paper-plane"></i>
-              }
-            </button>
-          </form>
-        }
-
-        <!-- Step 2: enter OTP -->
-        @if (otpStep() === 2) {
-          <form [formGroup]="otpVerifyForm" (ngSubmit)="verifyOtp()" novalidate>
-            <p style="font-size:.88rem;color:#7f8aa6;margin-bottom:14px;line-height:1.6">
-              We sent a 6-digit code to
-              <strong style="color:#132052">{{ otpRequestForm.get('contact')?.value }}</strong>.
-              It expires in <strong style="color:#6236e9">{{ otpCountdown() }}s</strong>.
-            </p>
-
-            <div class="field">
-              <label>Enter 6-digit OTP</label>
-              <div class="otp-row">
-                @for (i of [0,1,2,3,4,5]; track i) {
-                  <input
-                    class="otp-box"
-                    type="text"
-                    inputmode="numeric"
-                    maxlength="1"
-                    [id]="'otp-' + i"
-                    (input)="onOtpInput($event, i)"
-                    (keydown.backspace)="onOtpBackspace($any($event), i)"
-                    (paste)="onOtpPaste($any($event))"
-                    autocomplete="one-time-code"
-                    aria-label="OTP digit {{ i + 1 }}" />
-                }
-              </div>
-              <p class="otp-hint">
-                Didn't get it?
-                <button class="resend-link" type="button"
-                  [disabled]="otpCountdown() > 0"
-                  (click)="resendOtp()">
-                  {{ otpCountdown() > 0 ? 'Resend in ' + otpCountdown() + 's' : 'Resend OTP' }}
-                </button>
-              </p>
-            </div>
-
-            @if (otpError()) {
-              <div class="err-box" style="margin-bottom:14px">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <span>{{ otpError() }}</span>
-              </div>
-            }
-
-            <button type="submit" class="btn-primary" [disabled]="isLoading() || otpVerifyForm.invalid">
-              @if (isLoading()) {
-                <span class="spinner"></span> Verifying…
-              } @else {
-                Verify & sign in <i class="fa-solid fa-shield-check"></i>
-              }
-            </button>
-
-            <button type="button" class="btn-outline" style="margin-top:10px"
-              (click)="otpStep.set(1); captchaVerified.set(false)">
-              Change number / email
-            </button>
-          </form>
-        }
-      }
-
-      <!-- ══ SOCIAL / SSO TAB ══════════════════════════════════════ -->
-      @if (view() === 'social') {
-        <div style="display:flex;flex-direction:column;gap:12px">
-          <button type="button" class="btn-social" style="height:50px;justify-content:flex-start;padding:0 18px;gap:14px">
-            <span class="g-dot"></span>
-            <span>Continue with Google</span>
-          </button>
-          <button type="button" class="btn-social" style="height:50px;justify-content:flex-start;padding:0 18px;gap:14px">
-            <i class="fa-brands fa-apple" style="font-size:1.1rem"></i>
-            <span>Continue with Apple</span>
-          </button>
-          <button type="button" class="btn-social" style="height:50px;justify-content:flex-start;padding:0 18px;gap:14px">
-            <i class="fa-brands fa-microsoft" style="font-size:1rem;color:#00a4ef"></i>
-            <span>Continue with Microsoft</span>
-          </button>
-          <div class="divider"><span>or use company SSO</span></div>
-          <div class="field" style="margin-bottom:12px">
-            <label for="sso-domain">Work email domain</label>
-            <div class="inp-wrap">
-              <i class="fa-solid fa-building inp-icon"></i>
-              <input id="sso-domain" type="text" placeholder="company.com" />
-            </div>
-          </div>
-          <button type="button" class="btn-primary">
-            Find SSO provider <i class="fa-solid fa-magnifying-glass"></i>
-          </button>
-        </div>
-      }
-
       <p class="footer-txt">
         Don't have an account?
         <a routerLink="/auth/register">Create one free</a>
@@ -358,63 +161,8 @@
   <div class="auth-right">
     <div class="accent-dot"></div>
 
-    <div class="feature-stack">
-
-      <!-- Balance card -->
-      <div class="balance-card">
-        <div class="bal-label">
-          <i class="fa-solid fa-wallet"></i> Total balance
-        </div>
-        <div class="bal-amount">
-          ₹25.5L
-          <span class="bal-badge">
-            <i class="fa-solid fa-arrow-trend-up"></i> +2.15%
-          </span>
-        </div>
-        <div class="bar-row">
-          <div class="bar" style="height:28px"></div>
-          <div class="bar" style="height:38px"></div>
-          <div class="bar" style="height:22px"></div>
-          <div class="bar" style="height:44px"></div>
-          <div class="bar" style="height:34px"></div>
-          <div class="bar dim" style="height:18px"></div>
-          <div class="bar dim" style="height:26px"></div>
-          <div class="bar dim" style="height:14px"></div>
-          <div class="bar dim" style="height:20px"></div>
-          <div class="bar dim" style="height:16px"></div>
-          <div class="bar dim" style="height:12px"></div>
-        </div>
-        <div class="bal-footer">
-          <span>Set goals</span>
-          <i class="fa-solid fa-chevron-right"></i>
-        </div>
-      </div>
-
-      <!-- Auth method pills -->
-      <div class="auth-methods">
-        <div class="method-pill">
-          <span class="pill-icon"><i class="fa-solid fa-lock"></i></span>
-          Password login
-        </div>
-        <div class="method-pill">
-          <span class="pill-icon"><i class="fa-solid fa-mobile-screen"></i></span>
-          OTP login
-        </div>
-        <div class="method-pill">
-          <span class="pill-icon"><i class="fa-brands fa-google"></i></span>
-          Social SSO
-        </div>
-      </div>
-
-      <!-- Tagline card -->
-      <div class="hero-tagline">
-        <h2 class="hero-title">Three ways<br>to sign in</h2>
-        <p class="hero-body">
-          Use your password, get an OTP on your phone or email, or sign in instantly
-          via Google, Apple, or your company's SSO — whichever works best for you.
-        </p>
-      </div>
-
+    <div class="illustration-container">
+      <img src="assets/images/login_security.png" alt="Secure login illustration" class="login-illustration" />
     </div>
   </div>
 </div>

@@ -742,6 +742,28 @@
   transition: opacity .2s;
 }
 .back-btn:hover { opacity: .75; }
+.illustration-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 480px;
+  z-index: 2;
+}
+
+.login-illustration {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  animation: floatIllustration 6s ease-in-out infinite;
+}
+
+@keyframes floatIllustration {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
 
 /* ─── Responsive ─────────────────────────────────────────────────── */
 @media (max-width: 860px) {
