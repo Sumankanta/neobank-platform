@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8081/api'
+  apiUrl: 'http://neobank-platform-production.up.railway.app/api'
 };
