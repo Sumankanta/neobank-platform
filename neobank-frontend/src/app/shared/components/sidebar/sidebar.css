@@ -232,3 +232,25 @@
     margin-top: 0.75rem;
   }
 }
+
+/* Admin badge shown when role is ADMIN */
+.admin-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1rem;
+  margin-bottom: 1.25rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(79, 70, 229, 0.1) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: #a78bfa;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.1);
+}
+.admin-badge span {
+  font-size: 1rem;
+}
+

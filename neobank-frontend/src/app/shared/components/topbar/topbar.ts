@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
+import { ThemeService } from '../../../core/services/theme';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -13,8 +14,9 @@ import { FormsModule } from '@angular/forms';
 })
 export class TopbarComponent {
   authService = inject(AuthService);
+  themeService = inject(ThemeService);
   router = inject(Router);
-  
+
   searchQuery = '';
   currentDate = new Date().toLocaleDateString('en-IN', {
     weekday: 'long',
@@ -30,8 +32,11 @@ export class TopbarComponent {
 
   onSearch() {
     if (this.searchQuery.trim()) {
-      // For now, just a console log or navigate to a search page if it existed
       console.log('Searching for:', this.searchQuery);
     }
+  }
+
+  toggleTheme() {
+    this.themeService.toggle();
   }
 }

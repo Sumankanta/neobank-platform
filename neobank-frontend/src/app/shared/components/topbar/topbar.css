@@ -192,3 +192,15 @@
     display: none;
   }
 }
+
+/* Theme Toggle Button */
+.theme-toggle {
+  border-color: rgba(79, 70, 229, 0.25) !important;
+}
+.theme-toggle:hover {
+  background: rgba(79, 70, 229, 0.15) !important;
+  color: var(--primary) !important;
+  border-color: rgba(79, 70, 229, 0.4) !important;
+  box-shadow: 0 0 10px rgba(79, 70, 229, 0.2);
+}
+

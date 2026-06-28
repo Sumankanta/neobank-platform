@@ -72,10 +72,15 @@ export const routes: Routes = [
           import('./features/user/profile/profile').then((m) => m.Profile),
       },
       {
-        path: 'admin/users',
+        path: 'admin',
         canActivate: [adminGuard],
-        loadComponent: () =>
-          import('./features/user/admin-users/admin-users').then((m) => m.AdminUsers),
+        loadChildren: () =>
+          import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
+      },
+      {
+        path: 'admin/users',
+        redirectTo: 'admin/accounts',
+        pathMatch: 'prefix',
       },
     ],
   },

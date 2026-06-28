@@ -15,12 +15,19 @@ export class ApiEndpoints {
   };
 
   static admin = {
-    users: () => `${environment.apiUrl}${API_ROUTES.ADMIN}${API_ROUTES.USERS}`,
+    // These go through /api/users/admin/... (UserController)
+    users: () => `${environment.apiUrl}${API_ROUTES.USERS}/admin/users`,
+    toggleStatus: (id: number | string) => `${environment.apiUrl}${API_ROUTES.USERS}/admin/users/${id}/toggle-status`,
+    // These go through /api/admin/... (new AdminController)
     pendingApprovals: () => `${environment.apiUrl}${API_ROUTES.ADMIN}/pending-approvals`,
-    toggleStatus: (id: number | string) => `${environment.apiUrl}${API_ROUTES.ADMIN}${API_ROUTES.USERS}/${id}/status`,
     dashboard: () => `${environment.apiUrl}${API_ROUTES.ADMIN}/dashboard`,
     systemHealth: () => `${environment.apiUrl}${API_ROUTES.ADMIN}/system-health`,
+    // All accounts (admin view through /api/accounts)
+    allAccounts: () => `${environment.apiUrl}${API_ROUTES.ACCOUNTS}`,
+    // All transactions (admin view through /api/admin/transactions)
+    allTransactions: () => `${environment.apiUrl}${API_ROUTES.ADMIN}/transactions`,
   };
+
 
   static loans = {
     products: () => `${environment.apiUrl}${API_ROUTES.LOANS}/products`,

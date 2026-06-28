@@ -1,0 +1,123 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div class="header-left">
+      <span class="material-symbols-outlined page-icon accounts">account_balance_wallet</span>
+      <div>
+        <h1 class="page-title">Account Management</h1>
+        <p class="page-subtitle">Review active accounts and approve pending KYC requests</p>
+      </div>
+    </div>
+    <button class="refresh-btn" (click)="loadData()">
+      <span class="material-symbols-outlined">refresh</span>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar glass-card">
+    <div class="stat-item">
+      <span class="stat-num">{{ allUsers().length }}</span>
+      <span class="stat-lbl">Total Users</span>
+    </div>
+    <div class="divider"></div>
+    <div class="stat-item">
+      <span class="stat-num active">{{ allUsers().length - pendingUsers().length }}</span>
+      <span class="stat-lbl">Active</span>
+    </div>
+    <div class="divider"></div>
+    <div class="stat-item">
+      <span class="stat-num pending">{{ pendingUsers().length }}</span>
+      <span class="stat-lbl">Pending Approval</span>
+    </div>
+  </div>
+
+  <!-- Tabs + Search -->
+  <div class="controls-row">
+    <div class="tabs">
+      <button class="tab-btn" [class.active]="activeTab() === 'pending'" (click)="setTab('pending')">
+        Pending Approval
+        @if (pendingUsers().length > 0) {
+          <span class="badge-count">{{ pendingUsers().length }}</span>
+        }
+      </button>
+      <button class="tab-btn" [class.active]="activeTab() === 'all'" (click)="setTab('all')">
+        All Users
+      </button>
+    </div>
+    <div class="search-box">
+      <span class="material-symbols-outlined">search</span>
+      <input type="text" placeholder="Search by name, email, or role..."
+             [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)">
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="glass-card table-card">
+    @if (isLoading()) {
+      <div class="loading-rows">
+        @for (i of [1,2,3,4]; track i) {
+          <div class="shimmer-row"></div>
+        }
+      </div>
+    } @else if (filteredUsers().length === 0) {
+      <div class="empty-state">
+        <span class="material-symbols-outlined empty-ico">inbox</span>
+        <p>{{ activeTab() === 'pending' ? 'No pending approvals — great!' : 'No users found.' }}</p>
+      </div>
+    } @else {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Joined</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of filteredUsers(); track user.id) {
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="avatar-sm">{{ user.fullName?.charAt(0) || 'U' }}</div>
+                    <div>
+                      <span class="user-name">{{ user.fullName }}</span>
+                      <span class="user-id">ID #{{ user.id }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="email-cell">{{ user.email }}</td>
+                <td>
+                  <span class="role-badge" [class.admin]="user.role === 'ADMIN'">{{ user.role }}</span>
+                </td>
+                <td class="date-cell">{{ user.createdAt | date:'MMM d, y' }}</td>
+                <td>
+                  <span class="status-pill" [class.active]="user.active" [class.inactive]="!user.active">
+                    <span class="dot"></span>
+                    {{ user.active ? 'Active' : 'Pending' }}
+                  </span>
+                </td>
+                <td>
+                  @if (!user.active) {
+                    <button class="action-btn approve" (click)="toggleStatus(user)" title="Approve user">
+                      <span class="material-symbols-outlined">check_circle</span>
+                      Approve
+                    </button>
+                  } @else {
+                    <button class="action-btn suspend" (click)="toggleStatus(user)" title="Suspend user">
+                      <span class="material-symbols-outlined">block</span>
+                      Suspend
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

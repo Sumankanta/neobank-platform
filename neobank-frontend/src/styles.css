@@ -420,3 +420,46 @@ h1, h2, h3, h4, h5, h6 {
     padding: 1.5rem;
   }
 }
+
+/* ─── Light Theme ─── */
+body.light-theme {
+  --bg-primary:   #f0f2f8;
+  --bg-secondary: #ffffff;
+  --bg-tertiary:  #e5e7ef;
+
+  --card-bg:           rgba(255, 255, 255, 0.9);
+  --card-border:       rgba(0, 0, 0, 0.07);
+  --card-border-hover: rgba(79, 70, 229, 0.25);
+
+  --text-primary:   #1e2235;
+  --text-secondary: #4b5263;
+  --text-muted:     #9399a8;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .sidebar,
+body.light-theme .topbar-header {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(16px);
+}
+
+body.light-theme .search-box input,
+body.light-theme .search-box {
+  background: #f3f4f8;
+  color: #1e2235;
+}
+
+body.light-theme .action-btn {
+  background: #f0f2f8;
+  border-color: rgba(0,0,0,0.08);
+  color: #4b5263;
+}
+
+body.light-theme .action-btn:hover {
+  background: #e5e7ef;
+  color: var(--primary);
+}
+

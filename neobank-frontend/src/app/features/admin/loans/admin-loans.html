@@ -1,0 +1,138 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div class="header-left">
+      <span class="material-symbols-outlined page-icon loans">real_estate_agent</span>
+      <div>
+        <h1 class="page-title">Loan Management</h1>
+        <p class="page-subtitle">Review, approve, and reject loan applications</p>
+      </div>
+    </div>
+    <button class="refresh-btn" (click)="loadApplications()">
+      <span class="material-symbols-outlined">refresh</span>
+      Refresh
+    </button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi-mini glass-card">
+      <span class="material-symbols-outlined kpi-ico pending-ico">hourglass_top</span>
+      <div>
+        <span class="kpi-label">Pending Review</span>
+        <span class="kpi-num pending">{{ totalPending() }}</span>
+      </div>
+    </div>
+    <div class="kpi-mini glass-card">
+      <span class="material-symbols-outlined kpi-ico approved-ico">check_circle</span>
+      <div>
+        <span class="kpi-label">Approved Loans</span>
+        <span class="kpi-num approved">{{ totalActive() }}</span>
+      </div>
+    </div>
+    <div class="kpi-mini glass-card">
+      <span class="material-symbols-outlined kpi-ico total-ico">payments</span>
+      <div>
+        <span class="kpi-label">Total Applied Amount</span>
+        <span class="kpi-num">{{ formatCurrency(totalAmount()) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter -->
+  <div class="controls-row">
+    <div class="type-filters">
+      @for (s of ['ALL','PENDING','APPROVED','REJECTED']; track s) {
+        <button class="filter-btn" [class.active]="filterStatus() === s" (click)="setFilter(s)">{{ s }}</button>
+      }
+    </div>
+  </div>
+
+  <!-- Cards Grid -->
+  @if (isLoading()) {
+    <div class="loading-rows">
+      @for (i of [1,2,3]; track i) { <div class="shimmer-card"></div> }
+    </div>
+  } @else if (filtered().length === 0) {
+    <div class="empty-state glass-card">
+      <span class="material-symbols-outlined">real_estate_agent</span>
+      <p>No loan applications found.</p>
+    </div>
+  } @else {
+    <div class="apps-grid">
+      @for (app of filtered(); track app.id) {
+        <div class="app-card glass-card">
+          <div class="app-header">
+            <div class="app-id">
+              <span class="material-symbols-outlined">receipt</span>
+              App #{{ app.id }}
+            </div>
+            <span class="status-pill" [ngClass]="app.status?.toLowerCase()">{{ app.status }}</span>
+          </div>
+          <div class="app-body">
+            <div class="info-row">
+              <span class="info-label">Applicant</span>
+              <span class="info-val">{{ app.userFullName || app.userId || 'N/A' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Amount</span>
+              <span class="info-val amount">{{ formatCurrency(app.amount) }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Tenure</span>
+              <span class="info-val">{{ app.tenureMonths }} months</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Applied On</span>
+              <span class="info-val">{{ app.appliedAt | date:'MMM d, y' }}</span>
+            </div>
+            @if (app.adminRemarks) {
+              <div class="remarks-row">
+                <span class="material-symbols-outlined">sticky_note_2</span>
+                <span>{{ app.adminRemarks }}</span>
+              </div>
+            }
+          </div>
+          @if (app.status === 'PENDING') {
+            <div class="app-actions">
+              <button class="action-btn approve" (click)="openRemarksModal(app.id)">
+                <span class="material-symbols-outlined">how_to_reg</span>
+                Review
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- Remarks Modal -->
+@if (remarksModal()?.visible) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal glass-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Review Application #{{ remarksModal()!.id }}</h3>
+        <button class="close-btn" (click)="closeModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label class="field-label">Admin Remarks (optional)</label>
+        <textarea class="remarks-input"
+                  placeholder="Enter decision reason or notes..."
+                  [(ngModel)]="remarksModal()!.remarks"
+                  rows="4"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn reject" (click)="processApplication('REJECTED')">
+          <span class="material-symbols-outlined">cancel</span>
+          Reject
+        </button>
+        <button class="action-btn approve" (click)="processApplication('APPROVED')">
+          <span class="material-symbols-outlined">check_circle</span>
+          Approve
+        </button>
+      </div>
+    </div>
+  </div>
+}

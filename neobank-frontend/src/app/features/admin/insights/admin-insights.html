@@ -1,0 +1,166 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div class="header-left">
+      <span class="material-symbols-outlined page-icon insights">bar_chart</span>
+      <div>
+        <h1 class="page-title">Application Insights</h1>
+        <p class="page-subtitle">Detailed visualization of the entire NeoBank platform</p>
+      </div>
+    </div>
+    <button class="refresh-btn" (click)="loadAll()">
+      <span class="material-symbols-outlined">refresh</span>
+      Refresh
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-rows">
+      @for (i of [1,2,3]; track i) { <div class="shimmer-block"></div> }
+    </div>
+  } @else {
+    <!-- Overview KPIs -->
+    <div class="overview-grid">
+      <div class="ov-card glass-card users">
+        <div class="ov-top">
+          <span class="ov-label">Total Users</span>
+          <span class="material-symbols-outlined ov-ico">group</span>
+        </div>
+        <span class="ov-val">{{ totalUsers() }}</span>
+        <div class="ov-sub-row">
+          <span class="ov-sub green">{{ activeUsers() }} Active</span>
+          <span class="ov-sub yellow">{{ pendingKyc() }} Pending KYC</span>
+        </div>
+      </div>
+      <div class="ov-card glass-card transactions">
+        <div class="ov-top">
+          <span class="ov-label">Total Transactions</span>
+          <span class="material-symbols-outlined ov-ico">sync_alt</span>
+        </div>
+        <span class="ov-val">{{ transactions().length }}</span>
+        <div class="ov-sub-row">
+          <span class="ov-sub green">{{ creditTxns().length }} Credits</span>
+          <span class="ov-sub red">{{ debitTxns().length }} Debits</span>
+        </div>
+      </div>
+      <div class="ov-card glass-card loans">
+        <div class="ov-top">
+          <span class="ov-label">Loan Applications</span>
+          <span class="material-symbols-outlined ov-ico">real_estate_agent</span>
+        </div>
+        <span class="ov-val">{{ loans().length }}</span>
+        <div class="ov-sub-row">
+          <span class="ov-sub green">{{ approvedLoans().length }} Approved</span>
+          <span class="ov-sub yellow">{{ pendingLoans().length }} Pending</span>
+        </div>
+      </div>
+      <div class="ov-card glass-card money">
+        <div class="ov-top">
+          <span class="ov-label">Approved Loan Volume</span>
+          <span class="material-symbols-outlined ov-ico">payments</span>
+        </div>
+        <span class="ov-val">{{ formatCurrency(totalLoanAmount()) }}</span>
+        <div class="ov-sub-row">
+          <span class="ov-sub">Across {{ approvedLoans().length }} loans</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-row">
+      <!-- Transaction Volume -->
+      <div class="glass-card chart-card">
+        <h3 class="chart-title">
+          <span class="material-symbols-outlined">show_chart</span>
+          Transaction Flow
+        </h3>
+        <div class="flow-bars">
+          <div class="flow-bar-row">
+            <span class="flow-label">Credits</span>
+            <div class="flow-track">
+              <div class="flow-fill credit" [style.width.%]="(creditTxns().length / (transactions().length || 1)) * 100"></div>
+            </div>
+            <span class="flow-val credit">{{ formatCurrency(totalCredit()) }}</span>
+          </div>
+          <div class="flow-bar-row">
+            <span class="flow-label">Debits</span>
+            <div class="flow-track">
+              <div class="flow-fill debit" [style.width.%]="(debitTxns().length / (transactions().length || 1)) * 100"></div>
+            </div>
+            <span class="flow-val debit">{{ formatCurrency(totalDebit()) }}</span>
+          </div>
+        </div>
+        <div class="net-flow" [class.positive]="totalCredit() >= totalDebit()">
+          <span class="material-symbols-outlined">{{ totalCredit() >= totalDebit() ? 'trending_up' : 'trending_down' }}</span>
+          <span>Net Flow: {{ formatCurrency(totalCredit() - totalDebit()) }}</span>
+        </div>
+      </div>
+
+      <!-- Category Breakdown -->
+      <div class="glass-card chart-card">
+        <h3 class="chart-title">
+          <span class="material-symbols-outlined">donut_small</span>
+          Category Breakdown
+        </h3>
+        <div class="cat-list">
+          @for (cat of categoryBreakdown(); track cat.cat) {
+            <div class="cat-row">
+              <div class="cat-left">
+                <span class="cat-dot" [style.background]="catColor(cat.cat)"></span>
+                <span class="cat-name">{{ cat.cat }}</span>
+              </div>
+              <div class="cat-right">
+                <div class="cat-track">
+                  <div class="cat-fill" [style.width.%]="cat.pct" [style.background]="catColor(cat.cat)"></div>
+                </div>
+                <span class="cat-pct">{{ cat.pct }}%</span>
+                <span class="cat-count">{{ cat.count }}</span>
+              </div>
+            </div>
+          }
+          @if (categoryBreakdown().length === 0) {
+            <p class="no-data">No transaction data yet</p>
+          }
+        </div>
+      </div>
+
+      <!-- Loan Distribution -->
+      <div class="glass-card chart-card">
+        <h3 class="chart-title">
+          <span class="material-symbols-outlined">pie_chart</span>
+          Loan Status Distribution
+        </h3>
+        <div class="donut-container">
+          <div class="donut-ring">
+            @for (seg of loanStatusDist(); track seg.label) {
+              <div class="donut-seg" [class]="seg.cls">
+                <span class="seg-num">{{ seg.count }}</span>
+                <span class="seg-lbl">{{ seg.label }}</span>
+                <span class="seg-pct">{{ seg.pct }}%</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Breakdown -->
+    <div class="glass-card role-card">
+      <h3 class="chart-title">
+        <span class="material-symbols-outlined">manage_accounts</span>
+        User Role Breakdown
+      </h3>
+      <div class="role-bars">
+        @for (r of roleBreakdown(); track r.label) {
+          <div class="role-row">
+            <span class="role-lbl">{{ r.label }}</span>
+            <div class="role-track">
+              <div class="role-fill" [style.width.%]="r.pct"></div>
+            </div>
+            <span class="role-count">{{ r.count }}</span>
+            <span class="role-pct">{{ r.pct }}%</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

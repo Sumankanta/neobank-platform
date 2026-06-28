@@ -1,0 +1,204 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div class="header-left">
+      <span class="material-symbols-outlined page-icon">dashboard</span>
+      <div>
+        <h1 class="page-title">Admin Dashboard</h1>
+        <p class="page-subtitle">Application performance, health & KPIs at a glance</p>
+      </div>
+    </div>
+    <button class="refresh-btn" (click)="loadMetrics(); loadHealth()">
+      <span class="material-symbols-outlined">refresh</span>
+      Refresh
+    </button>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <!-- Vault Value -->
+    <div class="kpi-card glass-card">
+      <div class="kpi-icon vault">
+        <span class="material-symbols-outlined">account_balance</span>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">Total Vault Value</span>
+        @if (loadingMetrics()) {
+          <span class="kpi-value shimmer"></span>
+        } @else {
+          <span class="kpi-value">{{ metrics()?.totalVaultValue ? formatCurrency(metrics()!.totalVaultValue) : '₹0' }}</span>
+        }
+        <span class="kpi-desc">Aggregate deposits across all accounts</span>
+      </div>
+    </div>
+
+    <!-- Loan Exposure -->
+    <div class="kpi-card glass-card">
+      <div class="kpi-icon loan">
+        <span class="material-symbols-outlined">real_estate_agent</span>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">Active Loan Exposure</span>
+        @if (loadingMetrics()) {
+          <span class="kpi-value shimmer"></span>
+        } @else {
+          <span class="kpi-value">{{ metrics()?.activeLoanExposure ? formatCurrency(metrics()!.activeLoanExposure) : '₹0' }}</span>
+        }
+        <span class="kpi-desc">Outstanding balances in active loans</span>
+      </div>
+    </div>
+
+    <!-- KYC Queue -->
+    <div class="kpi-card glass-card">
+      <div class="kpi-icon kyc">
+        <span class="material-symbols-outlined">verified_user</span>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">KYC Queue</span>
+        @if (loadingMetrics()) {
+          <span class="kpi-value shimmer"></span>
+        } @else {
+          <span class="kpi-value">{{ metrics()?.kycQueueCount ?? '0' }}</span>
+        }
+        <span class="kpi-desc">Users pending identity approval</span>
+      </div>
+    </div>
+
+    <!-- Total Transactions -->
+    <div class="kpi-card glass-card">
+      <div class="kpi-icon txn">
+        <span class="material-symbols-outlined">sync_alt</span>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">Total Transactions</span>
+        @if (loadingMetrics()) {
+          <span class="kpi-value shimmer"></span>
+        } @else {
+          <span class="kpi-value">{{ metrics()?.totalTransactions | number }}</span>
+        }
+        <span class="kpi-desc">Lifetime transaction count</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- System Performance + API Health -->
+  <div class="section-grid">
+    <!-- System Performance -->
+    <div class="glass-card perf-card">
+      <div class="card-header-row">
+        <h3 class="card-title">
+          <span class="material-symbols-outlined">speed</span>
+          System Performance
+        </h3>
+        @if (!loadingHealth()) {
+          <span class="health-badge" [class.up]="health()?.apiHealth === 'UP'">
+            <span class="dot"></span>{{ health()?.apiHealth === 'UP' ? 'Healthy' : 'Degraded' }}
+          </span>
+        }
+      </div>
+
+      @if (loadingHealth()) {
+        <div class="loading-rows">
+          <div class="shimmer-row"></div>
+          <div class="shimmer-row"></div>
+          <div class="shimmer-row"></div>
+        </div>
+      } @else if (health()) {
+        <div class="perf-metrics">
+          <!-- CPU -->
+          <div class="perf-row">
+            <div class="perf-label-row">
+              <span class="perf-label">CPU Usage</span>
+              <span class="perf-value" [class.danger]="health()!.cpuUsage > 80" [class.warn]="health()!.cpuUsage > 50">
+                {{ health()!.cpuUsage }}%
+              </span>
+            </div>
+            <div class="perf-bar-track">
+              <div class="perf-bar-fill"
+                   [style.width.%]="health()!.cpuUsage"
+                   [class.danger]="health()!.cpuUsage > 80"
+                   [class.warn]="health()!.cpuUsage > 50"></div>
+            </div>
+          </div>
+          <!-- Memory -->
+          <div class="perf-row">
+            <div class="perf-label-row">
+              <span class="perf-label">Memory Usage</span>
+              <span class="perf-value" [class.danger]="health()!.memoryUsage > 80" [class.warn]="health()!.memoryUsage > 60">
+                {{ health()!.memoryUsage }}%
+              </span>
+            </div>
+            <div class="perf-bar-track">
+              <div class="perf-bar-fill"
+                   [style.width.%]="health()!.memoryUsage"
+                   [class.danger]="health()!.memoryUsage > 80"
+                   [class.warn]="health()!.memoryUsage > 60"></div>
+            </div>
+          </div>
+          <!-- Active Requests -->
+          <div class="stat-row-sm">
+            <span class="material-symbols-outlined stat-ico">bolt</span>
+            <span class="stat-lbl">Active Requests</span>
+            <span class="stat-val">{{ health()!.activeRequests }}</span>
+          </div>
+          <!-- Uptime -->
+          <div class="stat-row-sm">
+            <span class="material-symbols-outlined stat-ico">timer</span>
+            <span class="stat-lbl">Server Uptime</span>
+            <span class="stat-val">{{ formatUptime(health()!.uptime) }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- API Health Check -->
+    <div class="glass-card api-card">
+      <div class="card-header-row">
+        <h3 class="card-title">
+          <span class="material-symbols-outlined">api</span>
+          API Health Check
+        </h3>
+      </div>
+      <div class="api-list">
+        @for (ep of apiEndpoints; track ep.name) {
+          <div class="api-row">
+            <div class="api-info">
+              <span class="api-status-dot up"></span>
+              <span class="api-name">{{ ep.name }}</span>
+            </div>
+            <div class="api-right">
+              <span class="api-latency">{{ ep.latency }}</span>
+              <span class="api-badge up">{{ ep.status }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Action Links -->
+  <div class="quick-links">
+    <h3 class="section-title">Quick Actions</h3>
+    <div class="quick-grid">
+      <a routerLink="/admin/accounts" class="quick-card glass-card">
+        <span class="material-symbols-outlined q-icon accounts">account_balance_wallet</span>
+        <span class="q-title">Manage Accounts</span>
+        <span class="q-desc">View and approve accounts</span>
+      </a>
+      <a routerLink="/admin/transactions" class="quick-card glass-card">
+        <span class="material-symbols-outlined q-icon txns">sync_alt</span>
+        <span class="q-title">Transaction Ledger</span>
+        <span class="q-desc">Audit all transactions</span>
+      </a>
+      <a routerLink="/admin/loans" class="quick-card glass-card">
+        <span class="material-symbols-outlined q-icon loans">real_estate_agent</span>
+        <span class="q-title">Loan Pipeline</span>
+        <span class="q-desc">Review loan applications</span>
+      </a>
+      <a routerLink="/admin/insights" class="quick-card glass-card">
+        <span class="material-symbols-outlined q-icon insights">bar_chart</span>
+        <span class="q-title">Application Insights</span>
+        <span class="q-desc">Detailed visualizations</span>
+      </a>
+    </div>
+  </div>
+</div>

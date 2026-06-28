@@ -1,0 +1,104 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div class="header-left">
+      <span class="material-symbols-outlined page-icon txns">sync_alt</span>
+      <div>
+        <h1 class="page-title">Transaction Ledger</h1>
+        <p class="page-subtitle">Audit all transactions across the application</p>
+      </div>
+    </div>
+    <button class="refresh-btn" (click)="loadTransactions()">
+      <span class="material-symbols-outlined">refresh</span>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-grid">
+    <div class="sum-card glass-card credit">
+      <span class="material-symbols-outlined">trending_up</span>
+      <div>
+        <span class="sum-label">Total Credits</span>
+        <span class="sum-val">{{ formatCurrency(totalCredit()) }}</span>
+      </div>
+    </div>
+    <div class="sum-card glass-card debit">
+      <span class="material-symbols-outlined">trending_down</span>
+      <div>
+        <span class="sum-label">Total Debits</span>
+        <span class="sum-val">{{ formatCurrency(totalDebit()) }}</span>
+      </div>
+    </div>
+    <div class="sum-card glass-card total">
+      <span class="material-symbols-outlined">receipt_long</span>
+      <div>
+        <span class="sum-label">Total Transactions</span>
+        <span class="sum-val">{{ transactions().length }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="controls-row">
+    <div class="type-filters">
+      @for (type of ['ALL','CREDIT','DEBIT','TRANSFER']; track type) {
+        <button class="filter-btn" [class.active]="filterType() === type" (click)="setFilter(type)">{{ type }}</button>
+      }
+    </div>
+    <div class="search-box">
+      <span class="material-symbols-outlined">search</span>
+      <input type="text" placeholder="Search description or category..."
+             [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)">
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="glass-card table-card">
+    @if (isLoading()) {
+      <div class="loading-rows">
+        @for (i of [1,2,3,4,5]; track i) { <div class="shimmer-row"></div> }
+      </div>
+    } @else if (filteredTxns().length === 0) {
+      <div class="empty-state">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <p>No transactions found.</p>
+      </div>
+    } @else {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Balance After</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (txn of filteredTxns(); track txn.id) {
+              <tr>
+                <td class="id-cell">{{ txn.id }}</td>
+                <td class="desc-cell">{{ txn.description || '—' }}</td>
+                <td><span class="cat-badge">{{ txn.category }}</span></td>
+                <td>
+                  <span class="type-pill" [class.credit]="txn.type === 'CREDIT'" [class.debit]="txn.type !== 'CREDIT'">
+                    <span class="material-symbols-outlined">{{ txn.type === 'CREDIT' ? 'arrow_downward' : 'arrow_upward' }}</span>
+                    {{ txn.type }}
+                  </span>
+                </td>
+                <td class="amount-cell" [class.credit]="txn.type === 'CREDIT'" [class.debit]="txn.type !== 'CREDIT'">
+                  {{ txn.type === 'CREDIT' ? '+' : '-' }}{{ formatCurrency(txn.amount) }}
+                </td>
+                <td class="bal-cell">{{ txn.balanceAfter ? formatCurrency(txn.balanceAfter) : '—' }}</td>
+                <td class="date-cell">{{ txn.transactionDate | date:'MMM d, y, h:mm a' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
