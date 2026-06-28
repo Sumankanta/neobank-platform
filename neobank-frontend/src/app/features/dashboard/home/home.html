@@ -55,35 +55,55 @@
         <div class="kpi-card income">
           <div class="kpi-header">
             <span class="kpi-label">Total Income</span>
-            <span class="kpi-badge up"><i class="fa-solid fa-arrow-trend-up"></i> 2.3%</span>
+            @if (income() === 0) {
+              <span class="kpi-badge neutral">0%</span>
+            } @else {
+              <span class="kpi-badge up"><i class="fa-solid fa-arrow-trend-up"></i> 2.3%</span>
+            }
           </div>
           <div class="kpi-amount">{{ income() | currencyFormat }}</div>
           <div class="kpi-spark income-spark">
-            <div class="spark-bar" style="height:40%"></div>
-            <div class="spark-bar" style="height:55%"></div>
-            <div class="spark-bar" style="height:35%"></div>
-            <div class="spark-bar" style="height:70%"></div>
-            <div class="spark-bar" style="height:60%"></div>
-            <div class="spark-bar active" style="height:90%"></div>
-            <div class="spark-bar" style="height:65%"></div>
-            <div class="spark-bar" style="height:75%"></div>
+            @if (income() === 0) {
+              @for (i of [1,2,3,4,5,6,7,8]; track i) {
+                <div class="spark-bar" style="height:0%"></div>
+              }
+            } @else {
+              <div class="spark-bar" style="height:40%"></div>
+              <div class="spark-bar" style="height:55%"></div>
+              <div class="spark-bar" style="height:35%"></div>
+              <div class="spark-bar" style="height:70%"></div>
+              <div class="spark-bar" style="height:60%"></div>
+              <div class="spark-bar active" style="height:90%"></div>
+              <div class="spark-bar" style="height:65%"></div>
+              <div class="spark-bar" style="height:75%"></div>
+            }
           </div>
         </div>
         <div class="kpi-card expense">
           <div class="kpi-header">
             <span class="kpi-label">Total Spent</span>
-            <span class="kpi-badge down"><i class="fa-solid fa-arrow-trend-down"></i> 1.8%</span>
+            @if (expense() === 0) {
+              <span class="kpi-badge neutral">0%</span>
+            } @else {
+              <span class="kpi-badge down"><i class="fa-solid fa-arrow-trend-down"></i> 1.8%</span>
+            }
           </div>
           <div class="kpi-amount expense-amt">{{ expense() | currencyFormat }}</div>
           <div class="kpi-spark expense-spark">
-            <div class="spark-bar" style="height:50%"></div>
-            <div class="spark-bar" style="height:38%"></div>
-            <div class="spark-bar" style="height:62%"></div>
-            <div class="spark-bar" style="height:45%"></div>
-            <div class="spark-bar" style="height:55%"></div>
-            <div class="spark-bar active" style="height:72%"></div>
-            <div class="spark-bar" style="height:48%"></div>
-            <div class="spark-bar" style="height:58%"></div>
+            @if (expense() === 0) {
+              @for (i of [1,2,3,4,5,6,7,8]; track i) {
+                <div class="spark-bar" style="height:0%"></div>
+              }
+            } @else {
+              <div class="spark-bar" style="height:50%"></div>
+              <div class="spark-bar" style="height:38%"></div>
+              <div class="spark-bar" style="height:62%"></div>
+              <div class="spark-bar" style="height:45%"></div>
+              <div class="spark-bar" style="height:55%"></div>
+              <div class="spark-bar active" style="height:72%"></div>
+              <div class="spark-bar" style="height:48%"></div>
+              <div class="spark-bar" style="height:58%"></div>
+            }
           </div>
         </div>
         <div class="kpi-card chart-card">
