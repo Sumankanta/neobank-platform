@@ -95,13 +95,13 @@
                 </td>
                 <td class="date-cell">{{ user.createdAt | date:'MMM d, y' }}</td>
                 <td>
-                  <span class="status-pill" [class.active]="user.active" [class.inactive]="!user.active">
+                  <span class="status-pill" [class.active]="user.isActive ?? user.active" [class.inactive]="!(user.isActive ?? user.active)">
                     <span class="dot"></span>
-                    {{ user.active ? 'Active' : 'Pending' }}
+                    {{ (user.isActive ?? user.active) ? 'Active' : 'Pending' }}
                   </span>
                 </td>
                 <td>
-                  @if (!user.active) {
+                  @if (!(user.isActive ?? user.active)) {
                     <button class="action-btn approve" (click)="toggleStatus(user)" title="Approve user">
                       <span class="material-symbols-outlined">check_circle</span>
                       Approve

@@ -2,8 +2,8 @@
   <!-- Header -->
   <div class="dashboard-header flex-between mb-4">
     <div>
-      <h1>Loans & Credit</h1>
-      <p class="text-secondary">Manage your active loans and discover new financing options.</p>
+      <h1 class="page-title">Loans & Financing</h1>
+      <p class="text-secondary">Track your active applications, manage existing credit lines, and explore tailored loan products.</p>
     </div>
   </div>
 
@@ -48,8 +48,49 @@
     </div>
 
     <div class="loans-content-grid">
-      <!-- Active Loans Section -->
+      <!-- Active & Pending Loans Column -->
       <div class="active-loans-col">
+        
+        <!-- Pending Applications Section -->
+        @if (applications().length > 0) {
+          <div class="section-header mb-3">
+            <h2>Applications & Decisions</h2>
+          </div>
+          <div class="pending-applications-list mb-4">
+            @for (app of applications(); track app.id) {
+              <div class="glass-card pending-loan-card">
+                <div class="loan-card-top">
+                  <div class="lc-info">
+                    <h3>{{ app.loanProduct.productName || app.productName }}</h3>
+                    <span class="text-xs text-muted">Applied On: {{ app.appliedAt | date:'MMM d, y' }}</span>
+                  </div>
+                  <span class="status-badge" [ngClass]="getStatusClass(app.status)">
+                    <span class="dot"></span>
+                    {{ app.status }}
+                  </span>
+                </div>
+                <div class="loan-card-mid mt-3">
+                  <div class="lc-balance">
+                    <span class="text-xs text-muted uppercase">Requested Amount</span>
+                    <div class="font-bold text-xl mt-1 text-primary">{{ app.requestedAmount | currencyFormat }}</div>
+                  </div>
+                  <div class="lc-tenure">
+                    <span class="text-xs text-muted uppercase">Tenure</span>
+                    <div class="font-bold text-md mt-1">{{ app.tenureMonths }} Months</div>
+                  </div>
+                </div>
+                @if (app.adminRemarks) {
+                  <div class="remarks-box mt-3">
+                    <span class="text-xs font-bold text-muted"><i class="fa-solid fa-circle-info mr-1"></i> Admin Note:</span>
+                    <p class="text-sm text-secondary m-0 mt-1">{{ app.adminRemarks }}</p>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Active Loans Section -->
         <div class="section-header mb-3">
           <h2>Active Loans</h2>
         </div>
@@ -60,14 +101,17 @@
               <div class="loan-card-top">
                 <div class="lc-info">
                   <h3>{{ loan.loanProduct.productName }}</h3>
-                  <span class="text-xs text-muted">ID: {{ loan.id.toString().padStart(6, '0') }}</span>
+                  <span class="text-xs text-muted">Account: #{{ loan.id.toString().padStart(6, '0') }}</span>
                 </div>
-                <span class="status-badge" [ngClass]="getStatusClass(loan.status)">{{ loan.status }}</span>
+                <span class="status-badge badge-success">
+                  <span class="dot"></span>
+                  Active
+                </span>
               </div>
               
               <div class="loan-card-mid mt-4">
                 <div class="lc-balance">
-                  <span class="text-xs text-muted uppercase">Remaining</span>
+                  <span class="text-xs text-muted uppercase">Remaining Balance</span>
                   <div class="font-bold text-2xl mt-1">{{ loan.remainingBalance | currencyFormat }}</div>
                 </div>
                 
@@ -84,7 +128,7 @@
 
               <div class="loan-card-bottom mt-4">
                 <div class="lc-meta">
-                  <span class="text-xs text-muted">EMI</span>
+                  <span class="text-xs text-muted">Monthly EMI</span>
                   <span class="font-bold">{{ loan.monthlyEmi | currencyFormat }}</span>
                 </div>
                 <div class="lc-meta">
@@ -93,7 +137,7 @@
                 </div>
                 <div class="lc-meta">
                   <span class="text-xs text-muted">Rate</span>
-                  <span class="font-bold">{{ loan.loanProduct.interestRate }}%</span>
+                  <span class="font-bold">{{ loan.loanProduct.interestRate || loan.interestRate }}%</span>
                 </div>
               </div>
             </div>
@@ -101,13 +145,13 @@
             <div class="glass-card empty-state text-center p-5">
               <i class="fa-solid fa-folder-open text-3xl text-muted mb-3"></i>
               <h3>No active loans</h3>
-              <p class="text-secondary text-sm">Explore our loan products to get started.</p>
+              <p class="text-secondary text-sm">Explore our loan products below to apply for financing.</p>
             </div>
           }
         </div>
       </div>
 
-      <!-- Loan Products -->
+      <!-- Loan Products Column -->
       <div class="products-col">
         <div class="section-header mb-3">
           <h2>Available Products</h2>

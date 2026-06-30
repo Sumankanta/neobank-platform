@@ -1,137 +1,265 @@
 <div class="admin-page">
-  <div class="page-header">
+  <div class="page-header animate-fade-in">
     <div class="header-left">
       <span class="material-symbols-outlined page-icon loans">real_estate_agent</span>
       <div>
-        <h1 class="page-title">Loan Management</h1>
-        <p class="page-subtitle">Review, approve, and reject loan applications</p>
+        <h1 class="page-title">Loan Underwriting</h1>
+        <p class="page-subtitle">Evaluate, audit, and decision pending consumer credit applications</p>
       </div>
     </div>
     <button class="refresh-btn" (click)="loadApplications()">
       <span class="material-symbols-outlined">refresh</span>
-      Refresh
+      Refresh Ledger
     </button>
   </div>
 
   <!-- KPIs -->
-  <div class="kpi-row">
+  <div class="kpi-row animate-fade-in" style="animation-delay: 0.1s;">
     <div class="kpi-mini glass-card">
-      <span class="material-symbols-outlined kpi-ico pending-ico">hourglass_top</span>
+      <span class="material-symbols-outlined kpi-ico pending-ico">pending_actions</span>
       <div>
-        <span class="kpi-label">Pending Review</span>
+        <span class="kpi-label">Under Review</span>
         <span class="kpi-num pending">{{ totalPending() }}</span>
       </div>
     </div>
     <div class="kpi-mini glass-card">
       <span class="material-symbols-outlined kpi-ico approved-ico">check_circle</span>
       <div>
-        <span class="kpi-label">Approved Loans</span>
+        <span class="kpi-label">Approved Assets</span>
         <span class="kpi-num approved">{{ totalActive() }}</span>
       </div>
     </div>
     <div class="kpi-mini glass-card">
-      <span class="material-symbols-outlined kpi-ico total-ico">payments</span>
+      <span class="material-symbols-outlined kpi-ico total-ico">account_balance_wallet</span>
       <div>
-        <span class="kpi-label">Total Applied Amount</span>
+        <span class="kpi-label">Total Applied Value</span>
         <span class="kpi-num">{{ formatCurrency(totalAmount()) }}</span>
       </div>
     </div>
   </div>
 
-  <!-- Filter -->
-  <div class="controls-row">
+  <!-- Controls & Filters -->
+  <div class="controls-row animate-fade-in" style="animation-delay: 0.15s;">
     <div class="type-filters">
       @for (s of ['ALL','PENDING','APPROVED','REJECTED']; track s) {
-        <button class="filter-btn" [class.active]="filterStatus() === s" (click)="setFilter(s)">{{ s }}</button>
+        <button class="filter-btn" [class.active]="filterStatus() === s" (click)="setFilter(s)">
+          {{ s }}
+        </button>
       }
     </div>
   </div>
 
-  <!-- Cards Grid -->
+  <!-- Applications Cards Grid -->
   @if (isLoading()) {
     <div class="loading-rows">
       @for (i of [1,2,3]; track i) { <div class="shimmer-card"></div> }
     </div>
   } @else if (filtered().length === 0) {
-    <div class="empty-state glass-card">
-      <span class="material-symbols-outlined">real_estate_agent</span>
-      <p>No loan applications found.</p>
+    <div class="empty-state glass-card animate-fade-in">
+      <span class="material-symbols-outlined">rule_folder</span>
+      <h3>Clean Queue</h3>
+      <p>No loan applications fit the active filter criteria.</p>
     </div>
   } @else {
-    <div class="apps-grid">
+    <div class="apps-grid animate-fade-in" style="animation-delay: 0.2s;">
       @for (app of filtered(); track app.id) {
-        <div class="app-card glass-card">
+        <div class="app-card glass-card" [class.pending-border]="app.status === 'PENDING'">
           <div class="app-header">
             <div class="app-id">
-              <span class="material-symbols-outlined">receipt</span>
-              App #{{ app.id }}
+              <span class="material-symbols-outlined">receipt_long</span>
+              Ref #{{ app.id }}
             </div>
             <span class="status-pill" [ngClass]="app.status?.toLowerCase()">{{ app.status }}</span>
           </div>
+
           <div class="app-body">
-            <div class="info-row">
-              <span class="info-label">Applicant</span>
-              <span class="info-val">{{ app.userFullName || app.userId || 'N/A' }}</span>
+            <!-- User Info Group -->
+            <div class="applicant-info">
+              <div class="avatar-circle">
+                {{ getInitials(app.userFullName) }}
+              </div>
+              <div class="name-details">
+                <span class="applicant-name">{{ app.userFullName || 'N/A' }}</span>
+                <span class="applicant-sub">UID: {{ app.userId }}</span>
+              </div>
             </div>
-            <div class="info-row">
-              <span class="info-label">Amount</span>
-              <span class="info-val amount">{{ formatCurrency(app.amount) }}</span>
+
+            <hr class="card-divider" />
+
+            <!-- Core Loan Specs -->
+            <div class="spec-matrix">
+              <div class="spec-cell">
+                <span class="cell-lbl">Loan Amount</span>
+                <span class="cell-val amount">{{ formatCurrency(app.requestedAmount) }}</span>
+              </div>
+              <div class="spec-cell">
+                <span class="cell-lbl">Term (Months)</span>
+                <span class="cell-val">{{ app.tenureMonths }} mos</span>
+              </div>
             </div>
+
             <div class="info-row">
-              <span class="info-label">Tenure</span>
-              <span class="info-val">{{ app.tenureMonths }} months</span>
+              <span class="info-label">Product Class</span>
+              <span class="info-val highlight">{{ app.productName || 'Standard Loan' }}</span>
             </div>
+
             <div class="info-row">
-              <span class="info-label">Applied On</span>
+              <span class="info-label">Submission Date</span>
               <span class="info-val">{{ app.appliedAt | date:'MMM d, y' }}</span>
             </div>
+
+            @if (app.purpose) {
+              <div class="info-row purpose-row">
+                <span class="info-label">Declared Purpose</span>
+                <span class="info-val purpose-text">"{{ app.purpose }}"</span>
+              </div>
+            }
+
             @if (app.adminRemarks) {
-              <div class="remarks-row">
-                <span class="material-symbols-outlined">sticky_note_2</span>
-                <span>{{ app.adminRemarks }}</span>
+              <div class="remarks-display">
+                <span class="material-symbols-outlined">info</span>
+                <p class="remarks-text"><strong>Review Notes:</strong> {{ app.adminRemarks }}</p>
               </div>
             }
           </div>
-          @if (app.status === 'PENDING') {
-            <div class="app-actions">
-              <button class="action-btn approve" (click)="openRemarksModal(app.id)">
-                <span class="material-symbols-outlined">how_to_reg</span>
-                Review
+
+          <div class="app-actions">
+            @if (app.status === 'PENDING') {
+              <button class="action-btn approve w-full" (click)="openModal(app)">
+                <span class="material-symbols-outlined">rate_review</span>
+                Review & Underwrite
               </button>
-            </div>
-          }
+            } @else {
+              <button class="action-btn secondary w-full" (click)="openModal(app)">
+                <span class="material-symbols-outlined">visibility</span>
+                View Audit Details
+              </button>
+            }
+          </div>
         </div>
       }
     </div>
   }
 </div>
 
-<!-- Remarks Modal -->
-@if (remarksModal()?.visible) {
+<!-- Dynamic Loan Decision & Audit Modal -->
+@if (selectedApp()) {
   <div class="modal-overlay" (click)="closeModal()">
     <div class="modal glass-card" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h3>Review Application #{{ remarksModal()!.id }}</h3>
+        <div class="modal-title-group">
+          <h3>Loan Underwriting Audit</h3>
+          <span class="sub-desc">App Ref: #{{ selectedApp().id }}</span>
+        </div>
         <button class="close-btn" (click)="closeModal()">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
+
       <div class="modal-body">
-        <label class="field-label">Admin Remarks (optional)</label>
-        <textarea class="remarks-input"
-                  placeholder="Enter decision reason or notes..."
-                  [(ngModel)]="remarksModal()!.remarks"
-                  rows="4"></textarea>
+        <!-- Applicant Profile Card inside Modal -->
+        <div class="modal-sec-card">
+          <h4 class="sec-title">Applicant Profile</h4>
+          <div class="profile-summary">
+            <div class="avatar-circle large">
+              {{ getInitials(selectedApp().userFullName) }}
+            </div>
+            <div class="profile-details">
+              <h5>{{ selectedApp().userFullName || 'N/A' }}</h5>
+              <p>{{ selectedApp().userEmail || 'No email provided' }}</p>
+              <div class="badge-row">
+                <span class="status-pill kyc-pill">Verified Account</span>
+                <span class="status-pill status-pill-id">User ID: {{ selectedApp().userId }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Financial Breakdown Card inside Modal -->
+        <div class="modal-sec-card">
+          <h4 class="sec-title">Loan Parameters & Cost Breakdown</h4>
+          <div class="financial-breakdown">
+            <div class="fin-item">
+              <span class="fin-label">Requested Principal</span>
+              <span class="fin-val font-bold text-lg text-primary">{{ formatCurrency(selectedApp().requestedAmount) }}</span>
+            </div>
+            <div class="fin-item">
+              <span class="fin-label">Specified Tenure</span>
+              <span class="fin-val">{{ selectedApp().tenureMonths }} Months</span>
+            </div>
+            <div class="fin-item">
+              <span class="fin-label">Loan Product Type</span>
+              <span class="fin-val highlight">{{ selectedApp().productName || 'Standard Loan' }}</span>
+            </div>
+            <div class="fin-item">
+              <span class="fin-label">Annual Interest Rate</span>
+              <span class="fin-val text-success">
+                {{ selectedApp().loanProduct?.annualInterestRate || selectedApp().loanProduct?.interestRate || 12 }}% p.a.
+              </span>
+            </div>
+            <hr class="fin-divider" />
+            <div class="fin-item highlight-item">
+              <span class="fin-label text-warning font-semibold">Estimated Installment (EMI)</span>
+              <span class="fin-val text-warning font-bold text-xl">
+                {{ formatCurrency(calculateEmi(selectedApp().requestedAmount, selectedApp().loanProduct?.annualInterestRate || 12, selectedApp().tenureMonths)) }} <span class="per-mo">/mo</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        @if (selectedApp().purpose) {
+          <div class="modal-sec-card">
+            <h4 class="sec-title">Purpose of Funds</h4>
+            <div class="purpose-quote">
+              <span class="material-symbols-outlined quote-icon">format_quote</span>
+              <p>{{ selectedApp().purpose }}</p>
+            </div>
+          </div>
+        }
+
+        <!-- Decision Area -->
+        <div class="modal-sec-card decision-area">
+          <h4 class="sec-title">Auditor Audit Remarks</h4>
+          @if (selectedApp().status === 'PENDING') {
+            <textarea class="remarks-input"
+                      placeholder="Add comments on why this loan application is approved or rejected..."
+                      [(ngModel)]="remarks"
+                      [disabled]="isProcessing()"
+                      rows="3"></textarea>
+          } @else {
+            <div class="audit-history">
+              <div class="audit-status" [ngClass]="selectedApp().status?.toLowerCase()">
+                <span class="material-symbols-outlined">
+                  {{ selectedApp().status === 'APPROVED' ? 'check_circle' : 'cancel' }}
+                </span>
+                <span>Decision: {{ selectedApp().status }}</span>
+              </div>
+              <p class="history-remarks-label">Reviewer Notes:</p>
+              <div class="history-remarks-box">
+                {{ selectedApp().adminRemarks || 'No remarks provided during review.' }}
+              </div>
+            </div>
+          }
+        </div>
       </div>
+
       <div class="modal-footer">
-        <button class="action-btn reject" (click)="processApplication('REJECTED')">
-          <span class="material-symbols-outlined">cancel</span>
-          Reject
+        <button class="action-btn secondary" (click)="closeModal()" [disabled]="isProcessing()">
+          Close
         </button>
-        <button class="action-btn approve" (click)="processApplication('APPROVED')">
-          <span class="material-symbols-outlined">check_circle</span>
-          Approve
-        </button>
+        
+        @if (selectedApp().status === 'PENDING') {
+          <div class="decision-buttons">
+            <button class="action-btn reject" (click)="processApplication('REJECTED')" [disabled]="isProcessing()">
+              <span class="material-symbols-outlined">cancel</span>
+              {{ isProcessing() ? 'Processing...' : 'Reject Application' }}
+            </button>
+            <button class="action-btn approve" (click)="processApplication('APPROVED')" [disabled]="isProcessing()">
+              <span class="material-symbols-outlined">verified</span>
+              {{ isProcessing() ? 'Processing...' : 'Approve Application' }}
+            </button>
+          </div>
+        }
       </div>
     </div>
   </div>

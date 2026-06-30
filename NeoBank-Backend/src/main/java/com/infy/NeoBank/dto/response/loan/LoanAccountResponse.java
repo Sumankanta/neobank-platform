@@ -8,10 +8,13 @@ import java.time.LocalDate;
 public class LoanAccountResponse {
     private Long id;
     private Long userId;
-    private Long loanProductId;
-    private String productName;
+    private LoanProductResponse loanProduct;
     private BigDecimal principalAmount;
     private BigDecimal remainingBalance;
     private LocalDate startDate;
     private LocalDate endDate;
+    private BigDecimal monthlyEmi;
+    private String status;
+    private Integer tenureMonths;
+    private BigDecimal interestRate;
 }

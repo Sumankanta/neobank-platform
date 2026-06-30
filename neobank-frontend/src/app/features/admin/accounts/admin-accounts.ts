@@ -41,7 +41,7 @@ export class AdminAccounts implements OnInit {
     this.adminService.getAllUsers().subscribe({
       next: (users) => {
         this.allUsers.set(users);
-        this.pendingUsers.set(users.filter((u: any) => !u.active));
+        this.pendingUsers.set(users.filter((u: any) => !(u.isActive ?? u.active)));
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false),
@@ -52,8 +52,8 @@ export class AdminAccounts implements OnInit {
     this.adminService.toggleUserStatus(user.id).subscribe({
       next: (updated) => {
         this.allUsers.update(list => list.map(u => u.id === updated.id ? updated : u));
-        this.pendingUsers.set(this.allUsers().filter((u: any) => !u.active));
-        this.toastService.success(`User ${updated.active ? 'activated' : 'deactivated'} successfully`);
+        this.pendingUsers.set(this.allUsers().filter((u: any) => !(u.isActive ?? u.active)));
+        this.toastService.success(`User ${(updated.isActive ?? updated.active) ? 'activated' : 'deactivated'} successfully`);
       },
       error: () => this.toastService.error('Failed to update user status'),
     });

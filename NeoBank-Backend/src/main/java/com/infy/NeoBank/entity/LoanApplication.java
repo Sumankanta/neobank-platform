@@ -26,6 +26,12 @@ public class LoanApplication {
     @Column(name = "requested_amount", nullable = false)
     private BigDecimal requestedAmount;
 
+    @Column(name = "tenure_months", nullable = false)
+    private Integer tenureMonths = 12;
+
+    @Column(name = "purpose")
+    private String purpose;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private LoanStatus status = LoanStatus.PENDING;

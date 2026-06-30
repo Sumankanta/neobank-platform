@@ -2,23 +2,25 @@ export interface LoanProduct {
   id: number;
   productName: string;
   description: string;
-  interestRate: number;
+  annualInterestRate: number;   // field name from backend LoanProductResponse
+  interestRate?: number;        // optional alias kept for backward compat
   referenceAmount: number;
   minAmount: number;
   maxAmount: number;
   minTenureMonths: number;
   maxTenureMonths: number;
-  isActive: boolean;
+  isActive?: boolean;
 }
 
 export interface LoanApplication {
   id: number;
   userId: number;
   loanProduct: LoanProduct;
-  amountRequested: number;
+  productName?: string;
+  requestedAmount: number;
   tenureMonths: number;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
-  rejectionReason?: string;
+  adminRemarks?: string;
   appliedAt: string;
 }
 

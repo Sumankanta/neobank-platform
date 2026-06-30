@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user",
@@ -99,6 +101,12 @@ public class AuthController {
         AuthResponse response = authService.verifyOtp(request);
         log.info("OTP verified successfully. User logged in: {}", response.getEmail());
         return ResponseEntity.ok(response);
+    }
+
+    // TEMPORARY - remove after getting the hash
+    @GetMapping("/generate-hash")
+    public ResponseEntity<String> generateHash(@RequestParam String password) {
+        return ResponseEntity.ok(passwordEncoder.encode(password));
     }
 }
 

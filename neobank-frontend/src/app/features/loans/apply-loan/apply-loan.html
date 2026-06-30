@@ -67,7 +67,7 @@
 
               <div class="form-group">
                 <label class="form-label">PAN Number</label>
-                <input type="text" formControlName="panNumber" class="modern-input uppercase-input" placeholder="ABCDE1234F" maxlength="10">
+                <input type="text" formControlName="panNumber" (input)="onPanInput($event)" class="modern-input uppercase-input" placeholder="ABCDE1234F" maxlength="10">
                 <div class="error-text" *ngIf="personalForm.get('panNumber')?.invalid && personalForm.get('panNumber')?.touched">
                   Please enter a valid 10-character PAN.
                 </div>
@@ -144,7 +144,7 @@
               </div>
               <div class="review-item">
                 <span class="review-label">Interest Rate</span>
-                <span class="review-value text-success">{{ product()?.interestRate }}% p.a. Fixed</span>
+                <span class="review-value text-success">{{ product()?.annualInterestRate || product()?.interestRate }}% p.a. Fixed</span>
               </div>
               <div class="review-item">
                 <span class="review-label">Estimated EMI</span>

@@ -8,9 +8,14 @@ import java.time.LocalDateTime;
 public class LoanApplicationResponse {
     private Long id;
     private Long userId;
+    private String userFullName;
+    private String userEmail;
     private Long loanProductId;
     private String productName;
+    private LoanProductResponse loanProduct;
     private BigDecimal requestedAmount;
+    private Integer tenureMonths;
+    private String purpose;
     private String status;
     private String adminRemarks;
     private LocalDateTime appliedAt;

@@ -18,50 +18,103 @@ export class AdminLoans implements OnInit {
   applications = signal<any[]>([]);
   isLoading = signal(true);
   filterStatus = signal<string>('ALL');
-  remarksModal = signal<{ id: number; visible: boolean; remarks: string } | null>(null);
+  selectedApp = signal<any | null>(null);   // full app shown in modal
+  remarks = signal<string>('');
+  isProcessing = signal(false);
 
   filtered = computed(() => {
+    const apps = this.applications();
+    if (!Array.isArray(apps)) return [];
     const status = this.filterStatus();
-    if (status === 'ALL') return this.applications();
-    return this.applications().filter(a => a.status === status);
+    if (status === 'ALL') return apps;
+    return apps.filter(a => a && a.status === status);
   });
 
-  totalActive = computed(() => this.applications().filter(a => a.status === 'APPROVED').length);
-  totalPending = computed(() => this.applications().filter(a => a.status === 'PENDING').length);
-  totalAmount = computed(() => this.applications().reduce((s, a) => s + (a.amount || 0), 0));
+  totalActive  = computed(() => {
+    const apps = this.applications();
+    if (!Array.isArray(apps)) return 0;
+    return apps.filter(a => a && a.status === 'APPROVED').length;
+  });
+
+  totalPending = computed(() => {
+    const apps = this.applications();
+    if (!Array.isArray(apps)) return 0;
+    return apps.filter(a => a && a.status === 'PENDING').length;
+  });
+
+  totalAmount  = computed(() => {
+    const apps = this.applications();
+    if (!Array.isArray(apps)) return 0;
+    return apps.reduce((s, a) => s + (a ? (Number(a.requestedAmount) || 0) : 0), 0);
+  });
 
   ngOnInit(): void { this.loadApplications(); }
 
   loadApplications(): void {
     this.isLoading.set(true);
     this.adminService.getAllLoanApplications().subscribe({
-      next: (apps) => { this.applications.set(apps); this.isLoading.set(false); },
-      error: () => this.isLoading.set(false),
+      next: (apps) => {
+        this.applications.set(Array.isArray(apps) ? apps : []);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load loan applications:', err);
+        this.toastService.error('Failed to load applications ledger');
+        this.applications.set([]);
+        this.isLoading.set(false);
+      },
     });
   }
 
-  openRemarksModal(id: number): void {
-    this.remarksModal.set({ id, visible: true, remarks: '' });
+  openModal(app: any): void {
+    this.selectedApp.set(app);
+    this.remarks.set(app.adminRemarks || '');
   }
 
-  closeModal(): void { this.remarksModal.set(null); }
+  closeModal(): void {
+    this.selectedApp.set(null);
+    this.remarks.set('');
+  }
 
   processApplication(status: 'APPROVED' | 'REJECTED'): void {
-    const m = this.remarksModal();
-    if (!m) return;
-    this.adminService.processLoanApplication(m.id, { status, reason: m.remarks }).subscribe({
+    const app = this.selectedApp();
+    if (!app) return;
+    this.isProcessing.set(true);
+    this.adminService.processLoanApplication(app.id, { status, reason: this.remarks() }).subscribe({
       next: (updated) => {
-        this.applications.update(apps => apps.map(a => a.id === updated.id ? updated : a));
-        this.toastService.success(`Application ${status === 'APPROVED' ? 'approved' : 'rejected'}`);
+        this.applications.update(apps => {
+          if (!Array.isArray(apps)) return [];
+          return apps.map(a => a && a.id === updated.id ? updated : a);
+        });
+        this.toastService.success(`Application ${status === 'APPROVED' ? 'approved ✓' : 'rejected ✗'}`);
         this.closeModal();
+        this.isProcessing.set(false);
       },
-      error: () => this.toastService.error('Failed to process application'),
+      error: (err) => {
+        console.error('Failed to process loan application:', err);
+        this.toastService.error('Failed to process application');
+        this.isProcessing.set(false);
+      },
     });
   }
 
   setFilter(status: string): void { this.filterStatus.set(status); }
 
+  calculateEmi(amount: number, annualRate: number, tenureMonths: number): number {
+    if (!amount || !tenureMonths) return 0;
+    const r = annualRate / 12 / 100;
+    if (r === 0) return amount / tenureMonths;
+    const emi = (amount * r * Math.pow(1 + r, tenureMonths)) / (Math.pow(1 + r, tenureMonths) - 1);
+    return Math.round(emi);
+  }
+
   formatCurrency(v: number): string {
+    if (isNaN(v) || v == null) return '₹0';
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(v);
+  }
+
+  getInitials(name: string): string {
+    if (!name) return '?';
+    return name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
   }
 }

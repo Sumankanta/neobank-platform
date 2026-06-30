@@ -34,7 +34,7 @@ export class ApplyLoan implements OnInit {
     this.personalForm = this.fb.group({
       employmentType: ['SALARIED', Validators.required],
       monthlyIncome: ['', [Validators.required, Validators.min(1000)]],
-      panNumber: ['', [Validators.required, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)]]
+      panNumber: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}$/)]]
     });
 
     this.loanForm = this.fb.group({
@@ -42,6 +42,18 @@ export class ApplyLoan implements OnInit {
       tenureMonths: ['', [Validators.required, Validators.min(6)]],
       purpose: ['', [Validators.required, Validators.minLength(10)]]
     });
+  }
+
+  onPanInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const upperValue = input.value.toUpperCase();
+    this.personalForm.get('panNumber')?.setValue(upperValue, { emitEvent: false });
+    input.value = upperValue;
+    if (start !== null && end !== null) {
+      input.setSelectionRange(start, end);
+    }
   }
 
   ngOnInit() {
@@ -110,10 +122,12 @@ export class ApplyLoan implements OnInit {
   }
 
   calculateEMI(): number {
-    const p = this.loanForm.value.amount;
-    const r = (this.product()?.interestRate || 0) / 12 / 100;
-    const n = this.loanForm.value.tenureMonths;
-    if (p && r && n) {
+    const p = Number(this.loanForm.value.amount);
+    const annualRate = this.product()?.annualInterestRate || this.product()?.interestRate || 0;
+    const r = annualRate / 12 / 100;
+    const n = Number(this.loanForm.value.tenureMonths);
+    if (p > 0 && n > 0) {
+      if (r === 0) return p / n;
       return (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
     }
     return 0;

@@ -19,8 +19,8 @@ export class AdminInsights implements OnInit {
 
   // Computed stats
   totalUsers = computed(() => this.users().length);
-  activeUsers = computed(() => this.users().filter(u => u.active).length);
-  pendingKyc = computed(() => this.users().filter(u => !u.active).length);
+  activeUsers = computed(() => this.users().filter(u => u.isActive ?? u.active).length);
+  pendingKyc = computed(() => this.users().filter(u => !(u.isActive ?? u.active)).length);
 
   creditTxns = computed(() => this.transactions().filter(t => t.type === 'CREDIT'));
   debitTxns = computed(() => this.transactions().filter(t => t.type === 'DEBIT'));
@@ -30,7 +30,7 @@ export class AdminInsights implements OnInit {
   approvedLoans = computed(() => this.loans().filter(l => l.status === 'APPROVED'));
   pendingLoans = computed(() => this.loans().filter(l => l.status === 'PENDING'));
   rejectedLoans = computed(() => this.loans().filter(l => l.status === 'REJECTED'));
-  totalLoanAmount = computed(() => this.approvedLoans().reduce((s, l) => s + (l.amount || 0), 0));
+  totalLoanAmount = computed(() => this.approvedLoans().reduce((s, l) => s + (l.requestedAmount || l.amount || 0), 0));
 
   // Category breakdown
   categoryBreakdown = computed(() => {
