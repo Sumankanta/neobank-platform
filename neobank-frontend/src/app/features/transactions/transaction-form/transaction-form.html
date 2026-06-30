@@ -1,132 +1,301 @@
-<div class="form-container animate-fade-in pb-10">
-  <!-- Header Section -->
-  <div class="flex-between mb-8 header-section">
-    <div>
-      <h1 class="page-title text-primary">New Transaction</h1>
-      <p class="text-secondary">Process a debit or credit against your accounts</p>
+<div class="tf-page">
+
+  <!-- Floating background orbs -->
+  <div class="tf-orb tf-orb-1"></div>
+  <div class="tf-orb tf-orb-2"></div>
+  <div class="tf-orb tf-orb-3"></div>
+
+  <!-- Back button -->
+  <a routerLink="/dashboard" class="tf-back-btn">
+    <span class="material-symbols-outlined">arrow_back</span>
+    <span>Dashboard</span>
+  </a>
+
+  <!-- Hero -->
+  <div class="tf-hero animate-fade-in">
+    <div class="tf-hero-icon">
+      <span class="material-symbols-outlined">currency_exchange</span>
     </div>
-    <a routerLink="/dashboard" class="btn btn-secondary outline-btn cancel-btn">
-      <i class="fa-solid fa-arrow-left mr-2"></i> Cancel
-    </a>
+    <div>
+      <h1 class="tf-title">Transfer Funds</h1>
+      <p class="tf-subtitle">Process a secure debit or credit transaction instantly</p>
+    </div>
   </div>
 
-  <div class="card glass-card transaction-card p-0 shadow-xl border border-outline-variant rounded-xl overflow-hidden">
-    <!-- Card Top Decorator -->
-    <div class="card-decorator"></div>
+  @if (isLoading()) {
+    <div class="tf-loading animate-fade-in">
+      <div class="tf-spinner"></div>
+      <p>Initializing secure ledger...</p>
+    </div>
+  } @else {
+    <div class="tf-layout animate-slide-up">
 
-    <div class="p-8 relative z-10">
-      @if (isLoading()) {
-        <div class="flex-center flex-col py-16">
-          <mat-spinner diameter="48" color="primary"></mat-spinner>
-          <p class="text-secondary mt-4">Loading form data...</p>
-        </div>
-      } @else {
-        <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()" class="transaction-form">
+      <!-- LEFT: Form -->
+      <div class="tf-form-col">
 
-          <div class="form-grid">
-            <!-- Account Selection -->
-            <div class="form-group w-full">
-              <label class="form-label">Source / Destination Account</label>
-              <div class="input-wrapper">
-                <i class="fa-solid fa-wallet input-icon"></i>
-                <select class="custom-input custom-select pl-10" formControlName="accountId" [class.input-error]="transactionForm.get('accountId')?.touched && transactionForm.get('accountId')?.invalid">
-                  <option value="" disabled selected>Select an account</option>
-                  @for (account of accounts(); track account.id) {
-                    <option [value]="account.id">
-                      {{ account.accountType }} • {{ account.accountNumber }} ({{ account.balance | currency:'USD' }})
-                    </option>
-                  }
-                </select>
-                <i class="fa-solid fa-chevron-down select-caret"></i>
-              </div>
-              @if (transactionForm.get('accountId')?.touched && transactionForm.get('accountId')?.invalid) {
-                <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Please select an account.</span>
-              }
-            </div>
-
-            <!-- Transaction Type -->
-            <div class="form-group w-full">
-              <label class="form-label">Transaction Type</label>
-              <div class="type-selector-grid">
-                <label class="type-option" [class.selected]="transactionForm.get('type')?.value === 'DEBIT'">
-                  <input type="radio" formControlName="type" value="DEBIT" class="hidden-radio">
-                  <div class="type-content">
-                    <div class="type-icon-box debit-icon">
-                      <i class="fa-solid fa-arrow-up"></i>
-                    </div>
-                    <div class="type-text">
-                      <span class="type-title">Debit</span>
-                      <span class="type-desc">Withdraw / Send</span>
-                    </div>
-                  </div>
-                </label>
-                <label class="type-option" [class.selected]="transactionForm.get('type')?.value === 'CREDIT'">
-                  <input type="radio" formControlName="type" value="CREDIT" class="hidden-radio">
-                  <div class="type-content">
-                    <div class="type-icon-box credit-icon">
-                      <i class="fa-solid fa-arrow-down"></i>
-                    </div>
-                    <div class="type-text">
-                      <span class="type-title">Credit</span>
-                      <span class="type-desc">Deposit / Receive</span>
-                    </div>
-                  </div>
-                </label>
-              </div>
-              @if (transactionForm.get('type')?.touched && transactionForm.get('type')?.invalid) {
-                <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Type is required.</span>
-              }
-            </div>
+        <!-- STEP 1: Account -->
+        <div class="tf-glass-card tf-step-card">
+          <div class="tf-step-header">
+            <div class="tf-step-num">1</div>
+            <span class="material-symbols-outlined tf-step-icon">account_balance_wallet</span>
+            <h3 class="tf-step-title">Select Source Account</h3>
           </div>
 
-          <div class="form-grid">
+          @if (accounts().length === 0) {
+            <div class="tf-empty">
+              <span class="material-symbols-outlined">account_balance</span>
+              <p>No active accounts found. Please create an account first.</p>
+            </div>
+          } @else {
+            <div class="tf-accounts-grid">
+              @for (account of accounts(); track account.id) {
+                <div class="tf-account-card"
+                     [class.tf-account-card--selected]="transactionForm.value.accountId === account.id"
+                     (click)="selectAccount(account.id)">
+
+                  <!-- Card shimmer -->
+                  <div class="tf-card-shimmer"></div>
+
+                  <div class="tf-card-top">
+                    <div class="tf-card-chip">
+                      <div class="tf-chip-inner"></div>
+                    </div>
+                    <span class="tf-card-type">{{ account.accountType }}</span>
+                  </div>
+
+                  <div class="tf-card-number">
+                    {{ formatCardNumber(account.accountNumber) }}
+                  </div>
+
+                  <div class="tf-card-bottom">
+                    <div class="tf-card-balance">
+                      <span class="tf-bal-label">AVAILABLE</span>
+                      <span class="tf-bal-value">{{ account.balance | currencyFormat }}</span>
+                    </div>
+                    <div class="tf-check-icon" [class.tf-check-icon--visible]="transactionForm.value.accountId === account.id">
+                      <span class="material-symbols-outlined">check_circle</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <input type="hidden" formControlName="accountId" [formGroup]="transactionForm">
+          @if (transactionForm.get('accountId')?.touched && transactionForm.get('accountId')?.invalid) {
+            <span class="tf-error"><span class="material-symbols-outlined">error</span> Please select a source account.</span>
+          }
+        </div>
+
+        <!-- STEP 2: Transaction Details -->
+        <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
+          <div class="tf-glass-card tf-step-card">
+            <div class="tf-step-header">
+              <div class="tf-step-num">2</div>
+              <span class="material-symbols-outlined tf-step-icon">payments</span>
+              <h3 class="tf-step-title">Transaction Details</h3>
+            </div>
+
+            <!-- Type Toggle -->
+            <div class="tf-field-group">
+              <label class="tf-label">Transaction Type</label>
+              <div class="tf-type-toggle">
+                <label class="tf-type-option tf-type-debit"
+                       [class.tf-type-option--active]="transactionForm.value.type === 'DEBIT'">
+                  <input type="radio" formControlName="type" value="DEBIT" class="tf-radio-hidden">
+                  <div class="tf-type-icon">
+                    <span class="material-symbols-outlined">north_east</span>
+                  </div>
+                  <div class="tf-type-text">
+                    <span class="tf-type-name">Debit</span>
+                    <span class="tf-type-sub">Withdraw / Pay</span>
+                  </div>
+                </label>
+
+                <label class="tf-type-option tf-type-credit"
+                       [class.tf-type-option--active]="transactionForm.value.type === 'CREDIT'">
+                  <input type="radio" formControlName="type" value="CREDIT" class="tf-radio-hidden">
+                  <div class="tf-type-icon">
+                    <span class="material-symbols-outlined">south_west</span>
+                  </div>
+                  <div class="tf-type-text">
+                    <span class="tf-type-name">Credit</span>
+                    <span class="tf-type-sub">Deposit / Add</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
             <!-- Amount -->
-            <div class="form-group w-full">
-              <label class="form-label">Transaction Amount</label>
-              <div class="input-wrapper amount-wrapper">
-                <span class="amount-prefix">₹</span>
-                <input class="custom-input amount-input" type="number" formControlName="amount" placeholder="0.00" [class.input-error]="transactionForm.get('amount')?.touched && transactionForm.get('amount')?.invalid" />
-                <span class="amount-currency">INR</span>
+            <div class="tf-field-group">
+              <label class="tf-label">Transaction Amount</label>
+              <div class="tf-amount-box"
+                   [class.tf-amount-box--debit]="transactionForm.value.type === 'DEBIT'"
+                   [class.tf-amount-box--credit]="transactionForm.value.type === 'CREDIT'"
+                   [class.tf-amount-box--error]="transactionForm.get('amount')?.touched && transactionForm.get('amount')?.invalid">
+                <span class="tf-amt-prefix">₹</span>
+                <input type="number" formControlName="amount" placeholder="0.00" class="tf-amt-input" />
+                <span class="tf-amt-suffix">INR</span>
+              </div>
+              <div class="tf-presets">
+                @for (preset of presets; track preset) {
+                  <button type="button" class="tf-preset-btn" (click)="applyPreset(preset)">
+                    +₹{{ preset | number:'1.0-0' }}
+                  </button>
+                }
               </div>
               @if (transactionForm.get('amount')?.touched && transactionForm.get('amount')?.invalid) {
-                <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Enter a valid amount (> 0).</span>
+                <span class="tf-error"><span class="material-symbols-outlined">error</span> Please enter a valid transaction amount.</span>
               }
             </div>
 
-            <!-- Description -->
-            <div class="form-group w-full">
-              <label class="form-label">Description / Note</label>
-              <div class="input-wrapper">
-                <i class="fa-solid fa-pen input-icon"></i>
-                <input class="custom-input pl-10" type="text" formControlName="description" placeholder="e.g., Grocery Shopping, Salary" [class.input-error]="transactionForm.get('description')?.touched && transactionForm.get('description')?.invalid" />
+            <!-- Memo -->
+            <div class="tf-field-group">
+              <label class="tf-label">Memo / Description</label>
+              <div class="tf-memo-box"
+                   [class.tf-memo-box--error]="transactionForm.get('description')?.touched && transactionForm.get('description')?.invalid">
+                <span class="material-symbols-outlined tf-memo-icon">edit_note</span>
+                <input type="text" formControlName="description"
+                       placeholder="e.g. Rent, Grocery shopping, Dividends..."
+                       class="tf-memo-input" />
               </div>
               @if (transactionForm.get('description')?.touched && transactionForm.get('description')?.invalid) {
-                <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Description is required (min 3 chars).</span>
+                <span class="tf-error"><span class="material-symbols-outlined">error</span> Description required (min 3 characters).</span>
               }
             </div>
           </div>
 
-          <div class="form-actions mt-8 pt-6 border-t border-outline-variant border-opacity-30">
-            <button class="btn btn-primary btn-submit w-full" type="submit" [disabled]="isSubmitting()">
-              @if (isSubmitting()) {
-                <i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Processing Transaction...
-              } @else {
-                Execute Transaction <i class="fa-solid fa-bolt ml-2"></i>
-              }
-            </button>
-          </div>
+          <!-- Submit -->
+          <button class="tf-submit-btn"
+                  [class.tf-submit-btn--debit]="transactionForm.value.type === 'DEBIT'"
+                  [class.tf-submit-btn--credit]="transactionForm.value.type === 'CREDIT'"
+                  type="submit" [disabled]="isSubmitting() || !transactionForm.valid">
+            @if (isSubmitting()) {
+              <span class="material-symbols-outlined tf-spin">autorenew</span>
+              Securing Channel...
+            } @else {
+              <span class="material-symbols-outlined">bolt</span>
+              Execute Ledger Instruction
+            }
+          </button>
         </form>
-      }
-    </div>
-  </div>
+      </div>
 
-  <div class="info-note-card mt-6 card flex items-start gap-4">
-    <div class="info-icon-box">
-      <i class="fa-solid fa-shield-halved"></i>
+      <!-- RIGHT: Live Receipt -->
+      <div class="tf-receipt-col">
+        <div class="tf-glass-card tf-receipt-card">
+
+          <!-- Receipt header -->
+          <div class="tf-receipt-header">
+            <span class="tf-receipt-badge">Live Receipt Preview</span>
+            <div class="tf-seal">
+              <span class="material-symbols-outlined">verified_user</span>
+            </div>
+          </div>
+
+          <div class="tf-receipt-body">
+            @if (!selectedAccount()) {
+              <div class="tf-receipt-empty">
+                <div class="tf-receipt-empty-icon">
+                  <span class="material-symbols-outlined">lock_open</span>
+                </div>
+                <p>Select a card and fill in details to see your live transaction preview.</p>
+              </div>
+            } @else {
+              <!-- Account -->
+              <div class="tf-receipt-row">
+                <span class="tf-r-label">Source Account</span>
+                <div class="tf-r-account">
+                  <span class="tf-r-acc-badge">{{ selectedAccount()?.accountType }}</span>
+                  <span class="tf-r-acc-num">•••• {{ selectedAccount()?.accountNumber?.slice(-4) }}</span>
+                </div>
+              </div>
+
+              <!-- Direction -->
+              <div class="tf-receipt-row">
+                <span class="tf-r-label">Direction</span>
+                <div class="tf-r-direction"
+                     [class.tf-r-direction--debit]="transactionForm.value.type === 'DEBIT'"
+                     [class.tf-r-direction--credit]="transactionForm.value.type === 'CREDIT'">
+                  <span class="material-symbols-outlined">
+                    {{ transactionForm.value.type === 'DEBIT' ? 'north_east' : 'south_west' }}
+                  </span>
+                  <span>{{ transactionForm.value.type === 'DEBIT' ? 'Outgoing Debit' : 'Incoming Credit' }}</span>
+                </div>
+              </div>
+
+              <!-- Amount large display -->
+              <div class="tf-receipt-amount-display"
+                   [class.tf-receipt-amount-display--debit]="transactionForm.value.type === 'DEBIT'"
+                   [class.tf-receipt-amount-display--credit]="transactionForm.value.type === 'CREDIT'">
+                <span class="tf-r-sign">{{ transactionForm.value.type === 'DEBIT' ? '−' : '+' }}</span>
+                <span class="tf-r-amount">{{ (transactionForm.value.amount || 0) | currencyFormat }}</span>
+              </div>
+
+              @if (transactionForm.value.description) {
+                <div class="tf-receipt-row">
+                  <span class="tf-r-label">Memo</span>
+                  <p class="tf-r-memo">"{{ transactionForm.value.description }}"</p>
+                </div>
+              }
+
+              <div class="tf-receipt-divider"></div>
+
+              <!-- Ledger Projections -->
+              <div class="tf-projections">
+                <span class="tf-r-label">Ledger Projections</span>
+                <div class="tf-proj-row">
+                  <span>Current Balance</span>
+                  <span>{{ selectedAccount()?.balance | currencyFormat }}</span>
+                </div>
+                <div class="tf-proj-row"
+                     [class.tf-proj-row--debit]="transactionForm.value.type === 'DEBIT'"
+                     [class.tf-proj-row--credit]="transactionForm.value.type === 'CREDIT'">
+                  <span>{{ transactionForm.value.type === 'DEBIT' ? 'Deducting' : 'Adding' }}</span>
+                  <span>
+                    {{ transactionForm.value.type === 'DEBIT' ? '−' : '+' }}{{ (transactionForm.value.amount || 0) | currencyFormat }}
+                  </span>
+                </div>
+                <div class="tf-proj-total">
+                  <span>Projected Balance</span>
+                  <span [class.tf-proj-total--warn]="newBalancePreview() != null && newBalancePreview()! < 0">
+                    {{ (newBalancePreview() || 0) | currencyFormat }}
+                  </span>
+                </div>
+
+                @if (newBalancePreview() != null && newBalancePreview()! < 0) {
+                  <div class="tf-overdraft">
+                    <span class="material-symbols-outlined">warning</span>
+                    <span>This transaction will result in a negative (overdraft) balance.</span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="tf-receipt-footer">
+            <span class="material-symbols-outlined">security</span>
+            <span>256-bit AES Banking Level Encryption</span>
+          </div>
+        </div>
+
+        <!-- Security badges -->
+        <div class="tf-security-badges">
+          <div class="tf-badge">
+            <span class="material-symbols-outlined">lock</span>
+            <span>End-to-End Encrypted</span>
+          </div>
+          <div class="tf-badge">
+            <span class="material-symbols-outlined">verified</span>
+            <span>RBI Compliant</span>
+          </div>
+          <div class="tf-badge">
+            <span class="material-symbols-outlined">history</span>
+            <span>Instant Ledger</span>
+          </div>
+        </div>
+      </div>
+
     </div>
-    <div>
-      <h4 class="info-note-title">Secure Transaction Processing</h4>
-      <p class="info-note-desc">Debits are processed immediately via our secure network. Please ensure sufficient funds are available to avoid overdraft fees or transaction failure.</p>
-    </div>
-  </div>
+  }
 </div>

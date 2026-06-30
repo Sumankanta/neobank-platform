@@ -1,99 +1,180 @@
-<div class="form-container animate-fade-in pb-10">
-  <!-- Header Section -->
-  <div class="flex-between mb-8 header-section">
-    <div>
-      <h1 class="page-title text-primary">Schedule New Bill</h1>
-      <p class="text-secondary">Set up a reminder for your upcoming payments</p>
+<div class="sb-page">
+
+  <!-- Floating orbs -->
+  <div class="sb-orb sb-orb-1"></div>
+  <div class="sb-orb sb-orb-2"></div>
+
+  <!-- Back -->
+  <a routerLink="/bills" class="sb-back-btn">
+    <i class="fa-solid fa-arrow-left"></i>
+    <span>Back to Bills</span>
+  </a>
+
+  <!-- Hero -->
+  <div class="sb-hero animate-fade-in">
+    <div class="sb-hero-icon">
+      <i class="fa-solid fa-calendar-check"></i>
     </div>
-    <a routerLink="/bills" class="btn btn-secondary outline-btn cancel-btn">
-      <i class="fa-solid fa-arrow-left mr-2"></i> Cancel
-    </a>
+    <div>
+      <h1 class="sb-title">Schedule New Bill</h1>
+      <p class="sb-subtitle">Set up automated reminders for your upcoming payments</p>
+    </div>
   </div>
 
-  <div class="card glass-card form-card p-0 shadow-xl border border-outline-variant rounded-xl overflow-hidden">
-    <!-- Card Top Decorator -->
-    <div class="card-decorator"></div>
-    
-    <div class="p-8 relative z-10">
-      <form [formGroup]="billForm" (ngSubmit)="onSubmit()" class="custom-form">
-        <div class="form-grid">
-          <!-- Biller Name -->
-          <div class="form-group w-full">
-            <label class="form-label">Biller Name</label>
-            <div class="input-wrapper">
-              <i class="fa-solid fa-building input-icon"></i>
-              <input class="custom-input pl-10" type="text" formControlName="billerName" placeholder="e.g., Electric Co, Netflix" [class.input-error]="billForm.get('billerName')?.touched && billForm.get('billerName')?.invalid" />
-            </div>
-            @if (billForm.get('billerName')?.touched && billForm.get('billerName')?.invalid) {
-              <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Biller name is required (min 3 chars).</span>
-            }
-          </div>
+  <!-- Layout -->
+  <div class="sb-layout animate-slide-up">
 
-          <!-- Amount -->
-          <div class="form-group w-full">
-            <label class="form-label">Amount Due</label>
-            <div class="input-wrapper amount-wrapper">
-              <span class="amount-prefix">₹</span>
-              <input class="custom-input amount-input" type="number" formControlName="amount" placeholder="0.00" [class.input-error]="billForm.get('amount')?.touched && billForm.get('amount')?.invalid" />
-              <span class="amount-currency">INR</span>
-            </div>
-            @if (billForm.get('amount')?.touched && billForm.get('amount')?.invalid) {
-              <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Enter a valid amount (> 0).</span>
+    <!-- LEFT: Form -->
+    <div class="sb-glass-card sb-form-panel">
+      <form [formGroup]="billForm" (ngSubmit)="onSubmit()">
+
+        <!-- Biller Type Chips -->
+        <div class="sb-section">
+          <label class="sb-label"><i class="fa-solid fa-layer-group"></i> Bill Type</label>
+          <div class="sb-chips">
+            @for (type of billerTypes; track type.value) {
+              <button type="button" class="sb-chip"
+                [class.sb-chip--active]="billForm.get('billerType')?.value === type.value"
+                (click)="selectBillerType(type.value)">
+                <i class="fa-solid {{ type.icon }}"></i>
+                <span>{{ type.label }}</span>
+              </button>
             }
           </div>
         </div>
 
-        <div class="form-grid align-center mt-6">
-          <!-- Due Date -->
-          <div class="form-group w-full">
-            <label class="form-label">Due Date</label>
-            <div class="input-wrapper">
-              <i class="fa-regular fa-calendar input-icon"></i>
-              <input class="custom-input pl-10" type="date" formControlName="dueDate" [class.input-error]="billForm.get('dueDate')?.touched && billForm.get('dueDate')?.invalid" />
+        <!-- Biller Name -->
+        <div class="sb-section">
+          <label class="sb-label" for="sb-biller"><i class="fa-solid fa-building"></i> Biller Name</label>
+          <div class="sb-input-wrap">
+            <input id="sb-biller" class="sb-input" type="text" formControlName="billerName"
+              [placeholder]="currentTypePlaceholder"
+              [class.sb-input--error]="billForm.get('billerName')?.touched && billForm.get('billerName')?.invalid" />
+          </div>
+          @if (billForm.get('billerName')?.touched && billForm.get('billerName')?.invalid) {
+            <span class="sb-error"><i class="fa-solid fa-circle-exclamation"></i> Biller name is required (min 3 chars).</span>
+          }
+        </div>
+
+        <!-- Amount -->
+        <div class="sb-section">
+          <label class="sb-label" for="sb-amount"><i class="fa-solid fa-indian-rupee-sign"></i> Amount Due</label>
+          <div class="sb-amount-wrap">
+            <span class="sb-amount-prefix">₹</span>
+            <input id="sb-amount" class="sb-amount-input" type="number" formControlName="amount"
+              placeholder="0.00" min="1"
+              [class.sb-input--error]="billForm.get('amount')?.touched && billForm.get('amount')?.invalid" />
+            <span class="sb-amount-suffix">INR</span>
+          </div>
+          <!-- Quick presets -->
+          <div class="sb-presets">
+            @for (preset of amountPresets; track preset) {
+              <button type="button" class="sb-preset-btn"
+                (click)="billForm.get('amount')?.setValue(preset)">
+                ₹{{ preset >= 1000 ? (preset / 1000) + 'K' : preset }}
+              </button>
+            }
+          </div>
+          @if (billForm.get('amount')?.touched && billForm.get('amount')?.invalid) {
+            <span class="sb-error"><i class="fa-solid fa-circle-exclamation"></i> Enter a valid amount (&gt; 0).</span>
+          }
+        </div>
+
+        <!-- Due Date -->
+        <div class="sb-section">
+          <label class="sb-label" for="sb-due"><i class="fa-regular fa-calendar"></i> Due Date</label>
+          <div class="sb-input-wrap">
+            <input id="sb-due" class="sb-input" type="date" formControlName="dueDate"
+              [class.sb-input--error]="billForm.get('dueDate')?.touched && billForm.get('dueDate')?.invalid" />
+          </div>
+          @if (billForm.get('dueDate')?.touched && billForm.get('dueDate')?.invalid) {
+            <span class="sb-error"><i class="fa-solid fa-circle-exclamation"></i> Due date is required.</span>
+          }
+        </div>
+
+        <!-- Remind Me Toggle -->
+        <div class="sb-section">
+          <label class="sb-reminder-toggle">
+            <div class="sb-toggle-track" [class.sb-toggle--on]="billForm.get('remindMe')?.value">
+              <input type="checkbox" formControlName="remindMe" class="sb-toggle-input" />
+              <div class="sb-toggle-knob"></div>
             </div>
-            @if (billForm.get('dueDate')?.touched && billForm.get('dueDate')?.invalid) {
-              <span class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i> Due date is required.</span>
-            }
-          </div>
-
-          <!-- Remind Me -->
-          <div class="form-group w-full justify-center h-full pt-4">
-            <label class="toggle-switch-wrapper cursor-pointer">
-              <div class="flex items-center gap-4">
-                <div class="relative">
-                  <input type="checkbox" formControlName="remindMe" class="sr-only peer">
-                  <div class="toggle-bg peer-checked:bg-primary"></div>
-                  <div class="toggle-dot peer-checked:translate-x-full"></div>
-                </div>
-                <div>
-                  <span class="font-bold text-primary block">Enable Reminders</span>
-                  <span class="text-xs text-muted">We'll notify you 3 days before the due date</span>
-                </div>
-              </div>
-            </label>
-          </div>
+            <div class="sb-reminder-text">
+              <span class="sb-reminder-title">
+                <i class="fa-solid fa-bell"></i> Enable Reminders
+              </span>
+              <span class="sb-reminder-desc">We'll notify you 3 days before the due date</span>
+            </div>
+          </label>
         </div>
 
-        <div class="form-actions mt-8 pt-6 border-t border-outline-variant border-opacity-30">
-          <button class="btn btn-primary btn-submit w-full" type="submit" [disabled]="isSubmitting()">
-            @if (isSubmitting()) {
-              <i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Scheduling...
-            } @else {
-              Schedule Bill <i class="fa-solid fa-paper-plane ml-2"></i>
-            }
-          </button>
-        </div>
+        <!-- Submit -->
+        <button class="sb-submit-btn" type="submit" [disabled]="isSubmitting()">
+          @if (isSubmitting()) {
+            <i class="fa-solid fa-circle-notch fa-spin"></i> Scheduling...
+          } @else {
+            <i class="fa-solid fa-paper-plane"></i> Schedule Bill
+          }
+        </button>
+
       </form>
     </div>
-  </div>
 
-  <div class="info-note-card mt-6 card flex items-start gap-4">
-    <div class="info-icon-box bg-warning-light text-warning">
-      <i class="fa-solid fa-bell"></i>
-    </div>
-    <div>
-      <h4 class="info-note-title text-warning">Smart Reminders</h4>
-      <p class="info-note-desc">Bills are automatically categorized to help you track your monthly spending patterns in your Budget dashboard.</p>
+    <!-- RIGHT: Preview & Tips -->
+    <div class="sb-preview-panel">
+
+      <!-- Bill Preview Card -->
+      <div class="sb-glass-card sb-preview-card">
+        <div class="sb-preview-badge">Bill Preview</div>
+        <!-- Bill visual header -->
+        <div class="sb-bill-visual" [style.background]="currentTypeColor">
+          <div class="sb-bill-icon">
+            <i class="fa-solid {{ currentTypeIcon }}"></i>
+          </div>
+          <div class="sb-bill-visual-text">
+            <p class="sb-bill-biller">{{ billForm.get('billerName')?.value || 'Biller Name' }}</p>
+            <p class="sb-bill-type-label">{{ currentTypeLabel }}</p>
+          </div>
+        </div>
+
+        <!-- Details -->
+        <div class="sb-bill-details">
+          <div class="sb-bill-row">
+            <span class="sb-bill-row-label"><i class="fa-solid fa-indian-rupee-sign"></i> Amount</span>
+            <span class="sb-bill-row-value sb-bill-amount">
+              ₹{{ billForm.get('amount')?.value ? (billForm.get('amount')?.value | number:'1.0-0') : '—' }}
+            </span>
+          </div>
+          <div class="sb-bill-row">
+            <span class="sb-bill-row-label"><i class="fa-regular fa-calendar"></i> Due Date</span>
+            <span class="sb-bill-row-value">{{ formatDate(billForm.get('dueDate')?.value) }}</span>
+          </div>
+          <div class="sb-bill-row">
+            <span class="sb-bill-row-label"><i class="fa-solid fa-clock"></i> Due In</span>
+            <span class="sb-bill-row-value" [class.sb-due-soon]="daysUntilDue !== null && daysUntilDue <= 5">
+              {{ daysUntilDue !== null ? daysUntilDue + ' day' + (daysUntilDue === 1 ? '' : 's') : '—' }}
+            </span>
+          </div>
+          <div class="sb-bill-row">
+            <span class="sb-bill-row-label"><i class="fa-solid fa-bell"></i> Reminder</span>
+            <span class="sb-bill-row-value sb-reminder-status" [class.sb-reminder-on]="billForm.get('remindMe')?.value">
+              {{ billForm.get('remindMe')?.value ? '✓ Enabled' : '✗ Off' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div class="sb-glass-card sb-features-card">
+        <h4 class="sb-features-title"><i class="fa-solid fa-star"></i> Smart Features</h4>
+        <ul class="sb-features-list">
+          <li><i class="fa-solid fa-check-circle"></i> Auto-categorizes bills in your budget</li>
+          <li><i class="fa-solid fa-check-circle"></i> Push notification 3 days before due</li>
+          <li><i class="fa-solid fa-check-circle"></i> Monthly spend trend analytics</li>
+          <li><i class="fa-solid fa-check-circle"></i> Never miss a payment again</li>
+        </ul>
+      </div>
+
     </div>
   </div>
 </div>
